@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Query Apps Permission -->
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="PackageVisibilityPolicy,QueryAllPackagesPermission" /> <!-- Open Status Bar Permission -->
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" /> <!-- Uninstall Apps Permission -->
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" /> <!-- Internet Permission -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Locking Apps Using Biometrics -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" /> <!-- Required to Lock The Screen -->
+    <uses-feature
+        android:name="android.software.device_admin"
+        android:required="true" />
+
+    <application
+        android:name=".core.app.App"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Mordomo">
+        <activity
+            android:name=".ui.navigation.setup.SetupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.navigation.settings.SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.navigation.launcher.LauncherActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Launcher" />
+        <activity
+            android:name=".ui.navigation.MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="RedundantLabel">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
