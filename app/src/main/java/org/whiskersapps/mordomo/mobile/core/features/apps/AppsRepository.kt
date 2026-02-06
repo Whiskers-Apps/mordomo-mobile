@@ -106,10 +106,6 @@ class AppsRepository(
                     .distinctBy { it.packageName }
 
                 _filteredApps.update { apps }
-
-                for (app in apps) {
-                    Log.d("App", app.packageName)
-                }
             }
 
 //            val blacklistedApps = settingsRepo.settings.value.hiddenApps
@@ -121,8 +117,8 @@ class AppsRepository(
         }
     }
 
-    fun openApp(app: App) {
-        CoroutineScope(Dispatchers.Default).launch {
+    suspend fun openApp(app: App) {
+        withContext(Dispatchers.Default) {
             val intent = packageManager.getLaunchIntentForPackage(app.packageName)
             intent?.let {
                 context.startActivity(it)

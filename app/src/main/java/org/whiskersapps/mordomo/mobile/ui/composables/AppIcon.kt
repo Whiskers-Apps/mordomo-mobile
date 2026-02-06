@@ -1,6 +1,7 @@
 package org.whiskersapps.mordomo.mobile.ui.composables
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,8 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.core.graphics.drawable.toBitmap
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +31,8 @@ import org.whiskersapps.mordomo.mobile.core.features.apps.App
 fun AppIcon(
     themed: Boolean,
     size: Dp? = null,
-    icons: App.Icons
+    icons: App.Icons,
+    shape: Shape = CircleShape
 ) {
 
     val isAdaptive by remember {
@@ -62,13 +67,25 @@ fun AppIcon(
 
         val backgroundState = produceState<ImageBitmap?>(initialValue = null, icons, themed) {
             value = withContext(Dispatchers.Default) {
-                icon.background!!.toBitmap().asImageBitmap()
+                val height =
+                    if (icon.foreground.intrinsicHeight > 0) icon.foreground.intrinsicHeight else 128
+
+                val width =
+                    if (icon.foreground.intrinsicWidth > 0) icon.foreground.intrinsicWidth else 128
+
+                icon.background!!.toBitmap(width = width, height = height).asImageBitmap()
             }
         }
 
         val foregroundState = produceState<ImageBitmap?>(initialValue = null, icons, themed) {
             value = withContext(Dispatchers.Default) {
-                icon.foreground.toBitmap().asImageBitmap()
+                val height =
+                    if (icon.foreground.intrinsicHeight > 0) icon.foreground.intrinsicHeight else 128
+
+                val width =
+                    if (icon.foreground.intrinsicWidth > 0) icon.foreground.intrinsicWidth else 128
+
+                icon.foreground.toBitmap(width = width, height = height).asImageBitmap()
             }
         }
 
@@ -80,15 +97,18 @@ fun AppIcon(
                 .modifyIf(size == null) {
                     this.fillMaxWidth()
                 }
-                .clip(CircleShape),
+                .clip(shape),
             contentAlignment = Alignment.Center
         ) {
 
             backgroundState.value?.let { background ->
                 Image(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .scale(1.5f),
                     bitmap = background,
-                    contentDescription = null
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds
                 )
             }
             foregroundState.value?.let { foreground ->
@@ -97,11 +117,10 @@ fun AppIcon(
                         .fillMaxSize()
                         .scale(1.5f),
                     bitmap = foreground,
-                    contentDescription = null
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds
                 )
             }
-
-
         }
     } else {
         val icon by remember {
@@ -123,7 +142,8 @@ fun AppIcon(
                 .modifyIf(size == null) {
                     this.fillMaxWidth()
                 }
-                .clip(CircleShape),
+                .clip(shape)
+                .background(Color.White),
             contentAlignment = Alignment.Center
         ) {
             Image(

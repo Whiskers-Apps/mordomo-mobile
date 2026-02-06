@@ -20,9 +20,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowInfoTracker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
+import org.whiskersapps.mordomo.mobile.core.features.screen.FoldableRepository
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.AppsScreen
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.AppsScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen.HomeScreenRoot
@@ -45,6 +52,24 @@ class LauncherActivity : AppCompatActivity() {
         }
 
         applyStatusBarColor(true)
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                WindowInfoTracker.getOrCreate(this@LauncherActivity)
+                    .windowLayoutInfo(this@LauncherActivity)
+                    .collect { layoutInfo ->
+                        val foldingFeature =
+                            layoutInfo.displayFeatures.filterIsInstance<FoldingFeature>()
+                                .firstOrNull()
+
+                        val isFullyOpen = foldingFeature?.state == FoldingFeature.State.FLAT
+                        val isHalfOpen = foldingFeature?.state == FoldingFeature.State.HALF_OPENED
+                        val isOpen = isFullyOpen || isHalfOpen
+
+                        get<FoldableRepository>().setIsOpen(isOpen)
+                    }
+            }
+        }
 
         setContent {
             MordomoTheme {

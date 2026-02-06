@@ -25,14 +25,22 @@
         android:theme="@style/Theme.Mordomo">
         <activity
             android:name=".ui.navigation.setup.SetupActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.navigation.settings.SettingsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.navigation.launcher.LauncherActivity"
             android:exported="false"
-            android:theme="@style/Theme.Launcher" />
+            android:theme="@style/Theme.Launcher"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.navigation.MainActivity"
             android:exported="true"

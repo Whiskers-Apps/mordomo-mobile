@@ -1,21 +1,20 @@
 package org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,11 +22,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import org.whiskersapps.mordomo.mobile.ui.composables.AppIcon
+import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.components.AppRow
+import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.components.SearchBar
 
 @Composable
 fun AppsScreenRoot(
@@ -36,13 +40,26 @@ fun AppsScreenRoot(
 ) {
     val scope = rememberCoroutineScope()
 
+    fun scrollToHome() {
+        scope.launch {
+            pagerState.scrollToPage(1)
+        }
+    }
+
     AppsScreen(vm.state.collectAsState().value) { action ->
         when (action) {
             is AppsScreenAction.AppClick -> {
                 vm.onAction(action)
+                scrollToHome()
+            }
 
+            AppsScreenAction.SearchDone -> {
                 scope.launch {
-                    pagerState.scrollToPage(1)
+                    vm.onAction(action)
+
+                    delay(200)
+
+                    scrollToHome()
                 }
             }
 
@@ -55,6 +72,28 @@ fun AppsScreenRoot(
 
 @Composable
 fun AppsScreen(state: AppsScreenState, onAction: (AppsScreenAction) -> Unit) {
+    val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    fun clear() {
+        scope.launch {
+            lazyListState.scrollToItem(0)
+            focusManager.clearFocus()
+            keyboardController?.hide()
+        }
+    }
+
+    fun clearKeyboard() {
+        scope.launch {
+            focusManager.clearFocus()
+            keyboardController?.hide()
+        }
+    }
+
+
+
     if (!state.loading) {
         Column(
             modifier = Modifier
@@ -62,28 +101,66 @@ fun AppsScreen(state: AppsScreenState, onAction: (AppsScreenAction) -> Unit) {
                 .background(MaterialTheme.colorScheme.background)
                 .systemBarsPadding()
                 .padding(24.dp)
+                .imePadding()
         ) {
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                items(state.apps, key = { it.packageName }) { app ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(CircleShape)
-                            .clickable {
+
+
+            if (state.apps.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f, fill = true),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = """¯\_(ツ)_/¯""",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontSize = 24.sp
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+
+                    Text(
+                        text = "No Apps Found. Verify your spelling.",
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f, fill = true),
+                    state = lazyListState,
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    items(state.apps, key = { it.packageName }) { app ->
+                        AppRow(
+                            app,
+                            onClick = {
                                 onAction(AppsScreenAction.AppClick(app))
+                                clear()
                             }
-                            .padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        AppIcon(themed = false, size = 48.dp, icons = app.icons)
-
-                        Spacer(Modifier.width(8.dp))
-
-                        Text(app.name, color = MaterialTheme.colorScheme.onBackground)
+                        )
                     }
+
                 }
             }
+
+            Spacer(Modifier.height(16.dp))
+
+            SearchBar(
+                value = state.searchText,
+                onValueChange = { text -> onAction(AppsScreenAction.Search(text)) },
+                onDone = {
+                    if (state.searchText.trim().isEmpty()) {
+                        clearKeyboard()
+                        return@SearchBar
+                    }
+
+                    onAction(AppsScreenAction.SearchDone)
+                }
+            )
         }
     }
-
 }
