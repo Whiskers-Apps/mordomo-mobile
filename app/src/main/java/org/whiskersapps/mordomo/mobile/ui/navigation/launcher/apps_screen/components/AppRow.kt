@@ -1,6 +1,7 @@
 package org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,15 +24,21 @@ import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.AppsSc
 @Composable
 fun AppRow(
     app: App,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(CircleShape)
-            .clickable {
-                onClick()
-            }
+            .combinedClickable(
+                onClick = {
+                    onClick()
+                },
+                onLongClick = {
+                    onLongClick()
+                }
+            )
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

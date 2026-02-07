@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -24,12 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.components.AppDialog
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.components.AppRow
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.components.SearchBar
 
@@ -39,6 +39,15 @@ fun AppsScreenRoot(
     vm: AppsScreenVM = koinViewModel()
 ) {
     val scope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    fun clear() {
+        scope.launch {
+            focusManager.clearFocus()
+            keyboardController?.hide()
+        }
+    }
 
     fun scrollToHome() {
         scope.launch {
@@ -55,11 +64,15 @@ fun AppsScreenRoot(
 
             AppsScreenAction.SearchDone -> {
                 scope.launch {
+                    clear()
+
+                    if (vm.state.value.apps.isNotEmpty()
+                        && vm.state.value.searchText.trim().isNotEmpty()
+                    ) {
+                        scrollToHome()
+                    }
+
                     vm.onAction(action)
-
-                    delay(200)
-
-                    scrollToHome()
                 }
             }
 
@@ -74,27 +87,18 @@ fun AppsScreenRoot(
 fun AppsScreen(state: AppsScreenState, onAction: (AppsScreenAction) -> Unit) {
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
-
-    fun clear() {
-        scope.launch {
-            lazyListState.scrollToItem(0)
-            focusManager.clearFocus()
-            keyboardController?.hide()
-        }
-    }
-
-    fun clearKeyboard() {
-        scope.launch {
-            focusManager.clearFocus()
-            keyboardController?.hide()
-        }
-    }
-
-
 
     if (!state.loading) {
+        AppDialog(
+            app = state.longClickedApp,
+            onDismiss = { onAction(AppsScreenAction.AppDialogClose) },
+            onAppInfoClick = { onAction(AppsScreenAction.AppInfoClick(it)) },
+            onUninstallClick = { onAction(AppsScreenAction.UninstallAppClick(it)) },
+            onShortcutClick = { app, shortcut ->
+                onAction(AppsScreenAction.ShortcutClick(app, shortcut))
+            }
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -139,11 +143,16 @@ fun AppsScreen(state: AppsScreenState, onAction: (AppsScreenAction) -> Unit) {
                             app,
                             onClick = {
                                 onAction(AppsScreenAction.AppClick(app))
-                                clear()
+
+                                scope.launch(Dispatchers.Main) {
+                                    lazyListState.scrollToItem(0)
+                                }
+                            },
+                            onLongClick = {
+                                onAction(AppsScreenAction.AppLongClick(app))
                             }
                         )
                     }
-
                 }
             }
 
@@ -153,11 +162,6 @@ fun AppsScreen(state: AppsScreenState, onAction: (AppsScreenAction) -> Unit) {
                 value = state.searchText,
                 onValueChange = { text -> onAction(AppsScreenAction.Search(text)) },
                 onDone = {
-                    if (state.searchText.trim().isEmpty()) {
-                        clearKeyboard()
-                        return@SearchBar
-                    }
-
                     onAction(AppsScreenAction.SearchDone)
                 }
             )

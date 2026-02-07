@@ -46,7 +46,12 @@ class AppsScreenVM(
         when (action) {
             is AppsScreenAction.Search -> onSearch(action.text)
             is AppsScreenAction.AppClick -> onAppClick(action.app)
+            is AppsScreenAction.AppLongClick -> onAppLongClick(action.app)
             AppsScreenAction.SearchDone -> onSearchDone()
+            AppsScreenAction.AppDialogClose -> onAppDialogClose()
+            is AppsScreenAction.AppInfoClick -> onAppInfoClick(action.app)
+            is AppsScreenAction.UninstallAppClick -> onUninstallAppClick(action.app)
+            is AppsScreenAction.ShortcutClick -> onShortcutClick(action.app, action.shortcut)
         }
     }
 
@@ -74,6 +79,16 @@ class AppsScreenVM(
         }
     }
 
+    private fun onAppLongClick(app: App) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    longClickedApp = app
+                )
+            }
+        }
+    }
+
     private fun onSearchDone() {
         viewModelScope.launch {
             val state = state.value
@@ -94,6 +109,33 @@ class AppsScreenVM(
         }
     }
 
+    private fun onAppDialogClose() {
+        viewModelScope.launch {
+            _state.update { it.copy(longClickedApp = null) }
+        }
+    }
+
+    private fun onAppInfoClick(app: App) {
+        viewModelScope.launch {
+            appsRepository.openAppInfo(app)
+            closeAppDialog()
+        }
+    }
+
+    private fun onUninstallAppClick(app: App) {
+        viewModelScope.launch {
+            appsRepository.requestUninstall(app)
+            closeAppDialog()
+        }
+    }
+
+    private fun onShortcutClick(app: App, shortcut: App.Shortcut) {
+        viewModelScope.launch {
+            appsRepository.openShortcut(app, shortcut)
+            closeAppDialog()
+        }
+    }
+
     // ----------------------------------------------- //
 
     private fun clearScreen() {
@@ -103,6 +145,14 @@ class AppsScreenVM(
                     apps = appsRepository.filteredApps.value,
                     searchText = ""
                 )
+            }
+        }
+    }
+
+    private fun closeAppDialog() {
+        viewModelScope.launch(Dispatchers.Main) {
+            _state.update {
+                it.copy(longClickedApp = null)
             }
         }
     }

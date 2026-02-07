@@ -6,10 +6,13 @@ import android.content.pm.LauncherApps
 import android.content.pm.LauncherApps.ShortcutQuery.FLAG_MATCH_DYNAMIC
 import android.content.pm.LauncherApps.ShortcutQuery.FLAG_MATCH_MANIFEST
 import android.content.pm.LauncherApps.ShortcutQuery.FLAG_MATCH_PINNED
+import android.net.Uri
 import android.os.Process
+import android.provider.Settings
 import android.util.DisplayMetrics
 import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.net.toUri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -85,6 +88,7 @@ class AppsRepository(
                                 )
                             } ?: emptyList()
                     } catch (e: Exception) {
+                        e.printStackTrace()
                         emptyList()
                     }.take(5)
 
@@ -126,13 +130,36 @@ class AppsRepository(
         }
     }
 
-    fun openShortcut(packageName: String, shortcut: App.Shortcut) {
-        launcherApps.startShortcut(
-            packageName,
-            shortcut.id,
-            null,
-            null,
-            Process.myUserHandle()
-        )
+    suspend fun openShortcut(app: App, shortcut: App.Shortcut) {
+        withContext(Dispatchers.Default) {
+            launcherApps.startShortcut(
+                app.packageName,
+                shortcut.id,
+                null,
+                null,
+                Process.myUserHandle()
+            )
+        }
+    }
+
+    suspend fun openAppInfo(app: App) {
+        withContext(Dispatchers.Default) {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+            val uri = Uri.fromParts("package", app.packageName, null)
+            intent.data = uri
+            context.startActivity(intent)
+        }
+    }
+
+    suspend fun requestUninstall(app: App) {
+        withContext(Dispatchers.Default) {
+            val packageUri = "package:${app.packageName}".toUri()
+            val intent = Intent(Intent.ACTION_DELETE, packageUri)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+            context.startActivity(intent)
+        }
     }
 }

@@ -5,5 +5,6 @@ import org.whiskersapps.mordomo.mobile.core.features.apps.App
 data class AppsScreenState(
     val loading: Boolean = true,
     val searchText: String = "",
-    val apps: List<App> = emptyList()
+    val apps: List<App> = emptyList(),
+    val longClickedApp: App? = null
 )
