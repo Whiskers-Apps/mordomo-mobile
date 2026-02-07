@@ -9,6 +9,7 @@ import org.whiskersapps.mordomo.mobile.core.features.icons.IconsRepository
 import org.whiskersapps.mordomo.mobile.core.features.screen.FoldableRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.AppsScreenVM
+import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen.HomeScreenVM
 
 val appModule = module {
 
@@ -19,5 +20,6 @@ val appModule = module {
     single { FoldableRepository() } withOptions { createdAtStart() }
 
     // Screens ViewModels
+    viewModel { HomeScreenVM(get()) }
     viewModel { AppsScreenVM(get(), get()) }
 }

@@ -13,6 +13,9 @@ data class Settings(
 
         val KEY_CLOCK_STYLE = stringPreferencesKey("clock_style")
         const val DEFAULT_CLOCK_STYLE = SettingsOptions.ClockStyle.HIDDEN
+
+        val KEY_DATE_FORMAT = stringPreferencesKey("date_format")
+        const val DEFAULT_DATE_FORMAT = "EEEE - dd/MM/yyyy"
     }
 
     data class Setup(
@@ -20,7 +23,8 @@ data class Settings(
     )
 
     data class Home(
-        val clockStyle: String = DEFAULT_CLOCK_STYLE
+        val clockStyle: String = DEFAULT_CLOCK_STYLE,
+        val dateFormat: String = DEFAULT_DATE_FORMAT
     )
 
 }

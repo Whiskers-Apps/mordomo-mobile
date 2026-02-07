@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.internal.wait
 import org.whiskersapps.mordomo.mobile.core.features.icons.IconsRepository
+import org.whiskersapps.mordomo.mobile.core.utils.isDefaultLauncher
 
 class AppsRepository(
     private val context: Context,
@@ -72,23 +73,29 @@ class AppsRepository(
                         setPackage(packageName)
                     }
 
-                    val shortcuts: List<App.Shortcut> = try {
-                        launcherApps.getShortcuts(shortcutQuery, Process.myUserHandle())
-                            ?.map { shortcut ->
+                    val isDefaultLauncher = isDefaultLauncher(context)
 
-                                val icon = launcherApps.getShortcutIconDrawable(
-                                    shortcut,
-                                    DisplayMetrics.DENSITY_MEDIUM
-                                )
+                    val shortcuts: List<App.Shortcut> = if (isDefaultLauncher) {
+                        try {
+                            launcherApps.getShortcuts(shortcutQuery, Process.myUserHandle())
+                                ?.map { shortcut ->
 
-                                App.Shortcut(
-                                    id = shortcut.id,
-                                    text = shortcut.shortLabel.toString(),
-                                    icon = icon?.toBitmap()
-                                )
-                            } ?: emptyList()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                                    val icon = launcherApps.getShortcutIconDrawable(
+                                        shortcut,
+                                        DisplayMetrics.DENSITY_MEDIUM
+                                    )
+
+                                    App.Shortcut(
+                                        id = shortcut.id,
+                                        text = shortcut.shortLabel.toString(),
+                                        icon = icon?.toBitmap()
+                                    )
+                                } ?: emptyList()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            emptyList()
+                        }
+                    } else {
                         emptyList()
                     }.take(5)
 
