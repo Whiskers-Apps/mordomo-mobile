@@ -5,5 +5,6 @@ import org.whiskersapps.mordomo.mobile.core.features.settings.Settings
 data class HomeScreenState(
     val clockStyle: String = Settings.DEFAULT_CLOCK_STYLE,
     val clock: String = "00:00",
-    val date: String = ""
+    val date: String = "",
+    val showMenu: Boolean = false
 )

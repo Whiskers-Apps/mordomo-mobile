@@ -1,6 +1,8 @@
 package org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,6 +48,14 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsOptions
+import org.whiskersapps.mordomo.mobile.ui.composables.LeftCardShape
+import org.whiskersapps.mordomo.mobile.ui.composables.LeftCircleShape
+import org.whiskersapps.mordomo.mobile.ui.composables.MiddleCardShape
+import org.whiskersapps.mordomo.mobile.ui.composables.RightCardShape
+import org.whiskersapps.mordomo.mobile.ui.composables.RightCircleShape
+import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen.components.Clock
+import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen.components.HomePanel
+import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen.components.MenuDialog
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,6 +69,12 @@ fun HomeScreenRoot(
 
     HomeScreen(vm.state.collectAsState().value) { action ->
         when (action) {
+            is HomeScreenAction.QuickPanelButtonClick -> {
+                scope.launch {
+                    pagerState.scrollToPage(0)
+                }
+            }
+
             is HomeScreenAction.AppsButtonClick -> {
                 scope.launch {
                     pagerState.scrollToPage(2)
@@ -70,6 +86,10 @@ fun HomeScreenRoot(
                     sheetState.expand()
                 }
             }
+
+            else -> {
+                vm.onAction(action)
+            }
         }
     }
 }
@@ -78,6 +98,13 @@ fun HomeScreenRoot(
 fun HomeScreen(state: HomeScreenState, onAction: (HomeScreenAction) -> Unit) {
     val statusBarInset = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
     val statusBarSize = remember(statusBarInset) { statusBarInset + 16.dp }
+
+    MenuDialog(
+        show = state.showMenu,
+        onDismiss = { onAction(HomeScreenAction.MenuDismiss) },
+        onSettingsClick = { onAction(HomeScreenAction.SettingsClick) },
+        onSetWallpaperClick = { onAction(HomeScreenAction.SetWallpaperClick) }
+    )
 
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -97,60 +124,16 @@ fun HomeScreen(state: HomeScreenState, onAction: (HomeScreenAction) -> Unit) {
 
         Column(
             modifier = Modifier
+                .combinedClickable(
+                    onClick = {
+
+                    },
+                    onLongClick = { onAction(HomeScreenAction.LongClick) }
+                )
                 .padding(24.dp)
                 .systemBarsPadding()
         ) {
-
-            when (state.clockStyle) {
-                SettingsOptions.ClockStyle.MINIMAL -> {
-                    val textShadow = Shadow(
-                        Color.Black,
-                        offset = Offset(2f, 2f)
-                    )
-
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            state.clock,
-                            fontSize = 56.sp,
-                            color = Color.White,
-                            style = TextStyle(shadow = textShadow)
-                        )
-
-                        Text(
-                            state.date,
-                            fontSize = 20.sp,
-                            color = Color.White,
-                            style = TextStyle(shadow = textShadow)
-                        )
-                    }
-                }
-
-                SettingsOptions.ClockStyle.ISLAND -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.background)
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            state.clock,
-                            fontSize = 56.sp,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-
-                        Text(
-                            state.date,
-                            fontSize = 20.sp,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-                    }
-                }
-            }
+            Clock(style = state.clockStyle, clock = state.clock, date = state.date)
 
             Spacer(
                 Modifier
@@ -158,69 +141,17 @@ fun HomeScreen(state: HomeScreenState, onAction: (HomeScreenAction) -> Unit) {
                     .weight(1f, fill = true)
             )
 
-            Row(Modifier.fillMaxWidth()) {
-                OutlinedButton(
-                    modifier = Modifier
-                        .height(56.dp)
-                        .fillMaxWidth()
-                        .weight(1f, fill = true),
-                    onClick = {
-                        onAction(HomeScreenAction.SearchButtonClick)
-                    },
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onBackground,
-                    ),
-                    shape = RoundedCornerShape(
-                        topStart = 99.dp,
-                        bottomStart = 99.dp,
-                        topEnd = 8.dp,
-                        bottomEnd = 8.dp
-                    )
-                ) {
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        painter = painterResource(R.drawable.search),
-                        contentDescription = null
-                    )
-
-                    Spacer(Modifier.width(8.dp))
-
-                    Text(modifier = Modifier.fillMaxWidth(), text = "Search")
+            HomePanel(
+                onQuickPanelButtonClick = {
+                    onAction(HomeScreenAction.QuickPanelButtonClick)
+                },
+                onSearchButtonClick = {
+                    onAction(HomeScreenAction.SearchButtonClick)
+                },
+                onAppsButtonClick = {
+                    onAction(HomeScreenAction.AppsButtonClick)
                 }
-
-                Spacer(Modifier.width(4.dp))
-
-                OutlinedButton(
-                    modifier = Modifier
-                        .height(56.dp)
-                        .wrapContentWidth(),
-                    onClick = {
-                        onAction(HomeScreenAction.AppsButtonClick)
-                    },
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onBackground,
-                    ),
-                    shape = RoundedCornerShape(
-                        topStart = 8.dp,
-                        bottomStart = 8.dp,
-                        topEnd = 99.dp,
-                        bottomEnd = 99.dp
-                    )
-                ) {
-
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        painter = painterResource(R.drawable.apps),
-                        contentDescription = null
-                    )
-
-                    Spacer(Modifier.width(8.dp))
-
-                    Text(text = "Apps")
-                }
-            }
+            )
         }
     }
 }

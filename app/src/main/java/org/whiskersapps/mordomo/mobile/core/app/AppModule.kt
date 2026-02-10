@@ -20,6 +20,6 @@ val appModule = module {
     single { FoldableRepository() } withOptions { createdAtStart() }
 
     // Screens ViewModels
-    viewModel { HomeScreenVM(get()) }
+    viewModel { HomeScreenVM(get(), get()) }
     viewModel { AppsScreenVM(get(), get()) }
 }
