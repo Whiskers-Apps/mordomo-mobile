@@ -5,27 +5,39 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 
 data class Settings(
     val setup: Setup = Setup(),
-    val home: Home = Home()
+    val home: Home = Home(),
+    val apps: Apps = Apps()
 ) {
-    companion object {
-        val KEY_SETUP_COMPLETED = booleanPreferencesKey("setup_completed")
-        const val DEFAULT_SETUP_COMPLETED = false
-
-        val KEY_CLOCK_STYLE = stringPreferencesKey("clock_style")
-        const val DEFAULT_CLOCK_STYLE = SettingsOptions.ClockStyle.MINIMAL
-
-        val KEY_DATE_FORMAT = stringPreferencesKey("date_format")
-        const val DEFAULT_DATE_FORMAT = "EEEE - dd/MM/yyyy"
-    }
-
     data class Setup(
         val completed: Boolean = DEFAULT_SETUP_COMPLETED
-    )
+    ) {
+        companion object {
+            val KEY_SETUP_COMPLETED = booleanPreferencesKey("setup_completed")
+            const val DEFAULT_SETUP_COMPLETED = false
+        }
+    }
 
     data class Home(
         val clockStyle: String = DEFAULT_CLOCK_STYLE,
         val dateFormat: String = DEFAULT_DATE_FORMAT
-    )
+    ) {
+        companion object {
+            val KEY_CLOCK_STYLE = stringPreferencesKey("clock_style")
+            const val DEFAULT_CLOCK_STYLE = SettingsOptions.ClockStyle.MINIMAL
+
+            val KEY_DATE_FORMAT = stringPreferencesKey("date_format")
+            const val DEFAULT_DATE_FORMAT = "EEEE - dd/MM/yyyy"
+        }
+    }
+
+    data class Apps(
+        val splitList: Boolean = DEFAULT_SPLIT_LIST
+    ) {
+        companion object {
+            val KEY_SPLIT_LIST = booleanPreferencesKey("split_apps_list")
+            const val DEFAULT_SPLIT_LIST = true
+        }
+    }
 
 }
 

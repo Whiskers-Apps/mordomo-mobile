@@ -16,12 +16,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Companion.DEFAULT_CLOCK_STYLE
-import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Companion.DEFAULT_DATE_FORMAT
-import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Companion.DEFAULT_SETUP_COMPLETED
-import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Companion.KEY_CLOCK_STYLE
-import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Companion.KEY_DATE_FORMAT
-import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Companion.KEY_SETUP_COMPLETED
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Apps.Companion.DEFAULT_SPLIT_LIST
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Apps.Companion.KEY_SPLIT_LIST
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_CLOCK_STYLE
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_DATE_FORMAT
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.KEY_CLOCK_STYLE
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.KEY_DATE_FORMAT
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Setup.Companion.DEFAULT_SETUP_COMPLETED
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Setup.Companion.KEY_SETUP_COMPLETED
 
 
 val Context.dataStore by preferencesDataStore("settings")
@@ -41,6 +43,9 @@ class SettingsRepository(
             home = Settings.Home(
                 clockStyle = preferences[KEY_CLOCK_STYLE] ?: DEFAULT_CLOCK_STYLE,
                 dateFormat = preferences[KEY_DATE_FORMAT] ?: DEFAULT_DATE_FORMAT
+            ),
+            apps = Settings.Apps(
+                splitList = preferences[KEY_SPLIT_LIST] ?: DEFAULT_SPLIT_LIST
             )
         )
 

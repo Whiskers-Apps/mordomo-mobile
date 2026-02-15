@@ -99,4 +99,7 @@ dependencies {
 
     // MonoCode Material
     implementation(libs.compose.material)
+
+    // Layout
+    implementation(libs.layout.scaffold)
 }

@@ -1,11 +1,10 @@
 package org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen
 
-import android.content.Context
+import android.app.Application
 import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +17,7 @@ import java.util.Calendar
 import java.util.Locale
 
 class HomeScreenVM(
-    val context: Context,
+    val context: Application,
     val settingsRepository: SettingsRepository
 ) : ViewModel() {
 

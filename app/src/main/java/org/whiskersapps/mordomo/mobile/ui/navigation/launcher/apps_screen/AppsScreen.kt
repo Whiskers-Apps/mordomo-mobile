@@ -10,14 +10,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,8 +28,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lighttigerxiv.layout_scaffold.isExpandedWidth
+import com.lighttigerxiv.layout_scaffold.isMediumWidth
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.components.AppDialog
@@ -85,7 +89,7 @@ fun AppsScreenRoot(
 
 @Composable
 fun AppsScreen(state: AppsScreenState, onAction: (AppsScreenAction) -> Unit) {
-    val lazyListState = rememberLazyListState()
+    val lazyGridState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
 
     if (!state.loading) {
@@ -131,12 +135,17 @@ fun AppsScreen(state: AppsScreenState, onAction: (AppsScreenAction) -> Unit) {
                     )
                 }
             } else {
-                LazyColumn(
+                LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f, fill = true),
-                    state = lazyListState,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    columns = if (state.splitList) {
+                        GridCells.Adaptive(minSize = 300.dp)
+                    } else {
+                        GridCells.Fixed(1)
+                    },
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    state = lazyGridState
                 ) {
                     items(state.apps, key = { it.packageName }) { app ->
                         AppRow(
@@ -145,7 +154,7 @@ fun AppsScreen(state: AppsScreenState, onAction: (AppsScreenAction) -> Unit) {
                                 onAction(AppsScreenAction.AppClick(app))
 
                                 scope.launch(Dispatchers.Main) {
-                                    lazyListState.scrollToItem(0)
+                                    lazyGridState.scrollToItem(0)
                                 }
                             },
                             onLongClick = {

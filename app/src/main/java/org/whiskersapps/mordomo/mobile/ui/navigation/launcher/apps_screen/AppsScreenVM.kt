@@ -26,17 +26,25 @@ class AppsScreenVM(
     init {
         viewModelScope.launch(Dispatchers.Default) {
             val apps = appsRepository.filteredApps.value
+            val settings = settingsRepository.settings.value
 
             _state.update {
                 it.copy(
                     loading = false,
-                    apps = apps
+                    apps = apps,
+                    splitList = settings.apps.splitList
                 )
             }
 
             appsRepository.filteredApps.onEach { apps ->
                 _state.update {
                     it.copy(apps = apps)
+                }
+            }.launchIn(viewModelScope)
+
+            settingsRepository.settings.onEach { settings ->
+                _state.update {
+                    it.copy(splitList = settings.apps.splitList)
                 }
             }.launchIn(viewModelScope)
         }

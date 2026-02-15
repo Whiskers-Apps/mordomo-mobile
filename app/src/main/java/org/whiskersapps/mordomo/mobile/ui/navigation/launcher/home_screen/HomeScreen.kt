@@ -3,6 +3,7 @@ package org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -125,10 +126,10 @@ fun HomeScreen(state: HomeScreenState, onAction: (HomeScreenAction) -> Unit) {
         Column(
             modifier = Modifier
                 .combinedClickable(
-                    onClick = {
-
-                    },
-                    onLongClick = { onAction(HomeScreenAction.LongClick) }
+                    onClick = {},
+                    onLongClick = { onAction(HomeScreenAction.LongClick) },
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
                 )
                 .padding(24.dp)
                 .systemBarsPadding()
