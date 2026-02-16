@@ -1,4 +1,4 @@
-package org.whiskersapps.mordomo.mobile.ui.composables
+package org.whiskersapps.mordomo.mobile.ui.shared_composables
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

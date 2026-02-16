@@ -1,4 +1,4 @@
-package org.whiskersapps.mordomo.mobile.ui.composables
+package org.whiskersapps.mordomo.mobile.ui.shared_composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

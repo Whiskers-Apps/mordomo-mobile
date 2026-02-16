@@ -18,9 +18,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.whiskersapps.mordomo.mobile.R
-import org.whiskersapps.mordomo.mobile.ui.composables.LeftCircleShape
-import org.whiskersapps.mordomo.mobile.ui.composables.MiddleCardShape
-import org.whiskersapps.mordomo.mobile.ui.composables.RightCircleShape
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.LeftCircleShape
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.MiddleCardShape
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.RightCircleShape
 
 @Composable
 fun HomePanel(

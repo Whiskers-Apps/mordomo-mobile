@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import org.whiskersapps.mordomo.mobile.R
-import org.whiskersapps.mordomo.mobile.ui.composables.BottomCardShape
-import org.whiskersapps.mordomo.mobile.ui.composables.TopCardShape
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.BottomCardShape
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.TopCardShape
 
 @Composable
 fun MenuDialog(

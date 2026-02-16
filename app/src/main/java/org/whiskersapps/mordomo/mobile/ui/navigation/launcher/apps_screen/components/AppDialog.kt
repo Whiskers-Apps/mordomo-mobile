@@ -31,11 +31,11 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
-import org.whiskersapps.mordomo.mobile.ui.composables.AppIcon
-import org.whiskersapps.mordomo.mobile.ui.composables.LeftCardShape
-import org.whiskersapps.mordomo.mobile.ui.composables.RightCardShape
-import org.whiskersapps.mordomo.mobile.ui.composables.SingleCardShape
-import org.whiskersapps.mordomo.mobile.ui.composables.getShapeByIndex
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppIcon
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.LeftCardShape
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.RightCardShape
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.SingleCardShape
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.getShapeByIndex
 
 @Composable
 fun AppDialog(

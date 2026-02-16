@@ -1,10 +1,6 @@
-package org.whiskersapps.mordomo.mobile.ui.composables
+package org.whiskersapps.mordomo.mobile.ui.shared_composables
 
-import android.graphics.drawable.shapes.Shape
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 val TopCardShape =
