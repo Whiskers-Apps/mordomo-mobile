@@ -1,20 +1,14 @@
 package org.whiskersapps.mordomo.mobile.core.features.settings
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Apps.Companion.DEFAULT_SPLIT_LIST
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Apps.Companion.KEY_SPLIT_LIST
@@ -52,7 +46,13 @@ class SettingsRepository(
         updatedSettings
     }.stateIn(scope, SharingStarted.Eagerly, initialValue = Settings())
 
-    fun setSetupCompleted(completed: Boolean) {
+    // --------------------------------------------------------------------------- //
+    fun setSetupCompleted(completed: Boolean) =
         scope.launch { datastore.edit { it[KEY_SETUP_COMPLETED] = completed } }
-    }
+
+    suspend fun setHomeClockStyle(style: String) =
+        scope.launch { datastore.edit { it[KEY_CLOCK_STYLE] = style } }
+
+    suspend fun setDateFormat(format: String) =
+        scope.launch { datastore.edit { it[KEY_DATE_FORMAT] = format } }
 }

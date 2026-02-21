@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
@@ -26,28 +28,47 @@ class HomeScreenVM(
 
     init {
         viewModelScope.launch {
-            while (true) {
-                val calendar = Calendar.getInstance()
-                val locale = Locale.getDefault()
+            val initialSettings = settingsRepository.settings.value
 
-                val formatter =
-                    SimpleDateFormat(settingsRepository.settings.value.home.dateFormat, locale)
+            _state.update {
+                HomeScreenState(
+                    loading = false,
+                    clockStyle = initialSettings.home.clockStyle
+                )
+            }
 
-                val hours = String.format(locale, "%02d", calendar.get(Calendar.HOUR_OF_DAY))
-                val minutes = String.format(locale, "%02d", calendar.get(Calendar.MINUTE))
+            viewModelScope.launch {
+                while (true) {
+                    val calendar = Calendar.getInstance()
+                    val locale = Locale.getDefault()
 
-                val clockText = "$hours:$minutes"
-                val dateText = formatter.format(calendar.time)
+                    val formatter =
+                        SimpleDateFormat(settingsRepository.settings.value.home.dateFormat, locale)
 
+                    val hours = String.format(locale, "%02d", calendar.get(Calendar.HOUR_OF_DAY))
+                    val minutes = String.format(locale, "%02d", calendar.get(Calendar.MINUTE))
+
+                    val clockText = "$hours:$minutes"
+                    val dateText = formatter.format(calendar.time)
+
+                    _state.update {
+                        it.copy(
+                            clock = clockText,
+                            date = dateText
+                        )
+                    }
+
+                    delay(1000)
+                }
+            }
+
+            settingsRepository.settings.onEach { settings ->
                 _state.update {
                     it.copy(
-                        clock = clockText,
-                        date = dateText
+                        clockStyle = settings.home.clockStyle
                     )
                 }
-
-                delay(1000)
-            }
+            }.launchIn(viewModelScope)
         }
     }
 

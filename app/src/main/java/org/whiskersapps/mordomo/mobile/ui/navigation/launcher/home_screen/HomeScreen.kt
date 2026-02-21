@@ -25,12 +25,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen.components.Clock
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen.components.HomePanel
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen.components.MenuDialog
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,7 +83,7 @@ fun HomeScreen(state: HomeScreenState, onAction: (HomeScreenAction) -> Unit) {
         onSetWallpaperClick = { onAction(HomeScreenAction.SetWallpaperClick) }
     )
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -97,36 +99,45 @@ fun HomeScreen(state: HomeScreenState, onAction: (HomeScreenAction) -> Unit) {
                 )
         )
 
-        Column(
-            modifier = Modifier
-                .combinedClickable(
-                    onClick = {},
-                    onLongClick = { onAction(HomeScreenAction.LongClick) },
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                )
-                .padding(24.dp)
-                .systemBarsPadding()
-        ) {
-            Clock(style = state.clockStyle, clock = state.clock, date = state.date)
+        if (!state.loading) {
+            ResponsiveColumn {
+                Column(
+                    modifier = Modifier
+                        .combinedClickable(
+                            onClick = {},
+                            onLongClick = { onAction(HomeScreenAction.LongClick) },
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        )
+                        .padding(24.dp)
+                ) {
+                    Clock(style = state.clockStyle, clock = state.clock, date = state.date)
 
-            Spacer(
-                Modifier
-                    .fillMaxHeight()
-                    .weight(1f, fill = true)
-            )
+                    Spacer(
+                        Modifier
+                            .fillMaxHeight()
+                            .weight(1f, fill = true)
+                    )
 
-            HomePanel(
-                onQuickPanelButtonClick = {
-                    onAction(HomeScreenAction.QuickPanelButtonClick)
-                },
-                onSearchButtonClick = {
-                    onAction(HomeScreenAction.SearchButtonClick)
-                },
-                onAppsButtonClick = {
-                    onAction(HomeScreenAction.AppsButtonClick)
+                    HomePanel(
+                        onQuickPanelButtonClick = {
+                            onAction(HomeScreenAction.QuickPanelButtonClick)
+                        },
+                        onSearchButtonClick = {
+                            onAction(HomeScreenAction.SearchButtonClick)
+                        },
+                        onAppsButtonClick = {
+                            onAction(HomeScreenAction.AppsButtonClick)
+                        }
+                    )
                 }
-            )
+            }
         }
     }
+}
+
+@Composable
+@Preview(showBackground = false)
+fun Preview(){
+    HomeScreen(HomeScreenState(loading = false, clock = "13:23", date = "Domingo - 14/04/2026")) { }
 }

@@ -36,6 +36,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.components.AppDialog
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.components.AppRow
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.components.SearchBar
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.hideKeyboard
 
 @Composable
 fun AppsScreenRoot(
@@ -45,13 +46,6 @@ fun AppsScreenRoot(
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    fun clear() {
-        scope.launch {
-            focusManager.clearFocus()
-            keyboardController?.hide()
-        }
-    }
 
     fun scrollToHome() {
         scope.launch {
@@ -68,7 +62,7 @@ fun AppsScreenRoot(
 
             AppsScreenAction.SearchDone -> {
                 scope.launch {
-                    clear()
+                    hideKeyboard(focusManager, keyboardController)
 
                     if (vm.state.value.apps.isNotEmpty()
                         && vm.state.value.searchText.trim().isNotEmpty()

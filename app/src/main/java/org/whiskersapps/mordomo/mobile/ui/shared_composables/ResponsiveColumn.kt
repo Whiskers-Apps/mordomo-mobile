@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ResponsiveColumn(
-    padded: Boolean = false,
+    contentPadded: Boolean = false,
     scrollable: Boolean = false,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -33,7 +33,7 @@ fun ResponsiveColumn(
             Modifier
                 .widthIn(max = 900.dp)
                 .fillMaxWidth()
-                .modifyIf(padded) {
+                .modifyIf(contentPadded) {
                     this.padding(24.dp)
                 }
         ) {

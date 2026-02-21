@@ -18,6 +18,7 @@ import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
@@ -100,6 +101,7 @@ class LauncherActivity : AppCompatActivity() {
                     scaffoldState = scaffoldState,
                     containerColor = Color.Transparent,
                     sheetPeekHeight = 0.dp,
+                    sheetMaxWidth = Dp.Unspecified,
                     sheetDragHandle = {},
                     sheetContent = {
                         SearchScreenRoot(sheetState)

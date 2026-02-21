@@ -11,6 +11,7 @@ import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.AppsScreenVM
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen.HomeScreenVM
 import org.whiskersapps.mordomo.mobile.ui.navigation.settings.SettingsScreenVM
+import org.whiskersapps.mordomo.mobile.ui.navigation.settings.home_screen.HomeSettingsScreenVM
 
 val appModule = module {
 
@@ -23,5 +24,8 @@ val appModule = module {
     // Screens ViewModels
     viewModel { HomeScreenVM(get(), get()) }
     viewModel { AppsScreenVM(get(), get()) }
+
     viewModel { SettingsScreenVM(get()) }
+    viewModel { HomeSettingsScreenVM(get()) }
+
 }

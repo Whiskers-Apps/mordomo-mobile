@@ -30,6 +30,7 @@
         <activity
             android:name=".ui.navigation.settings.SettingsActivity"
             android:exported="false"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
