@@ -13,14 +13,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Apps.Companion.DEFAULT_SPLIT_LIST
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Apps.Companion.KEY_SPLIT_LIST
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_CLOCK_POSITION
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_CLOCK_STYLE
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_DATE_FORMAT
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_SHOW_APPS_BUTTON
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_SHOW_QUICK_BUTTON
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_SHOW_SEARCH_BUTTON
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.KEY_CLOCK_POSITION
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.KEY_CLOCK_STYLE
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.KEY_DATE_FORMAT
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.KEY_SHOW_APPS_BUTTON
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.KEY_SHOW_DATE
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.KEY_SHOW_QUICK_BUTTON
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.KEY_SHOW_SEARCH_BUTTON
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Setup.Companion.DEFAULT_SETUP_COMPLETED
@@ -41,10 +44,19 @@ class SettingsRepository(
             ),
             home = Settings.Home(
                 clockStyle = preferences[KEY_CLOCK_STYLE] ?: DEFAULT_CLOCK_STYLE,
+
+                clockPosition = preferences[KEY_CLOCK_POSITION] ?: DEFAULT_CLOCK_POSITION,
+
+                showDate = preferences[KEY_SHOW_DATE]
+                    ?: Settings.Home.DEFAULT_SHOW_DATE,
+
                 dateFormat = preferences[KEY_DATE_FORMAT] ?: DEFAULT_DATE_FORMAT,
+
                 showQuickButton = preferences[KEY_SHOW_QUICK_BUTTON] ?: DEFAULT_SHOW_QUICK_BUTTON,
+
                 showSearchButton = preferences[KEY_SHOW_SEARCH_BUTTON]
                     ?: DEFAULT_SHOW_SEARCH_BUTTON,
+
                 showAppsButton = preferences[KEY_SHOW_APPS_BUTTON] ?: DEFAULT_SHOW_APPS_BUTTON
             ),
             apps = Settings.Apps(
@@ -53,7 +65,11 @@ class SettingsRepository(
         )
 
         updatedSettings
-    }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, initialValue = Settings())
+    }.stateIn(
+        CoroutineScope(Dispatchers.IO),
+        SharingStarted.Eagerly,
+        initialValue = Settings()
+    )
 
     // --------------------------------------------------------------------------- //
     suspend fun setSetupCompleted(completed: Boolean) =
@@ -61,6 +77,14 @@ class SettingsRepository(
 
     suspend fun setHomeClockStyle(style: String) = withContext(Dispatchers.IO) {
         datastore.edit { it[KEY_CLOCK_STYLE] = style }
+    }
+
+    suspend fun setClockPosition(position: String) = withContext(Dispatchers.IO) {
+        datastore.edit { it[KEY_CLOCK_POSITION] = position }
+    }
+
+    suspend fun setShowDate(show: Boolean) = withContext(Dispatchers.IO) {
+        datastore.edit { it[KEY_SHOW_DATE] = show }
     }
 
     suspend fun setDateFormat(format: String) = withContext(Dispatchers.IO) {

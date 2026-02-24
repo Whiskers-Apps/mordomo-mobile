@@ -24,7 +24,8 @@ import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsOptions
 fun Clock(
     style: String,
     clock: String,
-    date: String
+    date: String,
+    showDate: Boolean
 ) {
     when (style) {
         SettingsOptions.ClockStyle.MINIMAL -> {
@@ -44,12 +45,14 @@ fun Clock(
                     style = TextStyle(shadow = textShadow)
                 )
 
-                Text(
-                    date,
-                    fontSize = 20.sp,
-                    color = Color.White,
-                    style = TextStyle(shadow = textShadow)
-                )
+                if (showDate) {
+                    Text(
+                        date,
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        style = TextStyle(shadow = textShadow)
+                    )
+                }
             }
         }
 

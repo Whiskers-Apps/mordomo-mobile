@@ -74,14 +74,42 @@ fun HomeSettingsScreen(
             onChange = { onAction(HomeSettingsScreenAction.ClockStyleSet(it)) }
         )
 
-        TextSetting(
-            title = "Date Format",
-            description = "Date format under the clock",
-            text = state.dateFormat,
-            onClick = {
-                onAction(HomeSettingsScreenAction.DateFormatClick)
-            }
+        if (state.clockStyle != SettingsOptions.ClockStyle.HIDDEN) {
+            SegmentedSetting(
+                title = "Clock Position",
+                description = "Clock position in the home screen",
+                options = listOf(
+                    SegmentedOption(
+                        id = SettingsOptions.ClockPosition.TOP,
+                        text = "Top"
+                    ),
+                    SegmentedOption(
+                        id = SettingsOptions.ClockPosition.CENTER,
+                        text = "Center"
+                    )
+                ),
+                activeOptionId = state.clockPosition,
+                onChange = { onAction(HomeSettingsScreenAction.ClockPositionSet(it)) }
+            )
+        }
+
+        SwitchSetting(
+            title = "Show Date",
+            description = "Show date",
+            value = state.showDate,
+            onValueChange = { onAction(HomeSettingsScreenAction.ShowDateClick(it)) }
         )
+
+        if (state.showDate) {
+            TextSetting(
+                title = "Date Format",
+                description = "Date format under the clock",
+                text = state.dateFormat,
+                onClick = {
+                    onAction(HomeSettingsScreenAction.DateFormatClick)
+                }
+            )
+        }
 
         SwitchSetting(
             title = "Quick Button",

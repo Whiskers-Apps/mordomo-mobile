@@ -34,6 +34,8 @@ class HomeScreenVM(
                 HomeScreenState(
                     loading = false,
                     clockStyle = initialSettings.home.clockStyle,
+                    clockPosition = initialSettings.home.clockPosition,
+                    showDate = initialSettings.home.showDate,
                     showQuickButton = initialSettings.home.showQuickButton,
                     showSearchButton = initialSettings.home.showSearchButton,
                     showAppsButton = initialSettings.home.showSearchButton
@@ -69,6 +71,8 @@ class HomeScreenVM(
                 _state.update {
                     it.copy(
                         clockStyle = settings.home.clockStyle,
+                        clockPosition = settings.home.clockPosition,
+                        showDate = settings.home.showDate,
                         showQuickButton = settings.home.showQuickButton,
                         showSearchButton = settings.home.showSearchButton,
                         showAppsButton = settings.home.showAppsButton
@@ -88,7 +92,7 @@ class HomeScreenVM(
         }
     }
 
-    // ---------------------------------------------------------- //
+    // --------------------------------------------------------------------- //
 
     private fun onLongClick() {
         viewModelScope.launch {

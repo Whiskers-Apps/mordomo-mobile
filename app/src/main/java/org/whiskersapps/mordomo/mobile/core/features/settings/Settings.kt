@@ -19,17 +19,31 @@ data class Settings(
 
     data class Home(
         val clockStyle: String = DEFAULT_CLOCK_STYLE,
+
+        val clockPosition: String = DEFAULT_CLOCK_POSITION,
+
+        val showDate: Boolean = DEFAULT_SHOW_DATE,
+
         val dateFormat: String = DEFAULT_DATE_FORMAT,
+
         val showQuickButton: Boolean = DEFAULT_SHOW_QUICK_BUTTON,
+
         val showSearchButton: Boolean = DEFAULT_SHOW_SEARCH_BUTTON,
+
         val showAppsButton: Boolean = DEFAULT_SHOW_APPS_BUTTON,
     ) {
         companion object {
             val KEY_CLOCK_STYLE = stringPreferencesKey("clock_style")
             const val DEFAULT_CLOCK_STYLE = SettingsOptions.ClockStyle.MINIMAL
 
+            val KEY_CLOCK_POSITION = stringPreferencesKey("clock_position")
+            const val DEFAULT_CLOCK_POSITION = SettingsOptions.ClockPosition.TOP
+
+            val KEY_SHOW_DATE = booleanPreferencesKey("show_date")
+            const val DEFAULT_SHOW_DATE = true
+
             val KEY_DATE_FORMAT = stringPreferencesKey("date_format")
-            const val DEFAULT_DATE_FORMAT = "EEEE - dd/MM/yyyy"
+            const val DEFAULT_DATE_FORMAT = "EEEE - dd/MM/Y"
 
             val KEY_SHOW_QUICK_BUTTON = booleanPreferencesKey("show_quick_button")
             const val DEFAULT_SHOW_QUICK_BUTTON = true
@@ -59,6 +73,11 @@ object SettingsOptions {
         const val MINIMAL = "minimal"
         const val ISLAND = "island"
         const val HIDDEN = "hidden"
+    }
+
+    object ClockPosition {
+        const val TOP = "top"
+        const val CENTER = "center"
     }
 }
 

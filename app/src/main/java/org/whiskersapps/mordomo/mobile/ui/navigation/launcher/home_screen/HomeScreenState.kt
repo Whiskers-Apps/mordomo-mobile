@@ -1,15 +1,22 @@
 package org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen
 
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_CLOCK_POSITION
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_CLOCK_STYLE
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_SHOW_APPS_BUTTON
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_SHOW_DATE
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_SHOW_QUICK_BUTTON
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_SHOW_SEARCH_BUTTON
 
 data class HomeScreenState(
     val loading: Boolean = true,
     val clockStyle: String = DEFAULT_CLOCK_STYLE,
+    val clockPosition: String = DEFAULT_CLOCK_POSITION,
+    val showDate: Boolean = DEFAULT_SHOW_DATE,
     val clock: String = "00:00",
     val date: String = "",
     val showMenu: Boolean = false,
-    val showQuickButton: Boolean = Settings.Home.DEFAULT_SHOW_QUICK_BUTTON,
-    val showSearchButton: Boolean = Settings.Home.DEFAULT_SHOW_SEARCH_BUTTON,
-    val showAppsButton: Boolean = Settings.Home.DEFAULT_SHOW_APPS_BUTTON,
+    val showQuickButton: Boolean = DEFAULT_SHOW_QUICK_BUTTON,
+    val showSearchButton: Boolean = DEFAULT_SHOW_SEARCH_BUTTON,
+    val showAppsButton: Boolean = DEFAULT_SHOW_APPS_BUTTON,
 )

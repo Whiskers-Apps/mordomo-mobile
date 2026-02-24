@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsOptions
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen.components.Clock
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen.components.HomePanel
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.home_screen.components.MenuDialog
@@ -72,7 +73,10 @@ fun HomeScreenRoot(
 }
 
 @Composable
-fun HomeScreen(state: HomeScreenState, onAction: (HomeScreenAction) -> Unit) {
+fun HomeScreen(
+    state: HomeScreenState,
+    onAction: (HomeScreenAction) -> Unit
+) {
     val statusBarInset = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
     val statusBarSize = remember(statusBarInset) { statusBarInset + 16.dp }
 
@@ -109,9 +113,22 @@ fun HomeScreen(state: HomeScreenState, onAction: (HomeScreenAction) -> Unit) {
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
                         )
-                        .padding(24.dp)
+                        .padding(start = 24.dp, bottom = 24.dp, end = 24.dp)
                 ) {
-                    Clock(style = state.clockStyle, clock = state.clock, date = state.date)
+                    if (state.clockPosition == SettingsOptions.ClockPosition.CENTER) {
+                        Spacer(
+                            Modifier
+                                .fillMaxHeight()
+                                .weight(1f, fill = true)
+                        )
+                    }
+
+                    Clock(
+                        style = state.clockStyle,
+                        clock = state.clock,
+                        date = state.date,
+                        showDate = state.showDate
+                    )
 
                     Spacer(
                         Modifier
@@ -141,6 +158,6 @@ fun HomeScreen(state: HomeScreenState, onAction: (HomeScreenAction) -> Unit) {
 
 @Composable
 @Preview(showBackground = false)
-fun Preview(){
+fun Preview() {
     HomeScreen(HomeScreenState(loading = false, clock = "13:23", date = "Domingo - 14/04/2026")) { }
 }

@@ -8,6 +8,10 @@ data class HomeSettingsScreenState(
 
     val clockStyle: String = Settings.Home.DEFAULT_CLOCK_STYLE,
 
+    val clockPosition: String = Settings.Home.DEFAULT_CLOCK_POSITION,
+
+    val showDate: Boolean = Settings.Home.DEFAULT_SHOW_DATE,
+
     val dateFormat: String = Settings.Home.DEFAULT_DATE_FORMAT,
     val dateFormatDialog: TextSettingDialogState = TextSettingDialogState(saveEnabled = true),
 

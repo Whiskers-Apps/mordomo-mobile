@@ -21,6 +21,8 @@ class HomeSettingsScreenVM(val settingsRepository: SettingsRepository) : ViewMod
                 HomeSettingsScreenState(
                     loading = false,
                     clockStyle = settings.home.clockStyle,
+                    clockPosition = settings.home.clockPosition,
+                    showDate = settings.home.showDate,
                     dateFormat = settings.home.dateFormat,
                     showQuickButton = settings.home.showQuickButton,
                     showSearchButton = settings.home.showSearchButton,
@@ -33,6 +35,10 @@ class HomeSettingsScreenVM(val settingsRepository: SettingsRepository) : ViewMod
     fun onAction(action: HomeSettingsScreenAction) {
         when (action) {
             is HomeSettingsScreenAction.ClockStyleSet -> onClockStyleSet(action.style)
+
+            is HomeSettingsScreenAction.ClockPositionSet -> onClockPositionSet(action.position)
+
+            is HomeSettingsScreenAction.ShowDateClick -> onShowDateClick(action.value)
 
             HomeSettingsScreenAction.DateFormatClick -> onDateFormatClick()
             is HomeSettingsScreenAction.DateFormatType -> onDateFormatType(action.format)
@@ -56,6 +62,22 @@ class HomeSettingsScreenVM(val settingsRepository: SettingsRepository) : ViewMod
 
         viewModelScope.launch {
             settingsRepository.setHomeClockStyle(style)
+        }
+    }
+
+    private fun onClockPositionSet(position: String) {
+        _state.update { it.copy(clockPosition = position) }
+
+        viewModelScope.launch {
+            settingsRepository.setClockPosition(position)
+        }
+    }
+
+    private fun onShowDateClick(value: Boolean) {
+        _state.update { it.copy(showDate = value) }
+
+        viewModelScope.launch {
+            settingsRepository.setShowDate(value)
         }
     }
 
