@@ -33,7 +33,10 @@ class HomeScreenVM(
             _state.update {
                 HomeScreenState(
                     loading = false,
-                    clockStyle = initialSettings.home.clockStyle
+                    clockStyle = initialSettings.home.clockStyle,
+                    showQuickButton = initialSettings.home.showQuickButton,
+                    showSearchButton = initialSettings.home.showSearchButton,
+                    showAppsButton = initialSettings.home.showSearchButton
                 )
             }
 
@@ -65,7 +68,10 @@ class HomeScreenVM(
             settingsRepository.settings.onEach { settings ->
                 _state.update {
                     it.copy(
-                        clockStyle = settings.home.clockStyle
+                        clockStyle = settings.home.clockStyle,
+                        showQuickButton = settings.home.showQuickButton,
+                        showSearchButton = settings.home.showSearchButton,
+                        showAppsButton = settings.home.showAppsButton
                     )
                 }
             }.launchIn(viewModelScope)

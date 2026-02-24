@@ -17,11 +17,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
@@ -41,6 +43,8 @@ class SetupActivity : AppCompatActivity() {
 
         setContent {
             MordomoTheme {
+                val scope = rememberCoroutineScope()
+
                 Column(
                     modifier = Modifier.Companion
                         .fillMaxSize()
@@ -77,7 +81,9 @@ class SetupActivity : AppCompatActivity() {
 
                     Button(
                         onClick = {
-                            get<SettingsRepository>().setSetupCompleted(true)
+                            scope.launch {
+                                get<SettingsRepository>().setSetupCompleted(true)
+                            }
 
                             open()
 

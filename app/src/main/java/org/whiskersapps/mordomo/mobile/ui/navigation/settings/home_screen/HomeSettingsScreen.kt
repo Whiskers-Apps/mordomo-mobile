@@ -13,8 +13,10 @@ import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsOptions
 import org.whiskersapps.mordomo.mobile.ui.navigation.settings.shared_composables.Nav
 import org.whiskersapps.mordomo.mobile.ui.navigation.settings.shared_composables.SegmentedOption
 import org.whiskersapps.mordomo.mobile.ui.navigation.settings.shared_composables.SegmentedSetting
+import org.whiskersapps.mordomo.mobile.ui.navigation.settings.shared_composables.SwitchSetting
 import org.whiskersapps.mordomo.mobile.ui.navigation.settings.shared_composables.TextSetting
 import org.whiskersapps.mordomo.mobile.ui.navigation.settings.shared_composables.TextSettingDialog
+import org.whiskersapps.mordomo.mobile.ui.navigation.settings.shared_composables.TextSettingDialogState
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
 
 @Composable
@@ -43,7 +45,7 @@ fun HomeSettingsScreen(
         state = state.dateFormatDialog,
         onValueChange = { onAction(HomeSettingsScreenAction.DateFormatType(it)) },
         onCancel = { onAction(HomeSettingsScreenAction.DateFormatDialogCancel) },
-        onSave = {onAction(HomeSettingsScreenAction.DateFormatDialogSave(it))}
+        onSave = { onAction(HomeSettingsScreenAction.DateFormatDialogSave(it)) }
     )
 
     ResponsiveColumn {
@@ -80,6 +82,27 @@ fun HomeSettingsScreen(
                 onAction(HomeSettingsScreenAction.DateFormatClick)
             }
         )
+
+        SwitchSetting(
+            title = "Quick Button",
+            description = "Show quick panel button",
+            value = state.showQuickButton,
+            onValueChange = { onAction(HomeSettingsScreenAction.ShowQuickButtonClick(it)) }
+        )
+
+        SwitchSetting(
+            title = "Search Button",
+            description = "Show search button",
+            value = state.showSearchButton,
+            onValueChange = { onAction(HomeSettingsScreenAction.ShowSearchButtonClick(it)) }
+        )
+
+        SwitchSetting(
+            title = "Apps Button",
+            description = "Show apps button",
+            value = state.showAppsButton,
+            onValueChange = { onAction(HomeSettingsScreenAction.ShowAppsButtonClick(it)) }
+        )
     }
 }
 
@@ -88,7 +111,12 @@ fun HomeSettingsScreen(
 fun Preview() {
     HomeSettingsScreen(
         HomeSettingsScreenState(
-            loading = false
+            loading = false,
+            dateFormatDialog = TextSettingDialogState(
+                show = false,
+                title = "Date Format",
+                label = "Format"
+            )
         )
     ) {
 

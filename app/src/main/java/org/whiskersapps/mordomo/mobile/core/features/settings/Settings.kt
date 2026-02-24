@@ -19,7 +19,10 @@ data class Settings(
 
     data class Home(
         val clockStyle: String = DEFAULT_CLOCK_STYLE,
-        val dateFormat: String = DEFAULT_DATE_FORMAT
+        val dateFormat: String = DEFAULT_DATE_FORMAT,
+        val showQuickButton: Boolean = DEFAULT_SHOW_QUICK_BUTTON,
+        val showSearchButton: Boolean = DEFAULT_SHOW_SEARCH_BUTTON,
+        val showAppsButton: Boolean = DEFAULT_SHOW_APPS_BUTTON,
     ) {
         companion object {
             val KEY_CLOCK_STYLE = stringPreferencesKey("clock_style")
@@ -27,6 +30,15 @@ data class Settings(
 
             val KEY_DATE_FORMAT = stringPreferencesKey("date_format")
             const val DEFAULT_DATE_FORMAT = "EEEE - dd/MM/yyyy"
+
+            val KEY_SHOW_QUICK_BUTTON = booleanPreferencesKey("show_quick_button")
+            const val DEFAULT_SHOW_QUICK_BUTTON = true
+
+            val KEY_SHOW_SEARCH_BUTTON = booleanPreferencesKey("show_search_button")
+            const val DEFAULT_SHOW_SEARCH_BUTTON = true
+
+            val KEY_SHOW_APPS_BUTTON = booleanPreferencesKey("show_apps_button")
+            const val DEFAULT_SHOW_APPS_BUTTON = false
         }
     }
 

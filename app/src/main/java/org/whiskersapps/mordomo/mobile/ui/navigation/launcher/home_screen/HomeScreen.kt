@@ -120,6 +120,9 @@ fun HomeScreen(state: HomeScreenState, onAction: (HomeScreenAction) -> Unit) {
                     )
 
                     HomePanel(
+                        showQuickButton = state.showQuickButton,
+                        showSearchButton = state.showSearchButton,
+                        showAppsButton = state.showAppsButton,
                         onQuickPanelButtonClick = {
                             onAction(HomeScreenAction.QuickPanelButtonClick)
                         },

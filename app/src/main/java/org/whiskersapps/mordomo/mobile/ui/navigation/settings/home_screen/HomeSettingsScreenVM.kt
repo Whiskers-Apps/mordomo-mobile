@@ -21,7 +21,10 @@ class HomeSettingsScreenVM(val settingsRepository: SettingsRepository) : ViewMod
                 HomeSettingsScreenState(
                     loading = false,
                     clockStyle = settings.home.clockStyle,
-                    dateFormat = settings.home.dateFormat
+                    dateFormat = settings.home.dateFormat,
+                    showQuickButton = settings.home.showQuickButton,
+                    showSearchButton = settings.home.showSearchButton,
+                    showAppsButton = settings.home.showAppsButton
                 )
             }
         }
@@ -30,10 +33,18 @@ class HomeSettingsScreenVM(val settingsRepository: SettingsRepository) : ViewMod
     fun onAction(action: HomeSettingsScreenAction) {
         when (action) {
             is HomeSettingsScreenAction.ClockStyleSet -> onClockStyleSet(action.style)
+
             HomeSettingsScreenAction.DateFormatClick -> onDateFormatClick()
             is HomeSettingsScreenAction.DateFormatType -> onDateFormatType(action.format)
             is HomeSettingsScreenAction.DateFormatDialogSave -> onDateFormatDialogSave(action.value)
             HomeSettingsScreenAction.DateFormatDialogCancel -> onDateFormatDialogCancel()
+
+            is HomeSettingsScreenAction.ShowQuickButtonClick -> onShowQuickButtonClick(action.value)
+
+            is HomeSettingsScreenAction.ShowSearchButtonClick -> onShowSearchButtonClick(action.value)
+
+            is HomeSettingsScreenAction.ShowAppsButtonClick -> onShowAppsButtonClick(action.value)
+
             else -> {}
         }
     }
@@ -90,6 +101,30 @@ class HomeSettingsScreenVM(val settingsRepository: SettingsRepository) : ViewMod
             it.copy(
                 dateFormatDialog = TextSettingDialogState()
             )
+        }
+    }
+
+    private fun onShowQuickButtonClick(value: Boolean) {
+        _state.update { it.copy(showQuickButton = value) }
+
+        viewModelScope.launch {
+            settingsRepository.setShowQuickButton(value)
+        }
+    }
+
+    private fun onShowSearchButtonClick(value: Boolean) {
+        _state.update { it.copy(showSearchButton = value) }
+
+        viewModelScope.launch {
+            settingsRepository.setShowSearchButton(value)
+        }
+    }
+
+    private fun onShowAppsButtonClick(value: Boolean) {
+        _state.update { it.copy(showAppsButton = value) }
+
+        viewModelScope.launch {
+            settingsRepository.setShowAppsButton(value)
         }
     }
 }
