@@ -13,6 +13,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.whiskersapps.mordomo.mobile.core.features.routes.Routes
+import org.whiskersapps.mordomo.mobile.ui.navigation.settings.apps_screen.AppsSettingsScreen
+import org.whiskersapps.mordomo.mobile.ui.navigation.settings.apps_screen.AppsSettingsScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.navigation.settings.home_screen.HomeSettingsScreen
 import org.whiskersapps.mordomo.mobile.ui.navigation.settings.home_screen.HomeSettingsScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
@@ -50,7 +52,11 @@ class SettingsActivity : AppCompatActivity() {
                         HomeSettingsScreenRoot(onBackClick = { navController.navigateUp() })
                     }
 
-                    composable(Routes.SETTINGS_APPS) { }
+                    composable(Routes.SETTINGS_APPS) {
+                        AppsSettingsScreenRoot(
+                            onBackClick = { navController.navigateUp() }
+                        )
+                    }
 
                     composable(Routes.SETTINGS_BOOKMARKS) { }
 

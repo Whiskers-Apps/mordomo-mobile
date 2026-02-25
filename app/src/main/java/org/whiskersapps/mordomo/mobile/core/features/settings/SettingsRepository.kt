@@ -102,4 +102,8 @@ class SettingsRepository(
     suspend fun setShowAppsButton(show: Boolean) = withContext(Dispatchers.IO) {
         datastore.edit { it[KEY_SHOW_APPS_BUTTON] = show }
     }
+
+    suspend fun setSplitList(split: Boolean) = withContext(Dispatchers.IO){
+        datastore.edit { it[KEY_SPLIT_LIST] = split }
+    }
 }
