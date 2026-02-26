@@ -57,11 +57,15 @@ data class Settings(
     }
 
     data class Apps(
-        val splitList: Boolean = DEFAULT_SPLIT_LIST
+        val splitList: Boolean = DEFAULT_SPLIT_LIST,
+        val searchBarPosition: String = DEFAULT_SEARCH_BAR_POSITION
     ) {
         companion object {
             val KEY_SPLIT_LIST = booleanPreferencesKey("split_apps_list")
             const val DEFAULT_SPLIT_LIST = true
+
+            val KEY_SEARCH_BAR_POSITION = stringPreferencesKey("search_bar_position")
+            const val DEFAULT_SEARCH_BAR_POSITION = SettingsOptions.SearchBarPosition.BOTTOM
         }
     }
 
@@ -78,6 +82,12 @@ object SettingsOptions {
     object ClockPosition {
         const val TOP = "top"
         const val CENTER = "center"
+    }
+
+    object SearchBarPosition {
+        const val TOP = "top"
+        const val BOTTOM = "bottom"
+        const val HIDDEN = "hidden"
     }
 }
 

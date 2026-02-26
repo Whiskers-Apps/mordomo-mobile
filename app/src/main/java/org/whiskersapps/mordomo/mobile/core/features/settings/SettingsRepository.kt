@@ -11,7 +11,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Apps.Companion.DEFAULT_SEARCH_BAR_POSITION
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Apps.Companion.DEFAULT_SPLIT_LIST
+import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Apps.Companion.KEY_SEARCH_BAR_POSITION
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Apps.Companion.KEY_SPLIT_LIST
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_CLOCK_POSITION
 import org.whiskersapps.mordomo.mobile.core.features.settings.Settings.Home.Companion.DEFAULT_CLOCK_STYLE
@@ -60,7 +62,10 @@ class SettingsRepository(
                 showAppsButton = preferences[KEY_SHOW_APPS_BUTTON] ?: DEFAULT_SHOW_APPS_BUTTON
             ),
             apps = Settings.Apps(
-                splitList = preferences[KEY_SPLIT_LIST] ?: DEFAULT_SPLIT_LIST
+                splitList = preferences[KEY_SPLIT_LIST] ?: DEFAULT_SPLIT_LIST,
+
+                searchBarPosition = preferences[KEY_SEARCH_BAR_POSITION]
+                    ?: DEFAULT_SEARCH_BAR_POSITION
             )
         )
 
@@ -103,7 +108,11 @@ class SettingsRepository(
         datastore.edit { it[KEY_SHOW_APPS_BUTTON] = show }
     }
 
-    suspend fun setSplitList(split: Boolean) = withContext(Dispatchers.IO){
+    suspend fun setSplitList(split: Boolean) = withContext(Dispatchers.IO) {
         datastore.edit { it[KEY_SPLIT_LIST] = split }
+    }
+
+    suspend fun setSearchBarPosition(position: String) = withContext(Dispatchers.IO) {
+        datastore.edit { it[KEY_SEARCH_BAR_POSITION] = position }
     }
 }

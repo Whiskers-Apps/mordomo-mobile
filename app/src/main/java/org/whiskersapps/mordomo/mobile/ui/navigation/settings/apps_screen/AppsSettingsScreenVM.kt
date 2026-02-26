@@ -20,7 +20,8 @@ class AppsSettingsScreenVM(
         _state.update {
             AppsSettingsScreenState(
                 loading = false,
-                splitList = settings.apps.splitList
+                splitList = settings.apps.splitList,
+                searchBarPosition = settings.apps.searchBarPosition
             )
         }
     }
@@ -28,6 +29,7 @@ class AppsSettingsScreenVM(
     fun onAction(action: AppsSettingsScreenAction) {
         when (action) {
             is AppsSettingsScreenAction.SplitListClick -> onSplitListClick(action.split)
+            is AppsSettingsScreenAction.SearchBarPositionSet -> onSearchBarPositionSet(action.position)
             else -> {}
         }
     }
@@ -39,6 +41,14 @@ class AppsSettingsScreenVM(
 
         viewModelScope.launch {
             settingsRepository.setSplitList(split)
+        }
+    }
+
+    private fun onSearchBarPositionSet(position: String) {
+        _state.update { it.copy(searchBarPosition = position) }
+
+        viewModelScope.launch {
+            settingsRepository.setSearchBarPosition(position)
         }
     }
 }

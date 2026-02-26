@@ -26,13 +26,14 @@ class AppsScreenVM(
     init {
         viewModelScope.launch(Dispatchers.Default) {
             val apps = appsRepository.filteredApps.value
-            val settings = settingsRepository.settings.value
+            val initialSettings = settingsRepository.settings.value
 
             _state.update {
                 it.copy(
                     loading = false,
                     apps = apps,
-                    splitList = settings.apps.splitList
+                    splitList = initialSettings.apps.splitList,
+                    searchBarPosition = initialSettings.apps.searchBarPosition
                 )
             }
 
@@ -44,7 +45,10 @@ class AppsScreenVM(
 
             settingsRepository.settings.onEach { settings ->
                 _state.update {
-                    it.copy(splitList = settings.apps.splitList)
+                    it.copy(
+                        splitList = settings.apps.splitList,
+                        searchBarPosition = settings.apps.searchBarPosition
+                    )
                 }
             }.launchIn(viewModelScope)
         }

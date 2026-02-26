@@ -1,5 +1,6 @@
 package org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen
 
+import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,15 +25,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.lighttigerxiv.layout_scaffold.isExpandedWidth
 import com.lighttigerxiv.layout_scaffold.isMediumWidth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.whiskersapps.droid.droid_icons.models.Icon
+import org.whiskersapps.mordomo.mobile.R
+import org.whiskersapps.mordomo.mobile.core.features.apps.App
+import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsOptions
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.components.AppDialog
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.components.AppRow
 import org.whiskersapps.mordomo.mobile.ui.navigation.launcher.apps_screen.components.SearchBar
@@ -105,7 +114,17 @@ fun AppsScreen(state: AppsScreenState, onAction: (AppsScreenAction) -> Unit) {
                 .padding(24.dp)
                 .imePadding()
         ) {
+            if (state.searchBarPosition == SettingsOptions.SearchBarPosition.TOP) {
+                SearchBar(
+                    value = state.searchText,
+                    onValueChange = { text -> onAction(AppsScreenAction.Search(text)) },
+                    onDone = {
+                        onAction(AppsScreenAction.SearchDone)
+                    }
+                )
 
+                Spacer(Modifier.height(8.dp))
+            }
 
             if (state.apps.isEmpty()) {
                 Column(
@@ -161,13 +180,50 @@ fun AppsScreen(state: AppsScreenState, onAction: (AppsScreenAction) -> Unit) {
 
             Spacer(Modifier.height(16.dp))
 
-            SearchBar(
-                value = state.searchText,
-                onValueChange = { text -> onAction(AppsScreenAction.Search(text)) },
-                onDone = {
-                    onAction(AppsScreenAction.SearchDone)
-                }
-            )
+            if (state.searchBarPosition == SettingsOptions.SearchBarPosition.BOTTOM) {
+                SearchBar(
+                    value = state.searchText,
+                    onValueChange = { text -> onAction(AppsScreenAction.Search(text)) },
+                    onDone = {
+                        onAction(AppsScreenAction.SearchDone)
+                    }
+                )
+            }
         }
     }
+}
+
+
+@Composable
+@Preview(showBackground = true)
+fun AppsScreenPreview() {
+    val context = LocalContext.current
+    val placeholder = ContextCompat.getDrawable(context, R.drawable.logo_tie)!!
+
+    val apps = remember {
+        val temp = ArrayList<App>()
+        for (i in 0..23) {
+            temp.add(
+                App(
+                    name = "App $i",
+                    packageName = "app $i",
+                    shortcuts = listOf(),
+                    icons = App.Icons(
+                        stock = Icon(drawable = placeholder, adaptive = null),
+                        themed = null
+                    )
+                )
+            )
+        }
+
+        temp
+    }
+
+    AppsScreen(
+        AppsScreenState(
+            loading = false,
+            apps = apps,
+            searchBarPosition = SettingsOptions.SearchBarPosition.BOTTOM
+        )
+    ) { }
 }
