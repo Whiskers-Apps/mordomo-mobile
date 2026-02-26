@@ -8,4 +8,8 @@ sealed interface HomeScreenAction {
     data object MenuDismiss : HomeScreenAction
     data object SetWallpaperClick : HomeScreenAction
     data object SettingsClick : HomeScreenAction
+
+    data object SwipeUp: HomeScreenAction
+
+    data object SwipeDown : HomeScreenAction
 }

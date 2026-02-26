@@ -16,12 +16,13 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ResponsiveColumn(
+    modifier: Modifier = Modifier,
     contentPadded: Boolean = false,
     scrollable: Boolean = false,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .modifyIf(scrollable) {
                 this.verticalScroll(rememberScrollState())

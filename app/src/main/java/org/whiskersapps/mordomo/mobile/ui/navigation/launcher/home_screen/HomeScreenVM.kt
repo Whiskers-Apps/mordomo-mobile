@@ -88,6 +88,7 @@ class HomeScreenVM(
             HomeScreenAction.SetWallpaperClick -> onSetWallpaperClick()
             HomeScreenAction.SettingsClick -> onSettingsClick()
             HomeScreenAction.MenuDismiss -> onMenuDismiss()
+            HomeScreenAction.SwipeDown -> onSwipeDown()
             else -> {}
         }
     }
@@ -127,6 +128,18 @@ class HomeScreenVM(
     private fun onMenuDismiss() {
         viewModelScope.launch {
             _state.update { it.copy(showMenu = false) }
+        }
+    }
+
+    private fun onSwipeDown() {
+        viewModelScope.launch {
+            try {
+                Class.forName("android.app.StatusBarManager")
+                    .getMethod("expandNotificationsPanel")
+                    .invoke(context.getSystemService("statusbar"))
+            } catch (e: Exception) {
+                println("Failed to expand notifications center $e")
+            }
         }
     }
 }
