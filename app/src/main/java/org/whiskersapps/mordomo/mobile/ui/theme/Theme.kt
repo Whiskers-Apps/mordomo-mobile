@@ -16,8 +16,6 @@ import org.monocode.lib.getMaterialMonoCode
 @Composable
 fun MordomoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
 //    val colorScheme = when {
@@ -34,6 +32,7 @@ fun MordomoTheme(
         true -> getMaterialMonoCode(ThemeId.PantherYellow)
         else -> getMaterialMonoCode(ThemeId.LynxYellow)
     }
+
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,

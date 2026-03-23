@@ -24,7 +24,7 @@ fun ResponsiveColumn(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .modifyIf(scrollable) {
+            .conditionalModifier(scrollable) {
                 this.verticalScroll(rememberScrollState())
             }
             .systemBarsPadding(),
@@ -34,7 +34,8 @@ fun ResponsiveColumn(
             Modifier
                 .widthIn(max = 900.dp)
                 .fillMaxWidth()
-                .modifyIf(contentPadded) {
+                .weight(1f)
+                .conditionalModifier(contentPadded) {
                     this.padding(24.dp)
                 }
         ) {

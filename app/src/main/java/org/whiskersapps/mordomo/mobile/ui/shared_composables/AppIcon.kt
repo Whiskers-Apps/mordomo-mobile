@@ -91,10 +91,10 @@ fun AppIcon(
 
         Box(
             modifier = Modifier
-                .modifyIf(size != null) {
+                .conditionalModifier(size != null) {
                     this.size(size!!)
                 }
-                .modifyIf(size == null) {
+                .conditionalModifier(size == null) {
                     this.fillMaxWidth()
                 }
                 .clip(shape),
@@ -136,10 +136,10 @@ fun AppIcon(
 
         Box(
             modifier = Modifier
-                .modifyIf(size != null) {
+                .conditionalModifier(size != null) {
                     this.size(size!!)
                 }
-                .modifyIf(size == null) {
+                .conditionalModifier(size == null) {
                     this.fillMaxWidth()
                 }
                 .clip(shape)
@@ -148,10 +148,10 @@ fun AppIcon(
         ) {
             Image(
                 modifier = Modifier
-                    .modifyIf(size != null) {
+                    .conditionalModifier(size != null) {
                         this.size(size!!)
                     }
-                    .modifyIf(size == null) {
+                    .conditionalModifier(size == null) {
                         this.fillMaxWidth()
                     }, bitmap = icon, contentDescription = null
             )

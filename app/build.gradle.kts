@@ -102,4 +102,7 @@ dependencies {
 
     // Layout
     implementation(libs.layout.scaffold)
+
+    // Slide to Unlock (Delete Sliders)
+    implementation(libs.compose.slidetounlock)
 }

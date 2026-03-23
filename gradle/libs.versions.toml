@@ -1,5 +1,5 @@
 [versions]
-agp = "9.0.1"
+agp = "9.1.0"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -30,6 +30,8 @@ composeMaterial = "1.0.1"
 uiGraphics = "1.10.2"
 activityVersion = "1.12.3"
 window = "1.5.1"
+slidetounlock = "1.0.2"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -72,6 +74,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "uiGraphics" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activityVersion" }
 androidx-window = { group = "androidx.window", name = "window", version.ref = "window" }
+compose-slidetounlock = { module = "com.revenuecat.purchases:slide-to-unlock", version.ref = "slidetounlock" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

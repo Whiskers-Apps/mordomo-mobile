@@ -7,8 +7,12 @@ import androidx.compose.ui.platform.SoftwareKeyboardController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+
 @Composable
-fun Modifier.modifyIf(condition: Boolean, modifier: @Composable Modifier.() -> Modifier): Modifier {
+fun Modifier.conditionalModifier(
+    condition: Boolean,
+    modifier: @Composable Modifier.() -> Modifier
+): Modifier {
     return if (condition) then(modifier()) else this
 }
 
