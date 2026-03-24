@@ -27,6 +27,7 @@ import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.C
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.KEY_SHOW_DATE
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.KEY_SHOW_QUICK_BUTTON
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.KEY_SHOW_SEARCH_BUTTON
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Search.Companion.KEY_DEFAULT_SEARCH_ENGINE
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Setup.Companion.DEFAULT_SETUP_COMPLETED
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Setup.Companion.KEY_SETUP_COMPLETED
 
@@ -65,6 +66,9 @@ class SettingsRepository(
 
                 searchBarPosition = preferences[KEY_SEARCH_BAR_POSITION]
                     ?: DEFAULT_SEARCH_BAR_POSITION
+            ),
+            search = AppSettings.Search(
+                defaultSearchEngine = preferences[KEY_DEFAULT_SEARCH_ENGINE]
             )
         )
 
@@ -113,5 +117,12 @@ class SettingsRepository(
 
     suspend fun setSearchBarPosition(position: String) = withContext(Dispatchers.IO) {
         datastore.edit { it[KEY_SEARCH_BAR_POSITION] = position }
+    }
+
+    suspend fun setDefaultEngineId(id: Int?) = withContext(Dispatchers.IO) {
+        when (id) {
+            null -> datastore.edit { it.remove(KEY_DEFAULT_SEARCH_ENGINE) }
+            else -> datastore.edit { it[KEY_DEFAULT_SEARCH_ENGINE] = id }
+        }
     }
 }

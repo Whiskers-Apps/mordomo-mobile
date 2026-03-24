@@ -2,6 +2,7 @@ package org.whiskersapps.mordomo.mobile.ui.main.settings.shared_composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,13 +29,14 @@ fun SwitchSetting(
     title: String,
     description: String,
     value: Boolean,
-    onValueChange: (value: Boolean) -> Unit
+    onValueChange: (value: Boolean) -> Unit,
+    padding: PaddingValues = PaddingValues(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
 ) {
     Row(
         Modifier
             .fillMaxWidth()
             .clickable { onValueChange(!value) }
-            .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
+            .padding(padding),
         verticalAlignment = Alignment.Top
     ) {
         Column(

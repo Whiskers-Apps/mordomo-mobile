@@ -46,11 +46,13 @@ import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.card
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.getCardShape
 import org.whiskersapps.mordomo.mobile.ui.main.settings.bookmarks_screen.BookmarksScreenIntent as ScreenIntent
+import org.whiskersapps.mordomo.mobile.ui.main.settings.bookmarks_screen.BookmarksScreenState as ScreenState
+import org.whiskersapps.mordomo.mobile.ui.main.settings.bookmarks_screen.BookmarksScreenVM as ScreenVM
 
 @Composable
 fun BookmarksScreenRoot(
     onBackClick: () -> Unit,
-    vm: BookmarksScreenVM = koinViewModel()
+    vm: ScreenVM = koinViewModel()
 ) {
     BookmarksScreen(
         state = vm.state.collectAsState().value
@@ -69,7 +71,7 @@ fun BookmarksScreenRoot(
 
 @Composable
 fun BookmarksScreen(
-    state: BookmarksScreenState,
+    state: ScreenState,
     onIntent: (ScreenIntent) -> Unit
 ) {
     val snackBarState = remember { SnackbarHostState() }
@@ -187,7 +189,7 @@ fun BookmarksScreen(
 @Preview(showBackground = true)
 fun BookmarksScreenPreview() {
     BookmarksScreen(
-        BookmarksScreenState(
+        ScreenState(
             loading = false,
             bookmarks = listOf(
                 Bookmark(id = 0, name = "Notion", url = "https://notion.so"),

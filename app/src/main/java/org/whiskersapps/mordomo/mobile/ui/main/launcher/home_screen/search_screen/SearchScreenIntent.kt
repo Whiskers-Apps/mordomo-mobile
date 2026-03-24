@@ -14,6 +14,8 @@ sealed interface SearchScreenIntent {
     data class AppLongClick(val app: App) : SearchScreenIntent
 
     data class BookmarkClick(val bookmark: Bookmark) : SearchScreenIntent
+
+    data object WebSearchClick: SearchScreenIntent
 }
 
 sealed interface AppDialogIntent : SearchScreenIntent {

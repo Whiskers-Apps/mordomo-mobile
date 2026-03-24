@@ -1,22 +1,16 @@
 package org.whiskersapps.mordomo.mobile.ui.main.settings.bookmarks_screen
 
-import android.util.Patterns
 import androidx.compose.material3.SnackbarResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.Bookmark
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.BookmarksRepository
-import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
 import org.whiskersapps.mordomo.mobile.core.utils.isValidURL
 import org.whiskersapps.mordomo.mobile.ui.main.settings.bookmarks_screen.BookmarksScreenState.AddBookmarkDialogState
 import org.whiskersapps.mordomo.mobile.ui.main.settings.bookmarks_screen.BookmarksScreenState.EditBookmarkDialogState
@@ -31,7 +25,7 @@ class BookmarksScreenVM(
     private val _state = MutableStateFlow(BookmarksScreenState())
     val state = _state.asStateFlow()
 
-    private var editingBookmark: Bookmark? = null
+    private var pendingBookmark: Bookmark? = null
     private var preDeletionBookmarks: List<Bookmark> = emptyList()
 
     init {
@@ -42,7 +36,7 @@ class BookmarksScreenVM(
                     bookmarks = bookmarks,
                 )
             }
-        }.launchIn(CoroutineScope(IO))
+        }.launchIn(viewModelScope)
     }
 
     fun onIntent(intent: BookmarksScreenIntent) {
@@ -76,9 +70,9 @@ class BookmarksScreenVM(
     private inner class ScreenIntent {
         fun onBack() {
             viewModelScope.launch {
-                editingBookmark?.let { bookmark ->
+                pendingBookmark?.let { bookmark ->
                     bookmarksRepository.deleteBookmark(bookmark)
-                    editingBookmark = null
+                    pendingBookmark = null
                 }
             }
         }
@@ -100,7 +94,7 @@ class BookmarksScreenVM(
                     )
                 }
 
-                editingBookmark = bookmark
+                pendingBookmark = bookmark
             }
         }
 
@@ -108,13 +102,13 @@ class BookmarksScreenVM(
             viewModelScope.launch {
                 when (result) {
                     SnackbarResult.Dismissed -> {
-                        bookmarksRepository.deleteBookmark(editingBookmark!!)
-                        editingBookmark = null
+                        bookmarksRepository.deleteBookmark(pendingBookmark!!)
+                        pendingBookmark = null
                     }
 
                     SnackbarResult.ActionPerformed -> {
                         _state.update { it.copy(bookmarks = preDeletionBookmarks) }
-                        editingBookmark = null
+                        pendingBookmark = null
                     }
                 }
 
@@ -191,7 +185,7 @@ class BookmarksScreenVM(
                 _state.update {
                     it.copy(
                         showUndoSnack = true,
-                        bookmarks = it.bookmarks.filter { bm -> bm.id != editingBookmark!!.id },
+                        bookmarks = it.bookmarks.filter { bm -> bm.id != pendingBookmark!!.id },
                         editBookmarkDialogState = it.editBookmarkDialogState.copy(show = false)
                     )
                 }
@@ -200,7 +194,7 @@ class BookmarksScreenVM(
 
         fun onSaveClick() {
             viewModelScope.launch {
-                val bookmark = editingBookmark!!.copy(
+                val bookmark = pendingBookmark!!.copy(
                     name = state.value.editBookmarkDialogState.name,
                     url = state.value.editBookmarkDialogState.url
                 )
@@ -225,7 +219,7 @@ class BookmarksScreenVM(
 
         private fun closeDialog() {
             _state.update { it.copy(editBookmarkDialogState = EditBookmarkDialogState()) }
-            editingBookmark = null
+            pendingBookmark = null
         }
     }
 }

@@ -1,12 +1,14 @@
 package org.whiskersapps.mordomo.mobile.core.features.settings
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 
 data class AppSettings(
     val setup: Setup = Setup(),
     val home: Home = Home(),
-    val apps: Apps = Apps()
+    val apps: Apps = Apps(),
+    val search: Search = Search()
 ) {
     data class Setup(
         val completed: Boolean = DEFAULT_SETUP_COMPLETED
@@ -69,6 +71,14 @@ data class AppSettings(
         }
     }
 
+    data class Search(
+        val defaultSearchEngine: Int? = DEFAULT_DEFAULT_SEARCH_ENGINE
+    ) {
+        companion object {
+            val KEY_DEFAULT_SEARCH_ENGINE = intPreferencesKey("default_search_engine")
+            val DEFAULT_DEFAULT_SEARCH_ENGINE = null
+        }
+    }
 }
 
 

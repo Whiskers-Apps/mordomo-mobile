@@ -7,6 +7,7 @@ import org.whiskersapps.mordomo.mobile.core.features.apps.AppsRepository
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.BookmarksRepository
 import org.whiskersapps.mordomo.mobile.core.features.icons.IconsRepository
 import org.whiskersapps.mordomo.mobile.core.features.screen.FoldableRepository
+import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEnginesRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
 import org.whiskersapps.mordomo.mobile.ui.main.add_bookmark.AddBookmarkSharingScreen
 import org.whiskersapps.mordomo.mobile.ui.main.add_bookmark.AddBookmarkSharingScreenVM
@@ -17,9 +18,11 @@ import org.whiskersapps.mordomo.mobile.ui.main.settings.SettingsScreenVM
 import org.whiskersapps.mordomo.mobile.ui.main.settings.apps_screen.AppsSettingsScreenVM
 import org.whiskersapps.mordomo.mobile.ui.main.settings.bookmarks_screen.BookmarksScreenVM
 import org.whiskersapps.mordomo.mobile.ui.main.settings.home_screen.HomeSettingsScreenVM
+import org.whiskersapps.mordomo.mobile.ui.main.settings.search_engines_screen.SearchEnginesScreenVM
 
 val appModule = module {
 
+    // Database Singleton
     single { getDB(get()) }
 
     // --------------------- Repositories -------------------------- //
@@ -27,18 +30,20 @@ val appModule = module {
     single(createdAtStart = true) { IconsRepository(get()) }
     single(createdAtStart = true) { AppsRepository(get(), get()) }
     single(createdAtStart = true) { BookmarksRepository(get()) }
+    single(createdAtStart = true) { SearchEnginesRepository(get()) }
     single(createdAtStart = true) { FoldableRepository() }
 
 
     // -------------------- View Models ----------------------- //
     viewModel { HomeScreenVM(get(), get()) }
-    viewModel { SearchScreenVM(get(), get(), get()) }
+    viewModel { SearchScreenVM(get(), get(), get(), get(), get()) }
     viewModel { AppsScreenVM(get(), get()) }
 
     viewModel { SettingsScreenVM(get()) }
     viewModel { HomeSettingsScreenVM(get()) }
     viewModel { AppsSettingsScreenVM(get()) }
     viewModel { BookmarksScreenVM(get()) }
+    viewModel { SearchEnginesScreenVM(get(), get()) }
 
     viewModel { params ->
         AddBookmarkSharingScreenVM(

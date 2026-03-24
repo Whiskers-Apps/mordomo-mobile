@@ -5,11 +5,12 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SearchEnginesDao {
     @Query("SELECT * FROM searchengine")
-    fun getAll(): List<SearchEngine>
+    fun getAll(): Flow<List<SearchEngine>>
 
     @Insert
     fun insert(searchEngine: SearchEngine)

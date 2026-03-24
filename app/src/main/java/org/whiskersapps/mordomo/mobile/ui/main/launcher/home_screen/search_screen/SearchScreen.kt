@@ -1,9 +1,12 @@
 package org.whiskersapps.mordomo.mobile.ui.main.launcher.home_screen.search_screen
 
+import android.widget.Space
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,15 +28,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.room.util.query
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -41,6 +47,7 @@ import org.whiskersapps.droid.droid_icons.models.Icon
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.Bookmark
+import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEngine
 import org.whiskersapps.mordomo.mobile.core.utils.getWebsiteIconURL
 import org.whiskersapps.mordomo.mobile.ui.main.launcher.apps_screen.composables.AppRow
 import org.whiskersapps.mordomo.mobile.ui.main.launcher.home_screen.search_screen.components.SearchBar
@@ -51,22 +58,24 @@ import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.card
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.getCardShape
+import org.whiskersapps.mordomo.mobile.ui.main.launcher.home_screen.search_screen.SearchScreenIntent as ScreenIntent
+import org.whiskersapps.mordomo.mobile.ui.main.launcher.home_screen.search_screen.SearchScreenVM as ScreenVM
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreenRoot(
     sheetState: SheetState,
-    vm: SearchScreenVM = koinViewModel()
+    vm: ScreenVM = koinViewModel()
 ) {
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(sheetState.currentValue) {
         if (sheetState.currentValue != SheetValue.Expanded) {
-            vm.onIntent(SearchScreenIntent.SheetClose)
+            vm.onIntent(ScreenIntent.SheetClose)
         }
 
         if (sheetState.currentValue == SheetValue.Expanded) {
-            vm.onIntent(SearchScreenIntent.SheetExpand)
+            vm.onIntent(ScreenIntent.SheetExpand)
         }
     }
 
@@ -74,7 +83,7 @@ fun SearchScreenRoot(
         state = vm.state.collectAsState().value,
     ) { intent ->
         when (intent) {
-            SearchScreenIntent.SearchDone -> {
+            ScreenIntent.SearchDone -> {
                 vm.onIntent(intent)
 
                 scope.launch {
@@ -83,7 +92,7 @@ fun SearchScreenRoot(
                 }
             }
 
-            is SearchScreenIntent.AppClick -> {
+            is ScreenIntent.AppClick -> {
                 vm.onIntent(intent)
 
                 scope.launch {
@@ -101,7 +110,7 @@ fun SearchScreenRoot(
 @Composable
 fun SearchScreen(
     state: SearchScreenState,
-    onIntent: (SearchScreenIntent) -> Unit
+    onIntent: (ScreenIntent) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -132,9 +141,9 @@ fun SearchScreen(
         Box(Modifier.padding(start = 8.dp, end = 8.dp)) {
             SearchBar(
                 value = state.searchText,
-                onValueChange = { onIntent(SearchScreenIntent.SearchType(it)) },
+                onValueChange = { onIntent(ScreenIntent.SearchType(it)) },
                 focus = state.focusSearchBar,
-                onDone = { onIntent(SearchScreenIntent.SearchDone) }
+                onDone = { onIntent(ScreenIntent.SearchDone) }
             )
         }
 
@@ -153,10 +162,10 @@ fun SearchScreen(
                                 app = app,
                                 shape = RoundedCornerShape(24.dp),
                                 onClick = {
-                                    onIntent(SearchScreenIntent.AppClick(app))
+                                    onIntent(ScreenIntent.AppClick(app))
                                 },
                                 onLongClick = {
-                                    onIntent(SearchScreenIntent.AppLongClick(app))
+                                    onIntent(ScreenIntent.AppLongClick(app))
                                 }
                             )
                         }
@@ -175,7 +184,7 @@ fun SearchScreen(
                             Row(
                                 modifier = Modifier.card(
                                     shape = getCardShape(index, state.bookmarks.size),
-                                    onClick = { onIntent(SearchScreenIntent.BookmarkClick(bookmark)) }
+                                    onClick = { onIntent(ScreenIntent.BookmarkClick(bookmark)) }
                                 ),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -199,6 +208,46 @@ fun SearchScreen(
                                     )
                                 }
                             }
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(16.dp))
+            }
+
+            if (state.searchEngine != null && state.searchText.isNotBlank()) {
+                SectionHeader(R.drawable.globe, "Web Search")
+
+                Section {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(24.dp))
+                            .clickable { onIntent(ScreenIntent.WebSearchClick) }
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        WebIcon(getWebsiteIconURL(state.searchEngine.query), size = 42.dp)
+
+                        Spacer(Modifier.width(8.dp))
+
+                        Column {
+                            Text(
+                                state.searchEngine.name,
+                                style = TextStyle(color = MaterialTheme.colorScheme.onBackground)
+                            )
+
+                            Spacer(Modifier.height(4.dp))
+
+                            Text(
+                                text = state.searchText,
+                                style = TextStyle(
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    fontSize = 12.sp
+                                ),
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
                         }
                     }
                 }
@@ -234,14 +283,22 @@ fun SearchScreenPreview() {
 
     SearchScreen(
         SearchScreenState(
-            loading = false, apps = apps, bookmarks = listOf(
+            loading = false,
+            apps = apps,
+            bookmarks = listOf(
                 Bookmark(id = 0, name = "Notion", url = "https://notion.so"),
                 Bookmark(id = 1, name = "Notion", url = "https://notion.so"),
                 Bookmark(id = 2, name = "Notion", url = "https://notion.so"),
                 Bookmark(id = 3, name = "Notion", url = "https://notion.so"),
                 Bookmark(id = 4, name = "Notion", url = "https://notion.so"),
                 Bookmark(id = 5, name = "Notion", url = "https://notion.so"),
-            )
+            ),
+            searchEngine = SearchEngine(
+                id = 0,
+                name = "DuckDuckGo",
+                query = "awidjlawjdilawdildjawl"
+            ),
+            searchText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         )
     ) { }
 }

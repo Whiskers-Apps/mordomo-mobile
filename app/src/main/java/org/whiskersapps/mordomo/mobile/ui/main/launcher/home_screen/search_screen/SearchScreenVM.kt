@@ -13,6 +13,9 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,13 +24,17 @@ import org.whiskersapps.mordomo.mobile.core.features.apps.App
 import org.whiskersapps.mordomo.mobile.core.features.apps.AppsRepository
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.Bookmark
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.BookmarksRepository
+import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEnginesRepository
+import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
 import org.whiskersapps.mordomo.mobile.ui.main.launcher.home_screen.search_screen.SearchScreenState.AppDialogState
 import org.whiskersapps.mordomo.mobile.ui.main.launcher.home_screen.search_screen.SearchScreenIntent as ScreenIntent
 
 class SearchScreenVM(
     val context: Application,
     val appsRepository: AppsRepository,
-    val bookmarksRepository: BookmarksRepository
+    settingsRepository: SettingsRepository,
+    bookmarksRepository: BookmarksRepository,
+    searchEnginesRepository: SearchEnginesRepository
 ) : ViewModel() {
     private val screenIntents = ScreenIntents()
     private val appDialogIntents = AppDialogIntents()
@@ -43,6 +50,27 @@ class SearchScreenVM(
     private val bookmarks =
         bookmarksRepository.bookmarks.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
+    init {
+        combine(
+            settingsRepository.appSettings,
+            searchEnginesRepository.searchEngines
+        ) { appSettings, searchEngines ->
+            _state.update {
+                it.copy(
+                    loading = false,
+                    searchEngine = when (appSettings.search.defaultSearchEngine) {
+                        null -> {
+                            null
+                        }
+
+                        else -> {
+                            searchEngines.firstOrNull { se -> se.id == appSettings.search.defaultSearchEngine }
+                        }
+                    }
+                )
+            }
+        }.launchIn(viewModelScope)
+    }
 
     fun onIntent(intent: ScreenIntent) {
         when (intent) {
@@ -54,6 +82,7 @@ class SearchScreenVM(
             is ScreenIntent.AppClick -> screenIntents.onAppClick(intent.app)
             is ScreenIntent.AppLongClick -> screenIntents.onAppLongClick(intent.app)
             is ScreenIntent.BookmarkClick -> screenIntents.onBookmarkClick(intent.bookmark)
+            is ScreenIntent.WebSearchClick -> screenIntents.onWebSearchClick()
 
             is AppDialogIntent -> when (intent) {
                 is AppDialogIntent.InfoClick -> appDialogIntents.onInfoClick()
@@ -124,6 +153,15 @@ class SearchScreenVM(
                         e.printStackTrace()
                     }
                 }
+
+                state.value.searchEngine?.let { searchEngine ->
+                    val queryURL = searchEngine.query
+                    val searchURL = queryURL.replace("%s", state.value.searchText)
+
+                    openURL(searchURL)
+
+                    closeSheet()
+                }
             }
         }
 
@@ -148,6 +186,8 @@ class SearchScreenVM(
                         apps = emptyList()
                     )
                 }
+
+                closeSheet()
             }
         }
 
@@ -165,21 +205,18 @@ class SearchScreenVM(
         }
 
         fun onBookmarkClick(bookmark: Bookmark) {
-            try {
-                context.startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        bookmark.url.toUri()
-                    ).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    }
-                )
+            openURL(bookmark.url)
 
-                closeSheet()
-            } catch (e: Exception) {
-                Log.e("Search Screen", "Error opening bookmark")
-                e.printStackTrace()
-            }
+            closeSheet()
+        }
+
+        fun onWebSearchClick() {
+            val queryURL = state.value.searchEngine!!.query
+            val searchURL = queryURL.replace("%s", state.value.searchText)
+
+            openURL(searchURL)
+
+            closeSheet()
         }
 
         private fun closeSheet() {
@@ -190,6 +227,24 @@ class SearchScreenVM(
                     apps = emptyList(),
                     bookmarks = emptyList()
                 )
+            }
+        }
+
+        private fun openURL(url: String) {
+            try {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        url.toUri()
+                    ).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                )
+
+                closeSheet()
+            } catch (e: Exception) {
+                Log.e("Search Screen", "Error opening url")
+                e.printStackTrace()
             }
         }
     }

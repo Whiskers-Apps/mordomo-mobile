@@ -25,7 +25,7 @@ fun String.isValidURL(): Boolean {
 fun getWebsiteIconURL(url: String): String {
     val trimmedURL = url.removePrefix("https://").removeSuffix("http://")
 
-    return "https://favicon.vemetric.com/$trimmedURL"
+    return "https://favicon.is/$trimmedURL"
 }
 
 fun Context.getActivity(): ComponentActivity? = when (this) {
