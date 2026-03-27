@@ -7,16 +7,13 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.whiskersapps.lib.Sniffer
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,14 +23,16 @@ import org.whiskersapps.mordomo.mobile.core.features.bookmarks.Bookmark
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.BookmarksRepository
 import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEnginesRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
+import org.whiskersapps.mordomo.mobile.core.utils.isShortURL
 import org.whiskersapps.mordomo.mobile.ui.main.launcher.home_screen.search_screen.SearchScreenState.AppDialogState
 import org.whiskersapps.mordomo.mobile.ui.main.launcher.home_screen.search_screen.SearchScreenIntent as ScreenIntent
+import org.whiskersapps.mordomo.mobile.ui.main.launcher.home_screen.search_screen.SearchScreenUICallback as UICallback
 
 class SearchScreenVM(
     val context: Application,
     val appsRepository: AppsRepository,
     settingsRepository: SettingsRepository,
-    bookmarksRepository: BookmarksRepository,
+    val bookmarksRepository: BookmarksRepository,
     searchEnginesRepository: SearchEnginesRepository
 ) : ViewModel() {
     private val screenIntents = ScreenIntents()
@@ -42,13 +41,10 @@ class SearchScreenVM(
     private val _state = MutableStateFlow(SearchScreenState())
     val state = _state.asStateFlow()
 
+    private val _uiCallbacks = Channel<UICallback>()
+    val uiCallbacks = _uiCallbacks.receiveAsFlow()
+
     private val sniffer = Sniffer()
-
-    private val apps = appsRepository.filteredApps
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-
-    private val bookmarks =
-        bookmarksRepository.bookmarks.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     init {
         combine(
@@ -90,12 +86,8 @@ class SearchScreenVM(
                 is AppDialogIntent.UninstallClick -> appDialogIntents.onUninstallClick()
                 AppDialogIntent.Close -> appDialogIntents.onClose()
             }
-
-            else -> throw Exception("Invalid Intent")
         }
     }
-
-    // -------------------------- Intents --------------------------------- //
 
     private inner class ScreenIntents {
         fun onSearchType(text: String) {
@@ -105,7 +97,7 @@ class SearchScreenVM(
                 val filteredApps = if (text.trim().isEmpty()) {
                     emptyList()
                 } else {
-                    apps.value.filter { app ->
+                    appsRepository.filteredApps.value.filter { app ->
                         sniffer.matches(app.name, text)
                     }
                 }.take(6)
@@ -113,14 +105,22 @@ class SearchScreenVM(
                 val filteredBookmarks = if (text.isBlank()) {
                     emptyList()
                 } else {
-                    bookmarks.value.filter { bookmark ->
+                    bookmarksRepository.bookmarks.value.filter { bookmark ->
                         sniffer.matches(bookmark.name, text)
                     }
                 }.take(6)
 
 
                 withContext(Main) {
-                    _state.update { it.copy(apps = filteredApps, bookmarks = filteredBookmarks) }
+                    _state.update {
+                        it.copy(
+                            apps = filteredApps,
+                            bookmarks = filteredBookmarks,
+                            circleApps = filteredApps.size == 1,
+                            circleBookmarks = filteredBookmarks.size == 1,
+                            isTextURL = text.isShortURL()
+                        )
+                    }
                 }
             }
         }
@@ -132,7 +132,7 @@ class SearchScreenVM(
 
                 firstApp?.let { app ->
                     appsRepository.openApp(app)
-                    closeSheet()
+                    resetScreen()
                     return@launch
                 }
 
@@ -147,11 +147,16 @@ class SearchScreenVM(
                             }
                         )
 
-                        closeSheet()
+                        resetScreen()
                     } catch (e: Exception) {
                         Log.e("Search Screen", "Error opening bookmark")
                         e.printStackTrace()
                     }
+                }
+
+                if (state.value.isTextURL) {
+                    openURL(state.value.searchText)
+                    resetScreen()
                 }
 
                 state.value.searchEngine?.let { searchEngine ->
@@ -160,19 +165,23 @@ class SearchScreenVM(
 
                     openURL(searchURL)
 
-                    closeSheet()
+                    resetScreen()
                 }
             }
         }
 
         fun onSheetExpand() {
-            _state.update { it.copy(focusSearchBar = true) }
+            viewModelScope.launch {
+                _uiCallbacks.send(UICallback.FocusSearchBar)
+            }
         }
 
-        fun onSheetClose() = closeSheet()
+        fun onSheetClose() = resetScreen()
 
         fun onFocusClear() {
-            _state.update { it.copy(focusSearchBar = false) }
+            viewModelScope.launch {
+                _uiCallbacks.send(UICallback.ClearFocus)
+            }
         }
 
         fun onAppClick(app: App) {
@@ -181,13 +190,12 @@ class SearchScreenVM(
 
                 _state.update {
                     it.copy(
-                        focusSearchBar = false,
                         searchText = "",
                         apps = emptyList()
                     )
                 }
 
-                closeSheet()
+                resetScreen()
             }
         }
 
@@ -207,41 +215,60 @@ class SearchScreenVM(
         fun onBookmarkClick(bookmark: Bookmark) {
             openURL(bookmark.url)
 
-            closeSheet()
+            resetScreen()
         }
 
         fun onWebSearchClick() {
+            if (state.value.isTextURL) {
+                openURL(state.value.searchText)
+                resetScreen()
+
+                return
+            }
+
             val queryURL = state.value.searchEngine!!.query
             val searchURL = queryURL.replace("%s", state.value.searchText)
 
             openURL(searchURL)
-
-            closeSheet()
+            resetScreen()
         }
 
-        private fun closeSheet() {
+        private fun resetScreen() {
             _state.update {
                 it.copy(
-                    focusSearchBar = false,
                     searchText = "",
                     apps = emptyList(),
-                    bookmarks = emptyList()
+                    bookmarks = emptyList(),
+                    circleApps = false,
+                    circleBookmarks = false,
                 )
+            }
+
+            viewModelScope.launch {
+                _uiCallbacks.send(UICallback.ClearFocus)
+                _uiCallbacks.send(UICallback.HideKeyboard)
+                _uiCallbacks.send(UICallback.CloseSheet)
             }
         }
 
         private fun openURL(url: String) {
             try {
+                val parsedURL = if (!url.startsWith("https") || !url.startsWith("http")) {
+                    "https://${url}"
+                } else {
+                    url
+                }
+
                 context.startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
-                        url.toUri()
+                        parsedURL.toUri()
                     ).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     }
                 )
 
-                closeSheet()
+                resetScreen()
             } catch (e: Exception) {
                 Log.e("Search Screen", "Error opening url")
                 e.printStackTrace()

@@ -18,6 +18,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -31,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.whiskersapps.droid.droid_icons.models.Icon
@@ -40,7 +43,6 @@ import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsOptions
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppDialog
 import org.whiskersapps.mordomo.mobile.ui.main.launcher.apps_screen.composables.AppRow
 import org.whiskersapps.mordomo.mobile.ui.main.launcher.apps_screen.composables.SearchBar
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.hideKeyboard
 
 @Composable
 fun AppsScreenRoot(
@@ -51,37 +53,26 @@ fun AppsScreenRoot(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    fun scrollToHome() {
-        scope.launch {
-            pagerState.scrollToPage(1)
-        }
+    LaunchedEffect(Unit) {
+        vm.uiCallbacks.onEach { callback ->
+            when (callback) {
+                AppsScreenUICallback.GoHome -> {
+                    pagerState.scrollToPage(1)
+                }
+
+                AppsScreenUICallback.HideKeyboard -> {
+                    keyboardController?.hide()
+                }
+
+                AppsScreenUICallback.ClearFocus -> {
+                    focusManager.clearFocus(true)
+                }
+            }
+        }.launchIn(scope)
     }
 
     AppsScreen(vm.state.collectAsState().value) { intent ->
-        when (intent) {
-            is AppsScreenIntent.AppClick -> {
-                vm.onIntent(intent)
-                scrollToHome()
-            }
-
-            AppsScreenIntent.SearchDone -> {
-                scope.launch {
-                    hideKeyboard(focusManager, keyboardController)
-
-                    if (vm.state.value.apps.isNotEmpty()
-                        && vm.state.value.searchText.trim().isNotEmpty()
-                    ) {
-                        scrollToHome()
-                    }
-
-                    vm.onIntent(intent)
-                }
-            }
-
-            else -> {
-                vm.onIntent(intent)
-            }
-        }
+        vm.onIntent(intent)
     }
 }
 

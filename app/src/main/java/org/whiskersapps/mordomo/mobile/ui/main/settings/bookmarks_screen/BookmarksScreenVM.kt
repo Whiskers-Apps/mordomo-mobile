@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.Bookmark
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.BookmarksRepository
-import org.whiskersapps.mordomo.mobile.core.utils.isValidURL
+import org.whiskersapps.mordomo.mobile.core.utils.isFullURL
 import org.whiskersapps.mordomo.mobile.ui.main.settings.bookmarks_screen.BookmarksScreenState.AddBookmarkDialogState
 import org.whiskersapps.mordomo.mobile.ui.main.settings.bookmarks_screen.BookmarksScreenState.EditBookmarkDialogState
 
@@ -153,7 +153,7 @@ class BookmarksScreenVM(
         private fun verifyFields() {
             val name = state.value.addBookmarkDialogState.name
             val url = state.value.addBookmarkDialogState.url
-            val enabled = name.isNotBlank() && url.isValidURL()
+            val enabled = name.isNotBlank() && url.isFullURL()
 
             _state.update {
                 it.copy(addBookmarkDialogState = it.addBookmarkDialogState.copy(saveEnabled = enabled))
@@ -210,7 +210,7 @@ class BookmarksScreenVM(
         private fun verifyFields() {
             val name = state.value.editBookmarkDialogState.name
             val url = state.value.editBookmarkDialogState.url
-            val enabled = name.isNotBlank() && url.isValidURL()
+            val enabled = name.isNotBlank() && url.isFullURL()
 
             _state.update {
                 it.copy(editBookmarkDialogState = it.editBookmarkDialogState.copy(saveEnabled = enabled))

@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
@@ -24,23 +25,9 @@ import org.whiskersapps.mordomo.mobile.R
 fun SearchBar(
     value: String,
     onValueChange: (text: String) -> Unit,
-    focus: Boolean? = null,
-    onFocus: () -> Unit = {},
+    focusRequester: FocusRequester,
     onDone: () -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
-    val focusRequester = remember { FocusRequester() }
-
-    LaunchedEffect(focus) {
-        focus?.let {
-            if (focus) {
-                focusManager.clearFocus()
-                focusRequester.requestFocus()
-                onFocus()
-            }
-        }
-    }
-
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()

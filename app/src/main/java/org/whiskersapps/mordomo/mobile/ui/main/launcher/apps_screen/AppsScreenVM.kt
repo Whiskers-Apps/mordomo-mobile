@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.whiskersapps.lib.Sniffer
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
@@ -15,6 +18,7 @@ import org.whiskersapps.mordomo.mobile.core.features.apps.AppsRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
 import org.whiskersapps.mordomo.mobile.ui.main.launcher.apps_screen.AppsScreenState.AppDialogState
 import org.whiskersapps.mordomo.mobile.ui.main.launcher.apps_screen.AppsScreenIntent as ScreenIntent
+import org.whiskersapps.mordomo.mobile.ui.main.launcher.apps_screen.AppsScreenUICallback as UICallback
 
 class AppsScreenVM(
     private val appsRepository: AppsRepository,
@@ -25,6 +29,9 @@ class AppsScreenVM(
 
     private val _state = MutableStateFlow(AppsScreenState())
     val state = _state.asStateFlow()
+
+    private val _uiCallbacks = Channel<UICallback>()
+    val uiCallbacks = _uiCallbacks.receiveAsFlow()
 
     private val sniffer = Sniffer()
 
@@ -65,8 +72,6 @@ class AppsScreenVM(
         }
     }
 
-    // ------------------------- Intents --------------------------- //
-
     private inner class ScreenIntents {
         fun onSearch(text: String) {
             _state.update { it.copy(searchText = text) }
@@ -86,7 +91,13 @@ class AppsScreenVM(
         fun onAppClick(app: App) {
             viewModelScope.launch {
                 appsRepository.openApp(app)
-                clearScreen()
+
+                delay(500)
+                _uiCallbacks.send(UICallback.ClearFocus)
+                _uiCallbacks.send(UICallback.HideKeyboard)
+                _uiCallbacks.send(UICallback.GoHome)
+
+                resetScreen()
             }
         }
 
@@ -108,7 +119,7 @@ class AppsScreenVM(
                 val state = state.value
 
                 if (state.searchText.trim().isEmpty()) {
-                    clearScreen()
+                    resetScreen()
                     return@launch
                 }
 
@@ -117,19 +128,21 @@ class AppsScreenVM(
 
                 app?.let { app ->
                     appsRepository.openApp(app)
+
+                    delay(500)
+                    _uiCallbacks.send(UICallback.ClearFocus)
+                    _uiCallbacks.send(UICallback.HideKeyboard)
+                    _uiCallbacks.send(UICallback.GoHome)
                 }
 
-                clearScreen()
+                resetScreen()
             }
         }
 
-        private fun clearScreen() {
+        private fun resetScreen() {
             viewModelScope.launch(Dispatchers.Main) {
                 _state.update {
-                    it.copy(
-                        apps = appsRepository.filteredApps.value,
-                        searchText = ""
-                    )
+                    AppsScreenState(loading = false, apps = appsRepository.filteredApps.value)
                 }
             }
         }

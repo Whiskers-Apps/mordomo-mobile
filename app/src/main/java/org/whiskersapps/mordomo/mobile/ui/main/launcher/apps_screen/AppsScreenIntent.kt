@@ -15,3 +15,9 @@ sealed interface AppDialogIntent : AppsScreenIntent {
     data class ShortcutClick(val shortcut: App.Shortcut) : AppDialogIntent
     data object Close : AppDialogIntent
 }
+
+sealed interface AppsScreenUICallback {
+    data object GoHome : AppsScreenUICallback
+    data object HideKeyboard : AppsScreenUICallback
+    data object ClearFocus : AppsScreenUICallback
+}

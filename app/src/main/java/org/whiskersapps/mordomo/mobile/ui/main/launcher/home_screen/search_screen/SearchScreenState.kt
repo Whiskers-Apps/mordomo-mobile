@@ -8,11 +8,13 @@ import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEngine
 data class SearchScreenState(
     val loading: Boolean = true,
     val searchText: String = "",
-    val focusSearchBar: Boolean = false,
     val apps: List<App> = emptyList(),
     val bookmarks: List<Bookmark> = emptyList(),
     val searchEngine: SearchEngine? = null,
-    val appDialogState: AppDialogState = AppDialogState()
+    val appDialogState: AppDialogState = AppDialogState(),
+    val circleApps: Boolean = false,
+    val circleBookmarks: Boolean = false,
+    val isTextURL: Boolean = false,
 ) {
     data class AppDialogState(
         val show: Boolean = false,

@@ -1,6 +1,5 @@
 package org.whiskersapps.mordomo.mobile.ui.main.add_bookmark
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,7 +8,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.Bookmark
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.BookmarksRepository
-import org.whiskersapps.mordomo.mobile.core.utils.isValidURL
+import org.whiskersapps.mordomo.mobile.core.utils.isFullURL
 import org.whiskersapps.mordomo.mobile.ui.main.add_bookmark.AddBookmarkSharingScreenState as ScreenState
 
 class AddBookmarkSharingScreenVM(
@@ -65,7 +64,7 @@ class AddBookmarkSharingScreenVM(
     private fun verifyFields() {
         val name = state.value.name
         val url = state.value.url
-        val enabled = name.isNotBlank() && url.isValidURL()
+        val enabled = name.isNotBlank() && url.isFullURL()
 
         _state.update { it.copy(saveEnabled = enabled) }
     }

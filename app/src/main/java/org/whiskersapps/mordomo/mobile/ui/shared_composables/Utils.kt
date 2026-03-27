@@ -15,11 +15,3 @@ fun Modifier.conditionalModifier(
 ): Modifier {
     return if (condition) then(modifier()) else this
 }
-
-suspend fun hideKeyboard(
-    focusManager: FocusManager,
-    keyboardController: SoftwareKeyboardController?
-) = withContext(Dispatchers.Main) {
-    focusManager.clearFocus()
-    keyboardController?.hide()
-}

@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEngine
 import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEnginesRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
-import org.whiskersapps.mordomo.mobile.core.utils.isValidURL
+import org.whiskersapps.mordomo.mobile.core.utils.isFullURL
 import org.whiskersapps.mordomo.mobile.ui.main.settings.search_engines_screen.SearchEnginesScreenState.AddEngineDialogState
 import org.whiskersapps.mordomo.mobile.ui.main.settings.search_engines_screen.SearchEnginesScreenState.EditEngineDialogState
 import org.whiskersapps.mordomo.mobile.ui.main.settings.search_engines_screen.SearchEnginesScreenIntent as ScreenIntent
@@ -160,7 +160,7 @@ class SearchEnginesScreenVM(
         private fun verifyFields() {
             val name = state.value.addEngineDialogState.name
             val query = state.value.addEngineDialogState.query
-            val enabled = name.isNotBlank() && query.isValidURL() && query.contains("%s")
+            val enabled = name.isNotBlank() && query.isFullURL() && query.contains("%s")
 
             _state.update {
                 it.copy(addEngineDialogState = it.addEngineDialogState.copy(saveEnabled = enabled))
@@ -236,7 +236,7 @@ class SearchEnginesScreenVM(
         private fun verifyFields() {
             val name = state.value.editEngineDialogState.name
             val query = state.value.editEngineDialogState.query
-            val enabled = name.isNotBlank() && query.isValidURL() && query.contains("%s")
+            val enabled = name.isNotBlank() && query.isFullURL() && query.contains("%s")
 
             _state.update {
                 it.copy(editEngineDialogState = it.editEngineDialogState.copy(saveEnabled = enabled))

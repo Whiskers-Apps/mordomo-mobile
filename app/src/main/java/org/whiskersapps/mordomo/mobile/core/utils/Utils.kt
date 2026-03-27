@@ -17,9 +17,14 @@ fun isDefaultLauncher(context: Context): Boolean {
     return resolve?.activityInfo?.packageName == context.packageName
 }
 
-fun String.isValidURL(): Boolean {
+fun String.isFullURL(): Boolean {
     return Patterns.WEB_URL.matcher(this).matches()
             && (this.startsWith("https://") || this.startsWith("http://"))
+}
+
+
+fun String.isShortURL(): Boolean {
+    return Patterns.WEB_URL.matcher(this).matches()
 }
 
 fun getWebsiteIconURL(url: String): String {

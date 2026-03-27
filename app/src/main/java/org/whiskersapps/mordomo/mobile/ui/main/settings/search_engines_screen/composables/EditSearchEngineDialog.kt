@@ -32,7 +32,7 @@ fun EditSearchEngineDialog(
     DialogLayout(onDismiss = { onIntent(DialogIntent.Close) }) {
         DialogTitle("Edit Search Engine")
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
@@ -45,7 +45,7 @@ fun EditSearchEngineDialog(
             }
         )
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
@@ -58,7 +58,7 @@ fun EditSearchEngineDialog(
             }
         )
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp))
 
         SwitchSetting(
             title = "Default",
@@ -68,11 +68,11 @@ fun EditSearchEngineDialog(
             padding = PaddingValues(0.dp)
         )
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp))
 
         DeletionSlider { onIntent(DialogIntent.DeleteSlide) }
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp))
 
         DialogFooter(
             primaryButtonText = "Save",
