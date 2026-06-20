@@ -14,7 +14,7 @@ data class AppSettings(
         val completed: Boolean = DEFAULT_SETUP_COMPLETED
     ) {
         companion object {
-            val KEY_SETUP_COMPLETED = booleanPreferencesKey("setup_completed")
+            val SetupCompletedKey = booleanPreferencesKey("setup_completed")
             const val DEFAULT_SETUP_COMPLETED = false
         }
     }
@@ -33,28 +33,32 @@ data class AppSettings(
         val showSearchButton: Boolean = DEFAULT_SHOW_SEARCH_BUTTON,
 
         val showAppsButton: Boolean = DEFAULT_SHOW_APPS_BUTTON,
+        val disableSwipe: Boolean = DEFAULT_DISABLE_SWIPE
     ) {
         companion object {
-            val KEY_CLOCK_STYLE = stringPreferencesKey("clock_style")
-            const val DEFAULT_CLOCK_STYLE = SettingsOptions.ClockStyle.MINIMAL
+            val ClockStyleKey = stringPreferencesKey("clock_style")
+            const val DEFAULT_CLOCK_STYLE = SettingsValues.ClockStyle.MINIMAL
 
-            val KEY_CLOCK_POSITION = stringPreferencesKey("clock_position")
-            const val DEFAULT_CLOCK_POSITION = SettingsOptions.ClockPosition.TOP
+            val ClockPositionKey = stringPreferencesKey("clock_position")
+            const val DEFAULT_CLOCK_POSITION = SettingsValues.ClockPosition.TOP
 
-            val KEY_SHOW_DATE = booleanPreferencesKey("show_date")
+            val ShowDateKey = booleanPreferencesKey("show_date")
             const val DEFAULT_SHOW_DATE = true
 
-            val KEY_DATE_FORMAT = stringPreferencesKey("date_format")
+            val DateFormatKey = stringPreferencesKey("date_format")
             const val DEFAULT_DATE_FORMAT = "EEEE - dd/MM/Y"
 
-            val KEY_SHOW_QUICK_BUTTON = booleanPreferencesKey("show_quick_button")
+            val ShowQuickButtonKey = booleanPreferencesKey("show_quick_button")
             const val DEFAULT_SHOW_QUICK_BUTTON = true
 
-            val KEY_SHOW_SEARCH_BUTTON = booleanPreferencesKey("show_search_button")
+            val ShowSearchButtonKey = booleanPreferencesKey("show_search_button")
             const val DEFAULT_SHOW_SEARCH_BUTTON = true
 
-            val KEY_SHOW_APPS_BUTTON = booleanPreferencesKey("show_apps_button")
+            val ShowAppsButtonKey = booleanPreferencesKey("show_apps_button")
             const val DEFAULT_SHOW_APPS_BUTTON = false
+
+            val DisableSwipeKey = booleanPreferencesKey("disable_swipe")
+            const val DEFAULT_DISABLE_SWIPE = false
         }
     }
 
@@ -63,26 +67,26 @@ data class AppSettings(
         val searchBarPosition: String = DEFAULT_SEARCH_BAR_POSITION
     ) {
         companion object {
-            val KEY_SPLIT_LIST = booleanPreferencesKey("split_apps_list")
+            val SplitListKey = booleanPreferencesKey("split_apps_list")
             const val DEFAULT_SPLIT_LIST = true
 
-            val KEY_SEARCH_BAR_POSITION = stringPreferencesKey("search_bar_position")
-            const val DEFAULT_SEARCH_BAR_POSITION = SettingsOptions.SearchBarPosition.BOTTOM
+            val SearchBarPositionKey = stringPreferencesKey("search_bar_position")
+            const val DEFAULT_SEARCH_BAR_POSITION = SettingsValues.SearchBarPosition.BOTTOM
         }
     }
 
     data class Search(
-        val defaultSearchEngine: Int? = DEFAULT_DEFAULT_SEARCH_ENGINE
+        val defaultSearchEngine: Int? = DEFAULT_SEARCH_ENGINE
     ) {
         companion object {
-            val KEY_DEFAULT_SEARCH_ENGINE = intPreferencesKey("default_search_engine")
-            val DEFAULT_DEFAULT_SEARCH_ENGINE = null
+            val DefaultSearchEngineKey = intPreferencesKey("default_search_engine")
+            val DEFAULT_SEARCH_ENGINE = null
         }
     }
 }
 
 
-object SettingsOptions {
+object SettingsValues {
     object ClockStyle {
         const val MINIMAL = "minimal"
         const val ISLAND = "island"

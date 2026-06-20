@@ -12,24 +12,26 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_SEARCH_BAR_POSITION
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_SPLIT_LIST
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.KEY_SEARCH_BAR_POSITION
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.KEY_SPLIT_LIST
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.SearchBarPositionKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.SplitListKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_CLOCK_POSITION
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_CLOCK_STYLE
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_DATE_FORMAT
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_SHOW_APPS_BUTTON
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_SHOW_QUICK_BUTTON
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_SHOW_SEARCH_BUTTON
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.KEY_CLOCK_POSITION
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.KEY_CLOCK_STYLE
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.KEY_DATE_FORMAT
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.KEY_SHOW_APPS_BUTTON
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.KEY_SHOW_DATE
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.KEY_SHOW_QUICK_BUTTON
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.KEY_SHOW_SEARCH_BUTTON
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Search.Companion.KEY_DEFAULT_SEARCH_ENGINE
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ClockPositionKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ClockStyleKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_DISABLE_SWIPE
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DateFormatKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DisableSwipeKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowAppsButtonKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowDateKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowQuickButtonKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowSearchButtonKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Search.Companion.DefaultSearchEngineKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Setup.Companion.DEFAULT_SETUP_COMPLETED
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Setup.Companion.KEY_SETUP_COMPLETED
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Setup.Companion.SetupCompletedKey
 
 
 val Context.dataStore by preferencesDataStore("settings")
@@ -42,33 +44,35 @@ class SettingsRepository(
     val appSettings: StateFlow<AppSettings> = datastore.data.map { preferences ->
         val updatedAppSettings = AppSettings(
             setup = AppSettings.Setup(
-                completed = preferences[KEY_SETUP_COMPLETED] ?: DEFAULT_SETUP_COMPLETED
+                completed = preferences[SetupCompletedKey] ?: DEFAULT_SETUP_COMPLETED
             ),
             home = AppSettings.Home(
-                clockStyle = preferences[KEY_CLOCK_STYLE] ?: DEFAULT_CLOCK_STYLE,
+                clockStyle = preferences[ClockStyleKey] ?: DEFAULT_CLOCK_STYLE,
 
-                clockPosition = preferences[KEY_CLOCK_POSITION] ?: DEFAULT_CLOCK_POSITION,
+                clockPosition = preferences[ClockPositionKey] ?: DEFAULT_CLOCK_POSITION,
 
-                showDate = preferences[KEY_SHOW_DATE]
+                showDate = preferences[ShowDateKey]
                     ?: AppSettings.Home.DEFAULT_SHOW_DATE,
 
-                dateFormat = preferences[KEY_DATE_FORMAT] ?: DEFAULT_DATE_FORMAT,
+                dateFormat = preferences[DateFormatKey] ?: DEFAULT_DATE_FORMAT,
 
-                showQuickButton = preferences[KEY_SHOW_QUICK_BUTTON] ?: DEFAULT_SHOW_QUICK_BUTTON,
+                showQuickButton = preferences[ShowQuickButtonKey] ?: DEFAULT_SHOW_QUICK_BUTTON,
 
-                showSearchButton = preferences[KEY_SHOW_SEARCH_BUTTON]
+                showSearchButton = preferences[ShowSearchButtonKey]
                     ?: DEFAULT_SHOW_SEARCH_BUTTON,
 
-                showAppsButton = preferences[KEY_SHOW_APPS_BUTTON] ?: DEFAULT_SHOW_APPS_BUTTON
+                showAppsButton = preferences[ShowAppsButtonKey] ?: DEFAULT_SHOW_APPS_BUTTON,
+
+                disableSwipe = preferences[DisableSwipeKey] ?: DEFAULT_DISABLE_SWIPE
             ),
             apps = AppSettings.Apps(
-                splitList = preferences[KEY_SPLIT_LIST] ?: DEFAULT_SPLIT_LIST,
+                splitList = preferences[SplitListKey] ?: DEFAULT_SPLIT_LIST,
 
-                searchBarPosition = preferences[KEY_SEARCH_BAR_POSITION]
+                searchBarPosition = preferences[SearchBarPositionKey]
                     ?: DEFAULT_SEARCH_BAR_POSITION
             ),
             search = AppSettings.Search(
-                defaultSearchEngine = preferences[KEY_DEFAULT_SEARCH_ENGINE]
+                defaultSearchEngine = preferences[DefaultSearchEngineKey]
             )
         )
 
@@ -81,48 +85,52 @@ class SettingsRepository(
 
     // --------------------------------------------------------------------------- //
     suspend fun setSetupCompleted(completed: Boolean) =
-        withContext(Dispatchers.IO) { datastore.edit { it[KEY_SETUP_COMPLETED] = completed } }
+        withContext(Dispatchers.IO) { datastore.edit { it[SetupCompletedKey] = completed } }
 
     suspend fun setHomeClockStyle(style: String) = withContext(Dispatchers.IO) {
-        datastore.edit { it[KEY_CLOCK_STYLE] = style }
+        datastore.edit { it[ClockStyleKey] = style }
     }
 
     suspend fun setClockPosition(position: String) = withContext(Dispatchers.IO) {
-        datastore.edit { it[KEY_CLOCK_POSITION] = position }
+        datastore.edit { it[ClockPositionKey] = position }
     }
 
     suspend fun setShowDate(show: Boolean) = withContext(Dispatchers.IO) {
-        datastore.edit { it[KEY_SHOW_DATE] = show }
+        datastore.edit { it[ShowDateKey] = show }
     }
 
     suspend fun setDateFormat(format: String) = withContext(Dispatchers.IO) {
-        datastore.edit { it[KEY_DATE_FORMAT] = format }
+        datastore.edit { it[DateFormatKey] = format }
     }
 
     suspend fun setShowQuickButton(show: Boolean) = withContext(Dispatchers.IO) {
-        datastore.edit { it[KEY_SHOW_QUICK_BUTTON] = show }
+        datastore.edit { it[ShowQuickButtonKey] = show }
     }
 
     suspend fun setShowSearchButton(show: Boolean) = withContext(Dispatchers.IO) {
-        datastore.edit { it[KEY_SHOW_SEARCH_BUTTON] = show }
+        datastore.edit { it[ShowSearchButtonKey] = show }
     }
 
     suspend fun setShowAppsButton(show: Boolean) = withContext(Dispatchers.IO) {
-        datastore.edit { it[KEY_SHOW_APPS_BUTTON] = show }
+        datastore.edit { it[ShowAppsButtonKey] = show }
     }
 
     suspend fun setSplitList(split: Boolean) = withContext(Dispatchers.IO) {
-        datastore.edit { it[KEY_SPLIT_LIST] = split }
+        datastore.edit { it[SplitListKey] = split }
     }
 
     suspend fun setSearchBarPosition(position: String) = withContext(Dispatchers.IO) {
-        datastore.edit { it[KEY_SEARCH_BAR_POSITION] = position }
+        datastore.edit { it[SearchBarPositionKey] = position }
     }
 
     suspend fun setDefaultEngineId(id: Int?) = withContext(Dispatchers.IO) {
         when (id) {
-            null -> datastore.edit { it.remove(KEY_DEFAULT_SEARCH_ENGINE) }
-            else -> datastore.edit { it[KEY_DEFAULT_SEARCH_ENGINE] = id }
+            null -> datastore.edit { it.remove(DefaultSearchEngineKey) }
+            else -> datastore.edit { it[DefaultSearchEngineKey] = id }
         }
+    }
+
+    suspend fun setDisableSwipe(disable: Boolean) = withContext(Dispatchers.IO){
+        datastore.edit { it[DisableSwipeKey] = disable }
     }
 }

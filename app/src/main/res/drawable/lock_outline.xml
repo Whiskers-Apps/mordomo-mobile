@@ -15,10 +15,10 @@
   -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:viewportHeight="256" android:viewportWidth="256" android:width="24dp">
       
-    <path android:fillColor="#00000000" android:pathData="M87,114L168,114A31,31 0,0 1,199 145L199,186A31,31 0,0 1,168 217L87,217A31,31 0,0 1,56 186L56,145A31,31 0,0 1,87 114z" android:strokeColor="#000000" android:strokeWidth="16"/>
+    <path android:fillColor="#00000000" android:pathData="M78,102L178,102A31,31 0,0 1,209 133L209,187A31,31 0,0 1,178 218L78,218A31,31 0,0 1,47 187L47,133A31,31 0,0 1,78 102z" android:strokeColor="#000000" android:strokeWidth="16"/>
       
-    <path android:fillColor="#00000000" android:pathData="M90,114V62C90,48.75 100.75,38 114,38H141C154.26,38 165,48.75 165,62V114" android:strokeColor="#000000" android:strokeWidth="16"/>
+    <path android:fillColor="#00000000" android:pathData="M86,102V61C86,47.75 96.75,37 110,37H147C160.26,37 171,47.75 171,61V102" android:strokeColor="#000000" android:strokeWidth="16"/>
       
-    <path android:fillColor="#000000" android:pathData="M128,147C134.07,147 139,151.93 139,158C139,162.56 136.23,166.46 132.28,168.13C132.4,168.31 132.49,168.51 132.53,168.73L135.28,183.73C135.45,184.65 134.74,185.5 133.8,185.5H122.2C121.26,185.5 120.56,184.65 120.72,183.73L123.47,168.73C123.51,168.51 123.6,168.31 123.72,168.13C119.77,166.46 117,162.56 117,158C117,151.93 121.93,147 128,147Z"/>
+    <path android:fillColor="#000000" android:pathData="M128,134C136.28,134 143,140.72 143,149C143,154.9 139.59,160 134.64,162.45C134.68,162.61 134.71,162.76 134.74,162.93L137.54,179.93C138.09,183.27 135.5,186.32 132.11,186.32H123.89C120.5,186.32 117.91,183.27 118.46,179.93L121.26,162.93C121.29,162.76 121.32,162.61 121.36,162.45C116.41,160 113,154.9 113,149C113,140.72 119.72,134 128,134Z"/>
     
 </vector>

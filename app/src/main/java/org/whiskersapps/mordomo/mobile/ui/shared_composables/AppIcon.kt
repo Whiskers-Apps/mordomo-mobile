@@ -105,7 +105,7 @@ fun AppIcon(
                 Image(
                     modifier = Modifier
                         .fillMaxSize()
-                        .scale(1.5f),
+                        .scale(1.48f),
                     bitmap = background,
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds
@@ -115,7 +115,7 @@ fun AppIcon(
                 Image(
                     modifier = Modifier
                         .fillMaxSize()
-                        .scale(1.5f),
+                        .scale(1.48f),
                     bitmap = foreground,
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds
@@ -142,8 +142,7 @@ fun AppIcon(
                 .conditionalModifier(size == null) {
                     this.fillMaxWidth()
                 }
-                .clip(shape)
-                .background(Color.White),
+                .clip(shape),
             contentAlignment = Alignment.Center
         ) {
             Image(

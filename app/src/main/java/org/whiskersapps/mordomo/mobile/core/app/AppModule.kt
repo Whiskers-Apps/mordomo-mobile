@@ -9,16 +9,15 @@ import org.whiskersapps.mordomo.mobile.core.features.icons.IconsRepository
 import org.whiskersapps.mordomo.mobile.core.features.screen.FoldableRepository
 import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEnginesRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
-import org.whiskersapps.mordomo.mobile.ui.main.add_bookmark.AddBookmarkSharingScreen
-import org.whiskersapps.mordomo.mobile.ui.main.add_bookmark.AddBookmarkSharingScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main.launcher.apps_screen.AppsScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main.launcher.home_screen.HomeScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main.launcher.home_screen.search_screen.SearchScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main.settings.SettingsScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main.settings.apps_screen.AppsSettingsScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main.settings.bookmarks_screen.BookmarksScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main.settings.home_screen.HomeSettingsScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main.settings.search_engines_screen.SearchEnginesScreenVM
+import org.whiskersapps.mordomo.mobile.ui.main_screen.add_bookmark.AddBookmarkSharingScreenVM
+import org.whiskersapps.mordomo.mobile.ui.main_screen.launcher.apps_screen.AppsScreenVM
+import org.whiskersapps.mordomo.mobile.ui.main_screen.launcher.home_screen.HomeScreenVM
+import org.whiskersapps.mordomo.mobile.ui.main_screen.launcher.home_screen.search_screen.SearchScreenVM
+import org.whiskersapps.mordomo.mobile.ui.main_screen.settings.SettingsScreenVM
+import org.whiskersapps.mordomo.mobile.ui.main_screen.settings.apps_screen.AppsSettingsScreenVM
+import org.whiskersapps.mordomo.mobile.ui.main_screen.settings.bookmarks_screen.BookmarksScreenVM
+import org.whiskersapps.mordomo.mobile.ui.main_screen.settings.home_screen.HomeSettingsScreenVM
+import org.whiskersapps.mordomo.mobile.ui.main_screen.settings.search_engines_screen.SearchEnginesScreenVM
 
 val appModule = module {
 
