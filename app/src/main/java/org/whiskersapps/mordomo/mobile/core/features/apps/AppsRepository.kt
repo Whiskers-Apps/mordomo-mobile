@@ -64,9 +64,15 @@ class AppsRepository(
             val updatedApps =
                 packageManager.queryIntentActivities(launcherIntent, 0).map { appIntent ->
                     val packageName = appIntent.activityInfo.packageName
-                    val appInfo = packageManager.getApplicationInfo(packageName, 0)
+                    val activityList = launcherApps.getActivityList(packageName, Process.myUserHandle())
 
-                    val name = appInfo.loadLabel(packageManager).toString()
+                    // This gets the name dynamically like some Morphe's Apps Change their name
+                    val name = if (activityList.isNotEmpty()) {
+                        activityList[0].label.toString()
+                    } else {
+                        val appInfo = packageManager.getApplicationInfo(packageName, 0)
+                        appInfo.loadLabel(packageManager).toString()
+                    }
 
                     val shortcutQuery = LauncherApps.ShortcutQuery().apply {
                         setQueryFlags(FLAG_MATCH_DYNAMIC or FLAG_MATCH_MANIFEST or FLAG_MATCH_PINNED)

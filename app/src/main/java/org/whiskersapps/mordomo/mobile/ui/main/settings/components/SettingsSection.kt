@@ -3,6 +3,7 @@ package org.whiskersapps.mordomo.mobile.ui.main.settings.components
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,11 +23,14 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.whiskersapps.mordomo.mobile.R
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.TopCardShape
 
 @Composable
-fun SettingSection(
+fun SettingsSection(
     shape: Shape,
     @DrawableRes iconId: Int,
     title: String,
@@ -41,12 +46,20 @@ fun SettingSection(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            modifier = Modifier.size(32.dp),
-            painter = painterResource(iconId),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onBackground
-        )
+        Box(Modifier
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                painter = painterResource(iconId),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground
+            )
+        }
+
 
         Spacer(Modifier.width(16.dp))
 
@@ -68,4 +81,15 @@ fun SettingSection(
             )
         }
     }
+}
+
+@Composable
+@Preview
+fun SettingsSectionPreview() {
+    SettingsSection(
+        shape = TopCardShape,
+        iconId = R.drawable.bookmark_outline,
+        title = "Bookmarks",
+        description = "Add bookmarks to quickly open links"
+    ) {}
 }

@@ -178,9 +178,9 @@ fun HomePanel(
 @Preview
 fun HomePanelPreview() {
     HomePanel(
-        showQuickButton = false,
+        showQuickButton = true,
         showSearchButton = true,
-        showAppsButton = false,
+        showAppsButton = true,
         onQuickPanelButtonClick = {},
         onSearchButtonClick = {},
         onAppsButtonClick = {}

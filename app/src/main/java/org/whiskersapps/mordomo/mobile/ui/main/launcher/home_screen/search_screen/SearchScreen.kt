@@ -27,7 +27,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -149,7 +148,7 @@ fun SearchScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             if (state.apps.isNotEmpty()) {
-                SectionHeader(R.drawable.apps, "Apps")
+                SectionHeader(R.drawable.apps_outline, "Apps")
 
                 Section(state.circleApps) {
                     state.apps.forEach { app ->
@@ -172,7 +171,7 @@ fun SearchScreen(
             }
 
             if (state.bookmarks.isNotEmpty()) {
-                SectionHeader(R.drawable.bookmark, "Bookmarks")
+                SectionHeader(R.drawable.bookmark_outline, "Bookmarks")
 
                 Section(state.circleBookmarks) {
                     state.bookmarks.forEachIndexed { index, bookmark ->
@@ -212,7 +211,7 @@ fun SearchScreen(
             }
 
             if (state.searchEngine != null && state.searchText.isNotBlank()) {
-                SectionHeader(R.drawable.globe, "Web Search")
+                SectionHeader(R.drawable.globe_outline, "Web Search")
 
                 Row(
                     modifier = Modifier

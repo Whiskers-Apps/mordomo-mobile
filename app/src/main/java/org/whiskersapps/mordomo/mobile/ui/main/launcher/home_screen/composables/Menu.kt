@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -33,6 +34,7 @@ fun MenuDialog(
     onSetWallpaperClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
+
     if (show) {
         Dialog(
             onDismissRequest = { onDismiss() },
@@ -53,7 +55,7 @@ fun MenuDialog(
                 ) {
                     Icon(
                         modifier = Modifier.size(24.dp),
-                        painter = painterResource(R.drawable.mountain),
+                        painter = painterResource(R.drawable.mountain_outline),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onBackground
                     )
@@ -79,7 +81,7 @@ fun MenuDialog(
                 ) {
                     Icon(
                         modifier = Modifier.size(24.dp),
-                        painter = painterResource(R.drawable.settings),
+                        painter = painterResource(R.drawable.settings_outline),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onBackground
                     )
@@ -91,5 +93,14 @@ fun MenuDialog(
             }
         }
     }
+}
 
+@Composable
+@Preview
+fun HomeMenuPreview(){
+    MenuDialog(
+        show = true,
+        onDismiss = {},
+        onSetWallpaperClick = {}
+    ){}
 }

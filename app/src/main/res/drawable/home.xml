@@ -1,7 +1,20 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:viewportHeight="24" android:viewportWidth="24" android:width="24dp">
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:viewportHeight="256" android:viewportWidth="256" android:width="24dp">
       
-    <path android:fillColor="#00000000" android:pathData="M22,12.204V13.725C22,17.626 22,19.576 20.828,20.788C19.657,22 17.771,22 14,22H10C6.229,22 4.343,22 3.172,20.788C2,19.576 2,17.626 2,13.725V12.204C2,9.915 2,8.771 2.519,7.823C3.038,6.874 3.987,6.286 5.884,5.108L7.884,3.867C9.889,2.622 10.892,2 12,2C13.108,2 14.111,2.622 16.116,3.867L18.116,5.108C20.013,6.286 20.962,6.874 21.481,7.823" android:strokeColor="#000" android:strokeLineCap="round" android:strokeWidth="2"/>
-      
-    <path android:fillColor="#00000000" android:pathData="M15,18H9" android:strokeColor="#000" android:strokeLineCap="round" android:strokeWidth="2"/>
+    <path android:fillColor="#00000000" android:pathData="M39,99.06V194C39,207.81 50.19,219 64,219H193C206.81,219 218,207.81 218,194V99.06C218,89.99 213.09,81.64 205.17,77.22L140.67,41.28C133.1,37.07 123.9,37.07 116.33,41.28L51.83,77.22C43.91,81.64 39,89.99 39,99.06Z" android:strokeColor="#000000" android:strokeWidth="16"/>
     
 </vector>

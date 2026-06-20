@@ -29,7 +29,7 @@ fun WebIcon(
     val tintColor = MaterialTheme.colorScheme.onBackground
 
     val tintedPlaceholder = remember(tintColor) {
-        ContextCompat.getDrawable(context, R.drawable.globe)?.apply {
+        ContextCompat.getDrawable(context, R.drawable.globe_outline)?.apply {
             setTint(tintColor.toArgb())
         }
     }
@@ -57,7 +57,7 @@ fun WebIcon(
             modifier = Modifier
                 .clip(CircleShape)
                 .size(size),
-            painter = painterResource(R.drawable.globe),
+            painter = painterResource(R.drawable.globe_outline),
             contentDescription = null,
             tint = tintColor
         )

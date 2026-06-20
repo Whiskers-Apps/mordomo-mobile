@@ -9,7 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import org.whiskersapps.mordomo.mobile.R
-import org.whiskersapps.mordomo.mobile.ui.main.settings.components.SettingSection
+import org.whiskersapps.mordomo.mobile.ui.main.settings.components.SettingsSection
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.BottomCardShape
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.MiddleCardShape
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
@@ -55,7 +55,7 @@ fun SettingsScreen(
             scrollable = true
         ) {
             if (!state.isDefaultLauncher) {
-                SettingSection(
+                SettingsSection(
                     shape = SingleCardShape,
                     iconId = R.drawable.info,
                     title = "Default Launcher",
@@ -66,7 +66,7 @@ fun SettingsScreen(
                 Spacer(Modifier.height(16.dp))
             }
 
-            SettingSection(
+            SettingsSection(
                 shape = TopCardShape,
                 iconId = R.drawable.palette,
                 title = "Style",
@@ -76,7 +76,7 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(2.dp))
 
-            SettingSection(
+            SettingsSection(
                 shape = MiddleCardShape,
                 iconId = R.drawable.home,
                 title = "Home",
@@ -86,7 +86,7 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(2.dp))
 
-            SettingSection(
+            SettingsSection(
                 shape = BottomCardShape,
                 iconId = R.drawable.apps_outline,
                 title = "Apps",
@@ -96,9 +96,9 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            SettingSection(
+            SettingsSection(
                 shape = TopCardShape,
-                iconId = R.drawable.bookmark,
+                iconId = R.drawable.bookmark_outline,
                 title = "Bookmarks",
                 description = "Add bookmarks to quickly open links",
                 onClick = { onIntent(SettingsScreenIntent.BookmarksSectionClick) }
@@ -107,7 +107,7 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(2.dp))
 
-            SettingSection(
+            SettingsSection(
                 shape = BottomCardShape,
                 iconId = R.drawable.search,
                 title = "Search Engines",
@@ -117,7 +117,7 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            SettingSection(
+            SettingsSection(
                 shape = TopCardShape,
                 iconId = R.drawable.fingerprint,
                 title = "Security",
@@ -128,9 +128,9 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(2.dp))
 
-            SettingSection(
+            SettingsSection(
                 shape = BottomCardShape,
-                iconId = R.drawable.lock,
+                iconId = R.drawable.lock_outline,
                 title = "Lock",
                 description = "Manage screen locking gesture",
                 onClick = { onIntent(SettingsScreenIntent.LockSectionClick) }
@@ -138,7 +138,7 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            SettingSection(
+            SettingsSection(
                 shape = SingleCardShape,
                 iconId = R.drawable.info,
                 title = "About",
