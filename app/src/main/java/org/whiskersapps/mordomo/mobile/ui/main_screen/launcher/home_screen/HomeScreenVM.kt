@@ -36,63 +36,47 @@ class HomeScreenVM(
 
     init {
         viewModelScope.launch {
-            val initialSettings = settingsRepository.appSettings.value
+            while (true) {
+                val calendar = Calendar.getInstance()
+                val locale = Locale.getDefault()
 
-            _state.update {
-                HomeScreenState(
-                    loading = false,
-                    clockStyle = initialSettings.home.clockStyle,
-                    clockPosition = initialSettings.home.clockPosition,
-                    showDate = initialSettings.home.showDate,
-                    disableSwipe = initialSettings.home.disableSwipe,
-                    showQuickButton = initialSettings.home.showQuickButton,
-                    showSearchButton = initialSettings.home.showSearchButton,
-                    showAppsButton = initialSettings.home.showSearchButton
-                )
-            }
+                val formatter =
+                    SimpleDateFormat(
+                        settingsRepository.appSettings.value.home.dateFormat,
+                        locale
+                    )
 
-            viewModelScope.launch {
-                while (true) {
-                    val calendar = Calendar.getInstance()
-                    val locale = Locale.getDefault()
+                val hours = String.format(locale, "%02d", calendar.get(Calendar.HOUR_OF_DAY))
+                val minutes = String.format(locale, "%02d", calendar.get(Calendar.MINUTE))
 
-                    val formatter =
-                        SimpleDateFormat(
-                            settingsRepository.appSettings.value.home.dateFormat,
-                            locale
-                        )
+                val clockText = "$hours:$minutes"
+                val dateText = formatter.format(calendar.time)
 
-                    val hours = String.format(locale, "%02d", calendar.get(Calendar.HOUR_OF_DAY))
-                    val minutes = String.format(locale, "%02d", calendar.get(Calendar.MINUTE))
-
-                    val clockText = "$hours:$minutes"
-                    val dateText = formatter.format(calendar.time)
-
-                    _state.update {
-                        it.copy(
-                            clock = clockText,
-                            date = dateText
-                        )
-                    }
-
-                    delay(1000)
-                }
-            }
-
-            settingsRepository.appSettings.onEach { settings ->
                 _state.update {
                     it.copy(
-                        clockStyle = settings.home.clockStyle,
-                        clockPosition = settings.home.clockPosition,
-                        showDate = settings.home.showDate,
-                        disableSwipe = settings.home.disableSwipe,
-                        showQuickButton = settings.home.showQuickButton,
-                        showSearchButton = settings.home.showSearchButton,
-                        showAppsButton = settings.home.showAppsButton
+                        clock = clockText,
+                        date = dateText
                     )
                 }
-            }.launchIn(viewModelScope)
+
+                delay(1000)
+            }
         }
+
+        settingsRepository.appSettings.onEach { settings ->
+            _state.update {
+                it.copy(
+                    loading = false,
+                    clockStyle = settings.home.clockStyle,
+                    clockPosition = settings.home.clockPosition,
+                    showDate = settings.home.showDate,
+                    disableSwipe = settings.home.disableSwipe,
+                    showQuickButton = settings.home.showQuickButton,
+                    showSearchButton = settings.home.showSearchButton,
+                    showAppsButton = settings.home.showAppsButton
+                )
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun onIntent(intent: Intent) {

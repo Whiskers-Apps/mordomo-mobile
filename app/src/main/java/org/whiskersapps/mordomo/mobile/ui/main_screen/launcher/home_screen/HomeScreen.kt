@@ -1,5 +1,6 @@
 package org.whiskersapps.mordomo.mobile.ui.main_screen.launcher.home_screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -34,6 +35,8 @@ import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
 import kotlin.math.abs
 import org.whiskersapps.mordomo.mobile.ui.main_screen.launcher.home_screen.HomeScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.main_screen.launcher.home_screen.HomeScreenState as State
+import org.whiskersapps.mordomo.mobile.ui.main_screen.launcher.home_screen.HomeScreenUICallback as UICallback
+import org.whiskersapps.mordomo.mobile.ui.main_screen.launcher.home_screen.HomeScreenVM as VM
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,14 +45,14 @@ fun HomeScreenRoot(
     onGoToQuickPanel: () -> Unit,
     onGoToApps: () -> Unit,
     onExpandSheet: () -> Unit,
-    vm: HomeScreenVM = koinViewModel()
+    vm: VM = koinViewModel()
 ) {
     LaunchedEffect(Unit) {
         vm.uiCallback.collect {
             when (it) {
-                HomeScreenUICallback.ExpandSheet -> onExpandSheet()
-                HomeScreenUICallback.GoToApps -> onGoToApps()
-                HomeScreenUICallback.GoToQuickPanel -> onGoToQuickPanel()
+                UICallback.ExpandSheet -> onExpandSheet()
+                UICallback.GoToApps -> onGoToApps()
+                UICallback.GoToQuickPanel -> onGoToQuickPanel()
             }
         }
     }
@@ -94,20 +97,19 @@ fun HomeScreen(
         if (!state.loading) {
             ResponsiveColumn(
                 modifier = Modifier
-                    .pointerInput(Unit) {
+                    .pointerInput(state.disableSwipe) {
                         detectVerticalDragGestures { _, dragAmount ->
-                            if(state.disableSwipe){
-                                return@detectVerticalDragGestures
-                            }
-
                             if (abs(dragAmount) > 40) {
                                 if (dragAmount < 0) {
-                                    onIntent(Intent.SwipeUp)
+                                    if(!state.disableSwipe){
+                                        onIntent(Intent.SwipeUp)
+                                    }
                                 } else {
-                                    onIntent(Intent.SwipeDown)
+                                    if(!state.disableSwipe){
+                                        onIntent(Intent.SwipeDown)
+                                    }
                                 }
                             }
-
                         }
                     }
                     .combinedClickable(

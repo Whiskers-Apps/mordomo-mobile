@@ -57,7 +57,7 @@ fun SearchBar(
                     modifier = Modifier.size(20.dp).clickable{
                         onValueChange("")
                     },
-                    painter = painterResource(R.drawable.cross),
+                    painter = painterResource(R.drawable.clear),
                     contentDescription = null
                 )
             }
