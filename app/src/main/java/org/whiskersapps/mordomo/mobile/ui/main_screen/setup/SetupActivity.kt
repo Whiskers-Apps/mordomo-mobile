@@ -36,11 +36,6 @@ class SetupActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
 
-        fun open() {
-            this.startActivity(Intent(this, LauncherActivity::class.java))
-            this.finish()
-        }
-
         setContent {
             MordomoTheme {
                 val scope = rememberCoroutineScope()
@@ -83,10 +78,9 @@ class SetupActivity : AppCompatActivity() {
                         onClick = {
                             scope.launch {
                                 get<SettingsRepository>().setSetupCompleted(true)
+                                startActivity(Intent(this@SetupActivity, LauncherActivity::class.java))
+                                finish()
                             }
-
-                            open()
-
                         }
                     ) {
                         Text("Continue")

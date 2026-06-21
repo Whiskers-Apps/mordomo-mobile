@@ -1,6 +1,7 @@
 package org.whiskersapps.mordomo.mobile.ui.main_screen.settings.shared_composables
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
@@ -37,6 +38,7 @@ fun TextSettingDialog(
             Spacer(Modifier.height(8.dp))
 
             OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = state.value,
                 onValueChange = { onValueChange(it) },
                 shape = RoundedCornerShape(8.dp),

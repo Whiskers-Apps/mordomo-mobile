@@ -2,10 +2,15 @@ package org.whiskersapps.mordomo.mobile.ui.main_screen
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
@@ -17,22 +22,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val context = this
+        CoroutineScope(Dispatchers.Default).launch {
+            val repo = get<SettingsRepository>()
 
-        lifecycleScope.launch {
-            get<SettingsRepository>().appSettings.first().also { settings ->
-                println(settings)
+            repo.loading.filter { true }.collect {
+                val settings = get<SettingsRepository>().appSettings.value
+
                 val activity = if (settings.setup.completed) {
                     LauncherActivity::class.java
                 } else {
                     SetupActivity::class.java
                 }
 
-                context.startActivity(
-                    Intent(context, activity)
-                )
-
-                context.finish()
+                startActivity(Intent(this@MainActivity, activity))
+                finish()
             }
         }
     }

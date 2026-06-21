@@ -157,7 +157,7 @@ fun BookmarksScreen(
                             ),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            WebIcon(getWebsiteIconURL(bookmark.url), size = 42.dp)
+                            WebIcon(getWebsiteIconURL(bookmark.url), size = 48.dp)
 
                             Spacer(Modifier.width(8.dp))
 

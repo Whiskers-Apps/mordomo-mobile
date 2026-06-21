@@ -188,7 +188,7 @@ fun SearchScreen(
                                 ),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                WebIcon(getWebsiteIconURL(bookmark.url), size = 42.dp)
+                                WebIcon(getWebsiteIconURL(bookmark.url), size = 48.dp)
 
                                 Spacer(Modifier.width(8.dp))
 
@@ -227,7 +227,7 @@ fun SearchScreen(
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    WebIcon(getWebsiteIconURL(state.searchEngine.query), size = 42.dp)
+                    WebIcon(getWebsiteIconURL(state.searchEngine.query), size = 48.dp)
 
                     Spacer(Modifier.width(8.dp))
 

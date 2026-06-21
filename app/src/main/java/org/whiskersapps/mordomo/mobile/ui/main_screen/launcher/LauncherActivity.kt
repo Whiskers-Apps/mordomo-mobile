@@ -76,10 +76,9 @@ class LauncherActivity : AppCompatActivity() {
             }
         }
 
-        val settingsRepo: SettingsRepository = get()
-
         setContent {
             MordomoTheme {
+                val settings = get<SettingsRepository>().appSettings.collectAsState().value
                 val pagerState = rememberPagerState(pageCount = { 3 }, initialPage = 1)
                 val sheetState = rememberStandardBottomSheetState(skipHiddenState = false)
                 val scaffoldState = rememberBottomSheetScaffoldState(sheetState)
@@ -121,7 +120,7 @@ class LauncherActivity : AppCompatActivity() {
                             .fillMaxSize()
                             .padding(innerPadding),
                         state = pagerState,
-                        userScrollEnabled = !settingsRepo.appSettings.collectAsState().value.home.disableSwipe
+                        userScrollEnabled = !settings.home.disableSwipe
                     ) { pageIndex ->
                         when (pageIndex) {
                             0 -> {

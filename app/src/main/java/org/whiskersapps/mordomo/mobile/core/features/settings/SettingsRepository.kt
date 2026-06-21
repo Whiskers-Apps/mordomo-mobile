@@ -1,14 +1,18 @@
 package org.whiskersapps.mordomo.mobile.core.features.settings
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_SEARCH_BAR_POSITION
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_SPLIT_LIST
@@ -41,96 +45,106 @@ class SettingsRepository(
 ) {
     private val datastore = context.dataStore
 
-    val appSettings: StateFlow<AppSettings> = datastore.data.map { preferences ->
-        val updatedAppSettings = AppSettings(
-            setup = AppSettings.Setup(
-                completed = preferences[SetupCompletedKey] ?: DEFAULT_SETUP_COMPLETED
-            ),
-            home = AppSettings.Home(
-                clockStyle = preferences[ClockStyleKey] ?: DEFAULT_CLOCK_STYLE,
+    private val _loading = MutableStateFlow(true)
+    val loading = _loading.asStateFlow()
 
-                clockPosition = preferences[ClockPositionKey] ?: DEFAULT_CLOCK_POSITION,
+    private val _appSettings = MutableStateFlow(AppSettings())
+    val appSettings = _appSettings.asStateFlow()
 
-                showDate = preferences[ShowDateKey]
-                    ?: AppSettings.Home.DEFAULT_SHOW_DATE,
 
-                dateFormat = preferences[DateFormatKey] ?: DEFAULT_DATE_FORMAT,
+    init {
+        datastore.data.map { preferences ->
+            val updatedAppSettings = AppSettings(
+                setup = AppSettings.Setup(
+                    completed = preferences[SetupCompletedKey] ?: DEFAULT_SETUP_COMPLETED
+                ),
+                home = AppSettings.Home(
+                    clockStyle = preferences[ClockStyleKey] ?: DEFAULT_CLOCK_STYLE,
 
-                showQuickButton = preferences[ShowQuickButtonKey] ?: DEFAULT_SHOW_QUICK_BUTTON,
+                    clockPosition = preferences[ClockPositionKey] ?: DEFAULT_CLOCK_POSITION,
 
-                showSearchButton = preferences[ShowSearchButtonKey]
-                    ?: DEFAULT_SHOW_SEARCH_BUTTON,
+                    showDate = preferences[ShowDateKey]
+                        ?: AppSettings.Home.DEFAULT_SHOW_DATE,
 
-                showAppsButton = preferences[ShowAppsButtonKey] ?: DEFAULT_SHOW_APPS_BUTTON,
+                    dateFormat = preferences[DateFormatKey] ?: DEFAULT_DATE_FORMAT,
 
-                disableSwipe = preferences[DisableSwipeKey] ?: DEFAULT_DISABLE_SWIPE
-            ),
-            apps = AppSettings.Apps(
-                splitList = preferences[SplitListKey] ?: DEFAULT_SPLIT_LIST,
+                    showQuickButton = preferences[ShowQuickButtonKey] ?: DEFAULT_SHOW_QUICK_BUTTON,
 
-                searchBarPosition = preferences[SearchBarPositionKey]
-                    ?: DEFAULT_SEARCH_BAR_POSITION
-            ),
-            search = AppSettings.Search(
-                defaultSearchEngine = preferences[DefaultSearchEngineKey]
+                    showSearchButton = preferences[ShowSearchButtonKey]
+                        ?: DEFAULT_SHOW_SEARCH_BUTTON,
+
+                    showAppsButton = preferences[ShowAppsButtonKey] ?: DEFAULT_SHOW_APPS_BUTTON,
+
+                    disableSwipe = preferences[DisableSwipeKey] ?: DEFAULT_DISABLE_SWIPE
+                ),
+                apps = AppSettings.Apps(
+                    splitList = preferences[SplitListKey] ?: DEFAULT_SPLIT_LIST,
+
+                    searchBarPosition = preferences[SearchBarPositionKey]
+                        ?: DEFAULT_SEARCH_BAR_POSITION
+                ),
+                search = AppSettings.Search(
+                    defaultSearchEngine = preferences[DefaultSearchEngineKey]
+                )
             )
-        )
 
-        updatedAppSettings
-    }.stateIn(
-        CoroutineScope(Dispatchers.IO),
-        SharingStarted.Eagerly,
-        initialValue = AppSettings()
-    )
+            updatedAppSettings
+        }.onEach { settings ->
+            Log.d("Settings", settings.toString())
+
+            _appSettings.update { settings }
+            _loading.update { false }
+        }.launchIn(CoroutineScope(IO))
+    }
 
     // --------------------------------------------------------------------------- //
     suspend fun setSetupCompleted(completed: Boolean) =
-        withContext(Dispatchers.IO) { datastore.edit { it[SetupCompletedKey] = completed } }
+        withContext(IO) { datastore.edit { it[SetupCompletedKey] = completed } }
 
-    suspend fun setHomeClockStyle(style: String) = withContext(Dispatchers.IO) {
+    suspend fun setHomeClockStyle(style: String) = withContext(IO) {
         datastore.edit { it[ClockStyleKey] = style }
     }
 
-    suspend fun setClockPosition(position: String) = withContext(Dispatchers.IO) {
+    suspend fun setClockPosition(position: String) = withContext(IO) {
         datastore.edit { it[ClockPositionKey] = position }
     }
 
-    suspend fun setShowDate(show: Boolean) = withContext(Dispatchers.IO) {
+    suspend fun setShowDate(show: Boolean) = withContext(IO) {
         datastore.edit { it[ShowDateKey] = show }
     }
 
-    suspend fun setDateFormat(format: String) = withContext(Dispatchers.IO) {
+    suspend fun setDateFormat(format: String) = withContext(IO) {
         datastore.edit { it[DateFormatKey] = format }
     }
 
-    suspend fun setShowQuickButton(show: Boolean) = withContext(Dispatchers.IO) {
+    suspend fun setShowQuickButton(show: Boolean) = withContext(IO) {
         datastore.edit { it[ShowQuickButtonKey] = show }
     }
 
-    suspend fun setShowSearchButton(show: Boolean) = withContext(Dispatchers.IO) {
+    suspend fun setShowSearchButton(show: Boolean) = withContext(IO) {
         datastore.edit { it[ShowSearchButtonKey] = show }
     }
 
-    suspend fun setShowAppsButton(show: Boolean) = withContext(Dispatchers.IO) {
+    suspend fun setShowAppsButton(show: Boolean) = withContext(IO) {
         datastore.edit { it[ShowAppsButtonKey] = show }
     }
 
-    suspend fun setSplitList(split: Boolean) = withContext(Dispatchers.IO) {
+    suspend fun setSplitList(split: Boolean) = withContext(IO) {
         datastore.edit { it[SplitListKey] = split }
     }
 
-    suspend fun setSearchBarPosition(position: String) = withContext(Dispatchers.IO) {
+    suspend fun setSearchBarPosition(position: String) = withContext(IO) {
         datastore.edit { it[SearchBarPositionKey] = position }
     }
 
-    suspend fun setDefaultEngineId(id: Int?) = withContext(Dispatchers.IO) {
+    suspend fun setDefaultEngineId(id: Int?) = withContext(IO) {
         when (id) {
             null -> datastore.edit { it.remove(DefaultSearchEngineKey) }
             else -> datastore.edit { it[DefaultSearchEngineKey] = id }
         }
     }
 
-    suspend fun setDisableSwipe(disable: Boolean) = withContext(Dispatchers.IO){
+    suspend fun setDisableSwipe(disable: Boolean) = withContext(IO) {
         datastore.edit { it[DisableSwipeKey] = disable }
     }
 }

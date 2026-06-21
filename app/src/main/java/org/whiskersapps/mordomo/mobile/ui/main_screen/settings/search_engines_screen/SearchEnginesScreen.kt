@@ -161,7 +161,7 @@ fun SearchEnginesScreen(
                             ),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            WebIcon(getWebsiteIconURL(engine.query), size = 42.dp)
+                            WebIcon(getWebsiteIconURL(engine.query), size = 48.dp)
 
                             Spacer(Modifier.width(8.dp))
 
