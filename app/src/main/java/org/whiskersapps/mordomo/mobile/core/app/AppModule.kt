@@ -9,15 +9,16 @@ import org.whiskersapps.mordomo.mobile.core.features.icons.IconsRepository
 import org.whiskersapps.mordomo.mobile.core.features.screen.FoldableRepository
 import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEnginesRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
-import org.whiskersapps.mordomo.mobile.ui.main_screen.add_bookmark.AddBookmarkSharingScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main_screen.launcher.apps_screen.AppsScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main_screen.launcher.home_screen.HomeScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main_screen.launcher.home_screen.search_screen.SearchScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main_screen.settings.SettingsScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main_screen.settings.apps_screen.AppsSettingsScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main_screen.settings.bookmarks_screen.BookmarksScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main_screen.settings.home_screen.HomeSettingsScreenVM
-import org.whiskersapps.mordomo.mobile.ui.main_screen.settings.search_engines_screen.SearchEnginesScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.add_bookmark.AddBookmarkSharingScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.launcher.apps_screen.AppsScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.HomeScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.SettingsScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.about_screen.AboutScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.apps_screen.AppsSettingsScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.home_screen.HomeSettingsScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenVM
 
 val appModule = module {
 
@@ -43,6 +44,7 @@ val appModule = module {
     viewModel { AppsSettingsScreenVM(get()) }
     viewModel { BookmarksScreenVM(get()) }
     viewModel { SearchEnginesScreenVM(get(), get()) }
+    viewModel { AboutScreenVM(get()) }
 
     viewModel { params ->
         AddBookmarkSharingScreenVM(
