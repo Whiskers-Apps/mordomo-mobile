@@ -38,4 +38,4 @@ Since this is a work in progress there are a lot of features still missing.
 ### Security
 
 - [x] Hide Apps
-- [ ] Lock Apps with Fingerprint
+- [x] Lock Apps with Fingerprint
