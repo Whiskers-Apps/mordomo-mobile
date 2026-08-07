@@ -1,8 +1,5 @@
 package org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen
 
-import android.R.attr.description
-import android.R.attr.onClick
-import android.R.attr.title
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,29 +26,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
 import org.whiskersapps.mordomo.mobile.core.features.apps.App.Icons
-import org.whiskersapps.mordomo.mobile.ui.screens.launcher.apps_screen.composables.AppRow
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.composables.AppsPicker
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.IconSetting
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Nav
-import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.TextSetting
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppIcon
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.CardShape
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogTitle
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.card
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenState as State
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenVM as VM
@@ -79,69 +70,25 @@ fun SecurityScreen(
 ) {
 
     if (state.showHiddenAppsPicker) {
-        DialogLayout(onDismiss = { onIntent(HiddenAppsIntent.Close) }) {
-            DialogTitle("Hidden Apps")
+        AppsPicker(
+            picker = state.hiddenAppsPicker,
+            "Hidden Apps",
+            R.drawable.anonym,
+            onClose = { onIntent(HiddenAppsIntent.Close) },
+            onAppClick = { onIntent(HiddenAppsIntent.AppClick(it.packageName)) },
+            onSaveClick = { onIntent(HiddenAppsIntent.SaveClick) },
+        )
+    }
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f, fill = true),
-            ) {
-                items(items = state.hiddenAppsPicker.apps, key = { it.packageName }) { app ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable() {
-                                onIntent(HiddenAppsIntent.AppClick(app.packageName))
-                            }.padding(top = 8.dp, bottom = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        AppIcon(
-                            themed = false,
-                            size = 48.dp,
-                            icons = app.icons,
-                            shape = CircleShape,
-                        )
-
-                        Spacer(Modifier.width(16.dp))
-
-                        Text(
-                            text = app.name,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-
-                        Spacer(
-                            Modifier
-                                .fillMaxWidth()
-                                .weight(1f, fill = true)
-                        )
-
-                        if (app.packageName in state.hiddenAppsPicker.selectedApps) {
-                            Box(
-                                modifier = Modifier
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                                    .padding(8.dp)
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(24.dp),
-                                    painter = painterResource(R.drawable.anonym),
-                                    tint = MaterialTheme.colorScheme.onBackground,
-                                    contentDescription = null
-                                )
-                            }
-
-                        }
-                    }
-                }
-            }
-
-            DialogFooter(
-                primaryButtonText = "Save",
-                onCancel = { onIntent(HiddenAppsIntent.Close) },
-                onPrimaryClick = { onIntent(HiddenAppsIntent.SaveClick) }
-            )
-        }
+    if (state.showSecureAppsPicker) {
+        AppsPicker(
+            picker = state.secureAppsPicker,
+            "Secure Apps",
+            R.drawable.fingerprint,
+            onClose = { onIntent(SecureAppsIntent.Close) },
+            onAppClick = { onIntent(SecureAppsIntent.AppClick(it.packageName)) },
+            onSaveClick = { onIntent(SecureAppsIntent.SaveClick) },
+        )
     }
 
     ResponsiveColumn() {
@@ -196,7 +143,7 @@ fun SecurityScreenPreview() {
     SecurityScreen(
         State(
             showHiddenAppsPicker = true,
-            hiddenAppsPicker = State.HiddenAppsPicker(
+            hiddenAppsPicker = State.Picker(
                 apps = apps,
                 selectedApps = setOf("app 3", "app 5")
             )

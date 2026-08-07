@@ -182,7 +182,7 @@ class AppsRepository(
         }
     }
 
-    // Returns a list with the package names of the hidden apps
+    /// Returns a list with the package names of the hidden apps
     suspend fun getHiddenApps(): Set<String> = withContext(IO) {
         return@withContext settingsRepository.appSettings.value.apps.hiddenApps
     }
@@ -191,5 +191,14 @@ class AppsRepository(
         settingsRepository.setHiddenApps(apps)
 
         fetchApps()
+    }
+
+    suspend fun getSecureApps(): Set<String> = withContext(IO) {
+        return@withContext settingsRepository.appSettings.value.apps.secureApps
+    }
+
+
+    suspend fun setSecureApps(apps: Set<String>) = withContext(IO) {
+        settingsRepository.setSecureApps(apps)
     }
 }

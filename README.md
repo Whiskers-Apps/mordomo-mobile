@@ -22,6 +22,7 @@ Since this is a work in progress there are a lot of features still missing.
 - [ ] Apply Icon Packs
 - [ ] Custom Icons
 - [ ] Custom App Names
+- [ ] Workspaces
 
 ### Quick Panel
 

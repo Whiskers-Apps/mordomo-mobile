@@ -12,6 +12,12 @@ sealed interface HiddenAppsIntent : SecurityScreenIntent {
     data object SaveClick : HiddenAppsIntent
 }
 
+sealed interface SecureAppsIntent : SecurityScreenIntent {
+    data object Close : SecureAppsIntent
+    data class AppClick(val packageName: String) : SecureAppsIntent
+    data object SaveClick : SecureAppsIntent
+}
+
 sealed interface SecurityScreenUICallback {
     data object GoBack : SecurityScreenUICallback
 }

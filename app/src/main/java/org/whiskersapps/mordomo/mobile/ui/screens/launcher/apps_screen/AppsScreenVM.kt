@@ -69,6 +69,7 @@ class AppsScreenVM(
                 AppDialogIntent.Close -> appDialogIntents.onClose()
             }
 
+            is ScreenIntent.OpenLockedApp -> screenIntents.onOpenLockedApp(intent.app)
         }
     }
 
@@ -89,6 +90,23 @@ class AppsScreenVM(
         }
 
         fun onAppClick(app: App) {
+            viewModelScope.launch {
+                if (app.packageName in appsRepository.getSecureApps()) {
+                    _uiCallbacks.send(UICallback.RequestFingerprint(app))
+                    return@launch
+                }
+
+                openApp(app)
+            }
+        }
+
+        fun onOpenLockedApp(app: App) {
+            viewModelScope.launch {
+                openApp(app)
+            }
+        }
+
+        private fun openApp(app: App) {
             viewModelScope.launch {
                 appsRepository.openApp(app)
 

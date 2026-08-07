@@ -76,6 +76,7 @@ class SearchScreenVM(
             ScreenIntent.SheetClose -> screenHandler.onSheetClose()
             ScreenIntent.FocusClear -> screenHandler.onFocusClear()
             is ScreenIntent.AppClick -> screenHandler.onAppClick(intent.app)
+            is ScreenIntent.OpenLockedApp -> screenHandler.onOpenLockedApp(intent.app)
             is ScreenIntent.AppLongClick -> screenHandler.onAppLongClick(intent.app)
             is ScreenIntent.BookmarkClick -> screenHandler.onBookmarkClick(intent.bookmark)
             is ScreenIntent.WebSearchClick -> screenHandler.onWebSearchClick()
@@ -86,6 +87,7 @@ class SearchScreenVM(
                 is AppDialogIntent.UninstallClick -> appDialogHandler.onUninstallClick()
                 AppDialogIntent.Close -> appDialogHandler.onClose()
             }
+
         }
     }
 
@@ -185,6 +187,23 @@ class SearchScreenVM(
         }
 
         fun onAppClick(app: App) {
+            viewModelScope.launch {
+                if (app.packageName in appsRepository.getSecureApps()) {
+                    _uiCallbacks.send(UICallback.RequestFingerprint(app))
+                    return@launch
+                }
+
+                openApp(app)
+            }
+        }
+
+        fun onOpenLockedApp(app: App) {
+            viewModelScope.launch {
+                openApp(app)
+            }
+        }
+
+        private fun openApp(app: App) {
             viewModelScope.launch {
                 appsRepository.openApp(app)
 

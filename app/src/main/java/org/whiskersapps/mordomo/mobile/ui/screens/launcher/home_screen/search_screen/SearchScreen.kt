@@ -45,6 +45,7 @@ import org.whiskersapps.droid.droid_icons.models.Icon
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.Bookmark
+import org.whiskersapps.mordomo.mobile.core.features.fingerprint.requestFingerprint
 import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEngine
 import org.whiskersapps.mordomo.mobile.core.utils.getWebsiteIconURL
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.apps_screen.composables.AppRow
@@ -67,6 +68,7 @@ fun SearchScreenRoot(
     sheetState: SheetState,
     vm: VM = koinViewModel()
 ) {
+    val context = LocalContext.current
     val state = vm.state.collectAsStateWithLifecycle().value
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
@@ -100,6 +102,15 @@ fun SearchScreenRoot(
 
                 UICallback.HideKeyboard -> {
                     keyboardController?.hide()
+                }
+
+                is UICallback.RequestFingerprint -> {
+                    requestFingerprint(
+                        context = context,
+                        title = "Open ${callback.app.name}",
+                        message = "Unlock to open this app",
+                        onSuccess = { vm.onIntent(Intent.OpenLockedApp(callback.app)) },
+                    )
                 }
             }
         }.launchIn(scope)

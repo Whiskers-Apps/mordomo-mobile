@@ -67,7 +67,8 @@ data class AppSettings(
     data class Apps(
         val splitList: Boolean = DEFAULT_SPLIT_LIST,
         val searchBarPosition: String = DEFAULT_SEARCH_BAR_POSITION,
-        val hiddenApps: Set<String> = DEFAULT_HIDDEN_APPS
+        val hiddenApps: Set<String> = DEFAULT_HIDDEN_APPS,
+        val secureApps: Set<String> = DEFAULT_SECURE_APPS
     ) {
         companion object {
             val SplitListKey = booleanPreferencesKey("split_apps_list")
@@ -78,6 +79,9 @@ data class AppSettings(
 
             val HiddenAppsKey = stringSetPreferencesKey("hidden-apps")
             val DEFAULT_HIDDEN_APPS = emptySet<String>()
+
+            val SecureAppsKey = stringSetPreferencesKey("secure-apps")
+            val DEFAULT_SECURE_APPS = emptySet<String>()
         }
     }
 

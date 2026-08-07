@@ -19,6 +19,7 @@ import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.C
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_SPLIT_LIST
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.HiddenAppsKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.SearchBarPositionKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.SecureAppsKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.SplitListKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_CLOCK_POSITION
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_CLOCK_STYLE
@@ -85,7 +86,9 @@ class SettingsRepository(
                     searchBarPosition = preferences[SearchBarPositionKey]
                         ?: DEFAULT_SEARCH_BAR_POSITION,
 
-                    hiddenApps = preferences[HiddenAppsKey] ?: DEFAULT_HIDDEN_APPS
+                    hiddenApps = preferences[HiddenAppsKey] ?: DEFAULT_HIDDEN_APPS,
+
+                    secureApps = preferences[SecureAppsKey] ?: AppSettings.Apps.DEFAULT_SECURE_APPS
                 ),
                 search = AppSettings.Search(
                     defaultSearchEngine = preferences[DefaultSearchEngineKey]
@@ -154,5 +157,9 @@ class SettingsRepository(
 
     suspend fun setHiddenApps(hiddenApps: Set<String>) = withContext(IO) {
         datastore.edit { it[HiddenAppsKey] = hiddenApps }
+    }
+
+    suspend fun setSecureApps(secureApps: Set<String>) = withContext(IO) {
+        datastore.edit { it[SecureAppsKey] = secureApps }
     }
 }

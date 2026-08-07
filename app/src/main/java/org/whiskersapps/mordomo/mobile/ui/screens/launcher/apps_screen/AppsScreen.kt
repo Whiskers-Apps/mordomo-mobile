@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -39,6 +40,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.whiskersapps.droid.droid_icons.models.Icon
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
+import org.whiskersapps.mordomo.mobile.core.features.fingerprint.requestFingerprint
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsValues
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppDialog
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.apps_screen.composables.AppRow
@@ -52,6 +54,7 @@ fun AppsScreenRoot(
     pagerState: PagerState,
     vm: AppsScreenVM = koinViewModel()
 ) {
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -69,6 +72,15 @@ fun AppsScreenRoot(
 
                 UICallback.ClearFocus -> {
                     focusManager.clearFocus(true)
+                }
+
+                is UICallback.RequestFingerprint -> {
+                    requestFingerprint(
+                        context = context,
+                        title = "Open ${callback.app.name}",
+                        message = "Unlock to open this app",
+                        onSuccess = { vm.onIntent(Intent.OpenLockedApp(callback.app)) },
+                    )
                 }
             }
         }.launchIn(scope)

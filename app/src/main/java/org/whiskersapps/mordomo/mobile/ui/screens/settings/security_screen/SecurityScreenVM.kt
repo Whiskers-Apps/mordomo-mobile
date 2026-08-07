@@ -1,6 +1,5 @@
 package org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
@@ -10,7 +9,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.whiskersapps.mordomo.mobile.core.features.apps.AppsRepository
-import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenState.HiddenAppsPicker
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenState.Picker
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenState as State
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenUICallback as UICallback
@@ -36,6 +35,12 @@ class SecurityScreenVM(
                 HiddenAppsIntent.SaveClick -> onHiddenAppsSave()
             }
 
+            is SecureAppsIntent -> when (intent) {
+                is SecureAppsIntent.AppClick -> onSecureAppClick(intent.packageName)
+                SecureAppsIntent.SaveClick -> onSecureAppsSave()
+                SecureAppsIntent.Close -> onSecureAppsClose()
+            }
+
         }
     }
 
@@ -48,7 +53,7 @@ class SecurityScreenVM(
             _state.update {
                 it.copy(
                     showHiddenAppsPicker = true,
-                    hiddenAppsPicker = HiddenAppsPicker(
+                    hiddenAppsPicker = Picker(
                         apps = appsRepository.apps,
                         selectedApps = appsRepository.getHiddenApps()
                     )
@@ -58,7 +63,17 @@ class SecurityScreenVM(
     }
 
     private fun onSecureAppsClick() {
-
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    showSecureAppsPicker = true,
+                    secureAppsPicker = Picker(
+                        apps = appsRepository.apps,
+                        selectedApps = appsRepository.getSecureApps()
+                    )
+                )
+            }
+        }
     }
 
     private fun onHiddenAppClick(packageName: String) {
@@ -87,7 +102,7 @@ class SecurityScreenVM(
             _state.update {
                 it.copy(
                     showHiddenAppsPicker = false,
-                    hiddenAppsPicker = HiddenAppsPicker()
+                    hiddenAppsPicker = Picker()
                 )
             }
         }
@@ -100,11 +115,57 @@ class SecurityScreenVM(
             _state.update {
                 it.copy(
                     showHiddenAppsPicker = false,
-                    hiddenAppsPicker = HiddenAppsPicker()
+                    hiddenAppsPicker = Picker()
                 )
             }
 
             appsRepository.setHiddenApps(hiddenApps)
+        }
+    }
+
+    private fun onSecureAppClick(packageName: String) {
+        viewModelScope.launch {
+            val selectedApps = state.value.secureAppsPicker.selectedApps.toMutableSet()
+
+            if (packageName in selectedApps) {
+                selectedApps.remove(packageName)
+            } else {
+                selectedApps.add(packageName)
+            }
+
+            _state.update {
+                it.copy(
+                    secureAppsPicker = it.secureAppsPicker.copy(
+                        selectedApps = selectedApps
+                    )
+                )
+            }
+        }
+    }
+
+    private fun onSecureAppsSave() {
+        viewModelScope.launch {
+            val secureApps = state.value.secureAppsPicker.selectedApps
+
+            _state.update {
+                it.copy(
+                    showSecureAppsPicker = false,
+                    secureAppsPicker = Picker()
+                )
+            }
+
+            appsRepository.setSecureApps(secureApps)
+        }
+    }
+
+    private fun onSecureAppsClose() {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    showSecureAppsPicker = false,
+                    secureAppsPicker = Picker()
+                )
+            }
         }
     }
 }

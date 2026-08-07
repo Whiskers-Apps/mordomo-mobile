@@ -11,6 +11,7 @@ sealed interface SearchScreenIntent {
     data object FocusClear : SearchScreenIntent
 
     data class AppClick(val app: App) : SearchScreenIntent
+    data class OpenLockedApp(val app: App) : SearchScreenIntent
     data class AppLongClick(val app: App) : SearchScreenIntent
 
     data class BookmarkClick(val bookmark: Bookmark) : SearchScreenIntent
@@ -30,4 +31,5 @@ sealed interface SearchScreenUICallback {
     data object ClearFocus : SearchScreenUICallback
     data object FocusSearchBar : SearchScreenUICallback
     data object HideKeyboard : SearchScreenUICallback
+    data class RequestFingerprint(val app: App) : SearchScreenUICallback
 }

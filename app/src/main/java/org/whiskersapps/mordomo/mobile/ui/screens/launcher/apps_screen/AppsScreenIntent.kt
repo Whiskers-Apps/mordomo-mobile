@@ -5,6 +5,7 @@ import org.whiskersapps.mordomo.mobile.core.features.apps.App
 sealed interface AppsScreenIntent {
     data class SearchType(val text: String) : AppsScreenIntent
     data class AppClick(val app: App) : AppsScreenIntent
+    data class OpenLockedApp(val app: App) : AppsScreenIntent
     data class AppLongClick(val app: App) : AppsScreenIntent
     data object SearchDone : AppsScreenIntent
 }
@@ -20,4 +21,5 @@ sealed interface AppsScreenUICallback {
     data object GoHome : AppsScreenUICallback
     data object HideKeyboard : AppsScreenUICallback
     data object ClearFocus : AppsScreenUICallback
+    data class RequestFingerprint(val app: App) : AppsScreenUICallback
 }
