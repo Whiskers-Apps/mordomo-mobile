@@ -1,11 +1,12 @@
 <div align="center">
   <img width="140" height="140" alt="Icon-Rounded" src="https://github.com/user-attachments/assets/7fa96154-1ab9-4d0f-be86-096a99be02d5" />
 
-  # Mordomo Mobile 
+# Mordomo Mobile
 
 </div>
 
 # About
+
 This is a launcher focused on search. You are able to search apps, web bookmarks and web search.
 
 <div align="center">
@@ -13,22 +14,27 @@ This is a launcher focused on search. You are able to search apps, web bookmarks
 </div>
 
 # TODO
+
 Since this is a work in progress there are a lot of features still missing.
 
 ### Apps
+
 - [ ] Apply Icon Packs
 - [ ] Custom Icons
 - [ ] Custom App Names
 
 ### Quick Panel
+
 - [ ] Pinned Apps
 - [ ] Pinned Bookmarks
 - [ ] Next Events
 - [ ] TODO List
 
 ### Home
+
 - [ ] Pinned Apps
 
 ### Security
-- [ ] Hide Apps
+
+- [x] Hide Apps
 - [ ] Lock Apps with Fingerprint
