@@ -133,7 +133,13 @@ class SearchScreenVM(
                 val firstBookmark = state.value.bookmarks.firstOrNull()
 
                 firstApp?.let { app ->
+                    if (app.packageName in appsRepository.getSecureApps()) {
+                        _uiCallbacks.send(UICallback.RequestFingerprint(app))
+                        return@launch
+                    }
+
                     appsRepository.openApp(app)
+
                     resetScreen()
                     return@launch
                 }

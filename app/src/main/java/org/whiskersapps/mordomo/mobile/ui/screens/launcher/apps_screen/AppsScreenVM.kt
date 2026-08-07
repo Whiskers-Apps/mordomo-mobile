@@ -145,6 +145,11 @@ class AppsScreenVM(
                 val app = filteredApps.getOrNull(0)
 
                 app?.let { app ->
+                    if (app.packageName in appsRepository.getSecureApps()) {
+                        _uiCallbacks.send(UICallback.RequestFingerprint(app))
+                        return@launch
+                    }
+
                     appsRepository.openApp(app)
 
                     delay(500)
