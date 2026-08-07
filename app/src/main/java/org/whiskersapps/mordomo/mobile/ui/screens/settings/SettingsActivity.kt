@@ -17,6 +17,7 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.apps_screen.AppsSetti
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.home_screen.HomeSettingsScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenRoot
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 
 class SettingsActivity : AppCompatActivity() {
@@ -71,7 +72,11 @@ class SettingsActivity : AppCompatActivity() {
                         )
                     }
 
-                    composable(Routes.SETTINGS_SECURITY) { }
+                    composable(Routes.SETTINGS_SECURITY) {
+                        SecurityScreenRoot(
+                            onBack = { navController.navigateUp() }
+                        )
+                    }
 
                     composable(Routes.SETTINGS_LOCK) { }
 

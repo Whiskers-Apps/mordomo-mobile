@@ -15,6 +15,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,11 +24,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.internal.wait
 import org.whiskersapps.mordomo.mobile.core.features.icons.IconsRepository
+import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
 import org.whiskersapps.mordomo.mobile.core.utils.isDefaultLauncher
 
 class AppsRepository(
     private val context: Context,
-    private val iconsRepository: IconsRepository
+    private val iconsRepository: IconsRepository,
+    private val settingsRepository: SettingsRepository
 ) {
     private val packageManager = context.packageManager
     private val launcherApps =
@@ -64,7 +67,8 @@ class AppsRepository(
             val updatedApps =
                 packageManager.queryIntentActivities(launcherIntent, 0).map { appIntent ->
                     val packageName = appIntent.activityInfo.packageName
-                    val activityList = launcherApps.getActivityList(packageName, Process.myUserHandle())
+                    val activityList =
+                        launcherApps.getActivityList(packageName, Process.myUserHandle())
 
                     // This gets the name dynamically like some Morphe's Apps Change their name
                     val name = if (activityList.isNotEmpty()) {
@@ -122,7 +126,9 @@ class AppsRepository(
                     .sortedBy { it.name.lowercase() }
                     .distinctBy { it.packageName }
 
-                _filteredApps.update { apps }
+                val hiddenApps = getHiddenApps()
+
+                _filteredApps.update { apps.filterNot { it.packageName in hiddenApps } }
             }
 
 //            val blacklistedApps = settingsRepo.settings.value.hiddenApps
@@ -174,5 +180,16 @@ class AppsRepository(
 
             context.startActivity(intent)
         }
+    }
+
+    // Returns a list with the package names of the hidden apps
+    suspend fun getHiddenApps(): Set<String> = withContext(IO) {
+        return@withContext settingsRepository.appSettings.value.apps.hiddenApps
+    }
+
+    suspend fun setHiddenApps(apps: Set<String>) = withContext(IO) {
+        settingsRepository.setHiddenApps(apps)
+
+        fetchApps()
     }
 }

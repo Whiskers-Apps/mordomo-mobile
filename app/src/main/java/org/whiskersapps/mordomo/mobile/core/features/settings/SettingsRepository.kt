@@ -14,8 +14,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_HIDDEN_APPS
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_SEARCH_BAR_POSITION
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_SPLIT_LIST
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.HiddenAppsKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.SearchBarPositionKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.SplitListKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_CLOCK_POSITION
@@ -81,7 +83,9 @@ class SettingsRepository(
                     splitList = preferences[SplitListKey] ?: DEFAULT_SPLIT_LIST,
 
                     searchBarPosition = preferences[SearchBarPositionKey]
-                        ?: DEFAULT_SEARCH_BAR_POSITION
+                        ?: DEFAULT_SEARCH_BAR_POSITION,
+
+                    hiddenApps = preferences[HiddenAppsKey] ?: DEFAULT_HIDDEN_APPS
                 ),
                 search = AppSettings.Search(
                     defaultSearchEngine = preferences[DefaultSearchEngineKey]
@@ -146,5 +150,9 @@ class SettingsRepository(
 
     suspend fun setDisableSwipe(disable: Boolean) = withContext(IO) {
         datastore.edit { it[DisableSwipeKey] = disable }
+    }
+
+    suspend fun setHiddenApps(hiddenApps: Set<String>) = withContext(IO) {
+        datastore.edit { it[HiddenAppsKey] = hiddenApps }
     }
 }

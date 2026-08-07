@@ -1,8 +1,10 @@
 package org.whiskersapps.mordomo.mobile.core.features.settings
 
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 
 data class AppSettings(
     val setup: Setup = Setup(),
@@ -64,7 +66,8 @@ data class AppSettings(
 
     data class Apps(
         val splitList: Boolean = DEFAULT_SPLIT_LIST,
-        val searchBarPosition: String = DEFAULT_SEARCH_BAR_POSITION
+        val searchBarPosition: String = DEFAULT_SEARCH_BAR_POSITION,
+        val hiddenApps: Set<String> = DEFAULT_HIDDEN_APPS
     ) {
         companion object {
             val SplitListKey = booleanPreferencesKey("split_apps_list")
@@ -72,6 +75,9 @@ data class AppSettings(
 
             val SearchBarPositionKey = stringPreferencesKey("search_bar_position")
             const val DEFAULT_SEARCH_BAR_POSITION = SettingsValues.SearchBarPosition.BOTTOM
+
+            val HiddenAppsKey = stringSetPreferencesKey("hidden-apps")
+            val DEFAULT_HIDDEN_APPS = emptySet<String>()
         }
     }
 

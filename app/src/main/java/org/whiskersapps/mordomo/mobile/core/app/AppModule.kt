@@ -19,6 +19,8 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.apps_screen.AppsSetti
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.home_screen.HomeSettingsScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenIntent
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenVM
 
 val appModule = module {
 
@@ -28,7 +30,7 @@ val appModule = module {
     // --------------------- Repositories -------------------------- //
     single(createdAtStart = true) { SettingsRepository(get()) }
     single(createdAtStart = true) { IconsRepository(get()) }
-    single(createdAtStart = true) { AppsRepository(get(), get()) }
+    single(createdAtStart = true) { AppsRepository(get(), get(), get()) }
     single(createdAtStart = true) { BookmarksRepository(get()) }
     single(createdAtStart = true) { SearchEnginesRepository(get()) }
     single(createdAtStart = true) { FoldableRepository() }
@@ -44,6 +46,7 @@ val appModule = module {
     viewModel { AppsSettingsScreenVM(get()) }
     viewModel { BookmarksScreenVM(get()) }
     viewModel { SearchEnginesScreenVM(get(), get()) }
+    viewModel { SecurityScreenVM(get()) }
     viewModel { AboutScreenVM(get()) }
 
     viewModel { params ->

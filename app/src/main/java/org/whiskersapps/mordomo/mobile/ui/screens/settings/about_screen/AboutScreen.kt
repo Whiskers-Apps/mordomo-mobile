@@ -51,7 +51,11 @@ fun AboutScreen(
             Nav { onIntent(Intent.BackClick) }
 
             Column(Modifier.padding(24.dp)) {
-                Text(text = "Version", fontWeight = FontWeight.Medium)
+                Text(
+                    text = "Version",
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
 
                 Spacer(Modifier.height(4.dp))
 
@@ -69,7 +73,11 @@ fun AboutScreen(
 
                 Spacer(Modifier.height(16.dp))
 
-                Text(text = "License", fontWeight = FontWeight.Medium)
+                Text(
+                    text = "License",
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
 
                 Spacer(Modifier.height(4.dp))
 
@@ -87,7 +95,11 @@ fun AboutScreen(
 
                 Spacer(Modifier.height(16.dp))
 
-                Text(text = "Repository", fontWeight = FontWeight.Medium)
+                Text(
+                    text = "Repository",
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
 
                 Spacer(Modifier.height(4.dp))
 
@@ -95,7 +107,7 @@ fun AboutScreen(
                     Modifier
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .clickable{ onIntent(Intent.URLClick) }
+                        .clickable { onIntent(Intent.URLClick) }
                         .padding(8.dp)
                 ) {
                     Text(
