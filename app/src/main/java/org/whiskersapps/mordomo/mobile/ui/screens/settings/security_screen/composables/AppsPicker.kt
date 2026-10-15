@@ -25,13 +25,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
-import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.HiddenAppsIntent
-import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenState.Picker
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppIcon
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogTitle
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
 
 
 @Composable
@@ -45,7 +43,7 @@ fun AppsPicker(
 ) {
 
     DialogLayout(onDismiss = { onClose() }) {
-        DialogTitle(title)
+        DialogHeader(R.drawable.apps_outline,title)
 
         Spacer(Modifier.height(16.dp))
 

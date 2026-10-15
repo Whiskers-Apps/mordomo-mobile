@@ -9,10 +9,12 @@ import org.whiskersapps.mordomo.mobile.core.features.icons.IconsRepository
 import org.whiskersapps.mordomo.mobile.core.features.screen.FoldableRepository
 import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEnginesRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
+import org.whiskersapps.mordomo.mobile.core.features.todo.ToDoRepository
 import org.whiskersapps.mordomo.mobile.ui.screens.add_bookmark.AddBookmarkSharingScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.apps_screen.AppsScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.HomeScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.SettingsScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.about_screen.AboutScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.apps_screen.AppsSettingsScreenVM
@@ -34,9 +36,11 @@ val appModule = module {
     single(createdAtStart = true) { BookmarksRepository(get()) }
     single(createdAtStart = true) { SearchEnginesRepository(get()) }
     single(createdAtStart = true) { FoldableRepository() }
+    single(createdAtStart = true) { ToDoRepository(get()) }
 
 
     // -------------------- View Models ----------------------- //
+    viewModel { QuickPanelScreenVM(get(), get(), get()) }
     viewModel { HomeScreenVM(get(), get()) }
     viewModel { SearchScreenVM(get(), get(), get(), get(), get()) }
     viewModel { AppsScreenVM(get(), get()) }

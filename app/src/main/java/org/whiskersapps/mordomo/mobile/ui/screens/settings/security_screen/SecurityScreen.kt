@@ -1,31 +1,13 @@
 package org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -37,12 +19,9 @@ import org.whiskersapps.mordomo.mobile.core.features.apps.App.Icons
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.composables.AppsPicker
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.IconSetting
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Nav
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppIcon
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.CardShape
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogTitle
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.BOTTOM_SHAPE
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.TOP_SHAPE
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenState as State
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenVM as VM
@@ -91,7 +70,7 @@ fun SecurityScreen(
         )
     }
 
-    ResponsiveColumn() {
+    ResponsiveColumn {
         Nav { onIntent(Intent.BackClick) }
 
         Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -99,14 +78,14 @@ fun SecurityScreen(
                 iconId = R.drawable.anonym,
                 title = "Hidden Apps",
                 description = "Select apps that should be hidden",
-                cardShape = CardShape.Top,
+                shape = TOP_SHAPE,
             ) { onIntent(Intent.HiddenAppsClick) }
 
             IconSetting(
                 iconId = R.drawable.fingerprint,
                 title = "Secure Apps",
                 description = "Select apps that require fingerprint to open",
-                cardShape = CardShape.Bottom,
+                shape = BOTTOM_SHAPE,
             ) { onIntent(Intent.SecureAppsClick) }
         }
     }
@@ -132,7 +111,8 @@ fun SecurityScreenPreview() {
                             adaptive = null
                         ),
                         themed = null
-                    )
+                    ),
+                    widgets = emptyList()
                 )
             )
         }

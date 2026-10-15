@@ -47,8 +47,8 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Nav
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.card
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.getCardShape
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubble
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenIntent as ScreenIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenState as ScreenState
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenVM as ScreenVM
@@ -154,11 +154,9 @@ fun SearchEnginesScreen(
                         key = { _, engine -> engine.id }
                     ) { index, engine ->
                         Row(
-                            modifier = Modifier.card(
-                                shape = getCardShape(index, state.searchEngines.size),
-                                padding = 16.dp,
-                                onClick = { onIntent(ScreenIntent.SearchEngineClick(engine)) }
-                            ),
+                            modifier = Modifier.buttonBubble(
+                                index, state.searchEngines.size,
+                            ) { onIntent(ScreenIntent.SearchEngineClick(engine)) },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             WebIcon(getWebsiteIconURL(engine.query), size = 48.dp)

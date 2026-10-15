@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,24 +25,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.whiskersapps.mordomo.mobile.R
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.CardShape
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.card
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.MIDDLE_SHAPE
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubble
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
 
 @Composable
 fun IconSetting(
     iconId: Int,
     title: String,
     description: String,
-    cardShape: CardShape,
+    shape: RoundedCornerShape,
     onClick: () -> Unit = {}
 ) {
     Row(
         Modifier
-            .card(
-                cardShape,
-                padding = 16.dp,
-                onClick = { onClick() }
-            ),
+            .buttonBubble(
+                0, 1,
+            ) { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -91,6 +91,6 @@ fun IconSettingPreview() {
         iconId = R.drawable.info,
         title = "Hidden Apps",
         description = "Select apps that should be hidden",
-        cardShape = CardShape.Top
+        shape = MIDDLE_SHAPE
     )
 }

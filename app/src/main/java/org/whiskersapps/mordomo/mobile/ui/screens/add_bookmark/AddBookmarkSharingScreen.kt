@@ -19,10 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.utils.getActivity
 import org.whiskersapps.mordomo.mobile.core.utils.getWebsiteIconURL
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogTitle
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
 import org.whiskersapps.mordomo.mobile.ui.screens.add_bookmark.AddBookmarkSharingScreenIntent as ScreenIntent
@@ -58,7 +59,7 @@ fun AddBookmarkSharingScreen(state: ScreenState, onIntent: (ScreenIntent) -> Uni
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
         ) {
-            DialogTitle("Add Bookmark")
+            DialogHeader(R.drawable.plus,"Add Bookmark")
 
             Spacer(Modifier.height(8.dp))
 

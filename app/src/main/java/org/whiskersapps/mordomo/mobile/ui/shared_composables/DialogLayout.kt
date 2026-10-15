@@ -1,19 +1,25 @@
 package org.whiskersapps.mordomo.mobile.ui.shared_composables
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -24,15 +30,30 @@ import org.whiskersapps.mordomo.mobile.R
 
 
 @Composable
-fun DialogTitle(title: String) {
-    Text(
-        text = title,
-        style = TextStyle(
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onBackground
+fun DialogHeader(
+    @DrawableRes iconId: Int,
+    title: String
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(iconId),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onBackground
         )
-    )
+
+        Spacer(Modifier.height(8.dp))
+
+        Text(
+            text = title,
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.titleMedium,
+        )
+    }
 }
 
 @Composable
@@ -56,7 +77,7 @@ fun DialogFooter(
                 }
 
                 if (primaryButtonText.isNotEmpty()) {
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
 
                     Button(onClick = { onPrimaryClick() }, enabled = enabled) {
                         Text(text = primaryButtonText)
@@ -70,8 +91,9 @@ fun DialogFooter(
 
 @Preview(showBackground = true)
 @Composable
-fun DialogTitlePreview() {
-    DialogTitle(
+fun DialogHeaderPreview() {
+    DialogHeader(
+        iconId = R.drawable.text,
         title = "Select Category"
     )
 }

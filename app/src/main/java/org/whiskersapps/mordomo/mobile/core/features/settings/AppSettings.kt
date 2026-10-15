@@ -1,16 +1,17 @@
 package org.whiskersapps.mordomo.mobile.core.features.settings
 
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import org.whiskersapps.mordomo.mobile.core.features.widgets.WidgetSetting
 
 data class AppSettings(
     val setup: Setup = Setup(),
     val home: Home = Home(),
     val apps: Apps = Apps(),
-    val search: Search = Search()
+    val search: Search = Search(),
+    val quick: Quick = Quick()
 ) {
     data class Setup(
         val completed: Boolean = DEFAULT_SETUP_COMPLETED
@@ -35,7 +36,8 @@ data class AppSettings(
         val showSearchButton: Boolean = DEFAULT_SHOW_SEARCH_BUTTON,
 
         val showAppsButton: Boolean = DEFAULT_SHOW_APPS_BUTTON,
-        val disableSwipe: Boolean = DEFAULT_DISABLE_SWIPE
+        val disableSwipe: Boolean = DEFAULT_DISABLE_SWIPE,
+        val widgets: List<WidgetSetting> = DEFAULT_WIDGETS,
     ) {
         companion object {
             val ClockStyleKey = stringPreferencesKey("clock_style")
@@ -61,6 +63,9 @@ data class AppSettings(
 
             val DisableSwipeKey = booleanPreferencesKey("disable_swipe")
             const val DEFAULT_DISABLE_SWIPE = false
+
+            val WidgetsKey = stringPreferencesKey("widgets")
+            val DEFAULT_WIDGETS = emptyList<WidgetSetting>()
         }
     }
 
@@ -68,7 +73,7 @@ data class AppSettings(
         val splitList: Boolean = DEFAULT_SPLIT_LIST,
         val searchBarPosition: String = DEFAULT_SEARCH_BAR_POSITION,
         val hiddenApps: Set<String> = DEFAULT_HIDDEN_APPS,
-        val secureApps: Set<String> = DEFAULT_SECURE_APPS
+        val secureApps: Set<String> = DEFAULT_SECURE_APPS,
     ) {
         companion object {
             val SplitListKey = booleanPreferencesKey("split_apps_list")
@@ -91,6 +96,18 @@ data class AppSettings(
         companion object {
             val DefaultSearchEngineKey = intPreferencesKey("default_search_engine")
             val DEFAULT_SEARCH_ENGINE = null
+        }
+    }
+
+    data class Quick(
+        val quickApps: Set<String> = DEFAULT_QUICK_APPS,
+        val quickBookmarks: Set<String> = DEFAULT_QUICK_BOOKMARKS,
+    ) {
+        companion object {
+            val QuickAppsKey = stringSetPreferencesKey("quick-apps")
+            val DEFAULT_QUICK_APPS = emptySet<String>()
+            val QuickBookmarksKey = stringSetPreferencesKey("quick-bookmarks")
+            val DEFAULT_QUICK_BOOKMARKS = emptySet<String>()
         }
     }
 }

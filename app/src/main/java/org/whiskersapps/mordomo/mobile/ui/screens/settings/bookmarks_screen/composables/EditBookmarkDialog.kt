@@ -10,11 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenState.EditBookmarkDialogState
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DeletionSlider
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogTitle
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.EditBookmarkDialogIntent as DialogIntent
 
 @Composable
@@ -25,7 +26,7 @@ fun EditBookmarkDialog(
     DialogLayout(
         onDismiss = { onIntent(DialogIntent.Close) },
     ) {
-        DialogTitle("Edit Bookmark")
+        DialogHeader(R.drawable.pencil, "Edit Bookmark")
 
         Spacer(Modifier.height(8.dp))
 

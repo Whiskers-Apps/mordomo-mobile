@@ -55,8 +55,8 @@ import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_sc
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppDialog
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.card
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.getCardShape
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubble
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenState as State
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenUICallback as UICallback
@@ -193,10 +193,10 @@ fun SearchScreen(
                     state.bookmarks.forEachIndexed { index, bookmark ->
                         key("bookmark-${bookmark.id}") {
                             Row(
-                                modifier = Modifier.card(
-                                    shape = getCardShape(index, state.bookmarks.size),
-                                    onClick = { onIntent(Intent.BookmarkClick(bookmark)) }
-                                ),
+                                modifier = Modifier.buttonBubble(
+                                    index,
+                                    state.bookmarks.size
+                                ) { onIntent(Intent.BookmarkClick(bookmark)) },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 WebIcon(getWebsiteIconURL(bookmark.url), size = 48.dp)
@@ -286,7 +286,8 @@ fun SearchScreenPreview() {
                     icons = App.Icons(
                         stock = Icon(drawable = placeholder, adaptive = null),
                         themed = null
-                    )
+                    ),
+                    widgets = emptyList()
                 )
             )
         }

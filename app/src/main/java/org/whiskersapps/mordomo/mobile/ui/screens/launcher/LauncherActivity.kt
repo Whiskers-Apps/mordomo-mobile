@@ -39,6 +39,7 @@ import org.whiskersapps.mordomo.mobile.ui.screens.launcher.apps_screen.AppsScree
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.HomeScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreen
+import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 
 class LauncherActivity : AppCompatActivity() {
@@ -123,7 +124,7 @@ class LauncherActivity : AppCompatActivity() {
                     ) { pageIndex ->
                         when (pageIndex) {
                             0 -> {
-                                QuickPanelScreen()
+                                QuickPanelScreenRoot()
                             }
 
                             1 -> {

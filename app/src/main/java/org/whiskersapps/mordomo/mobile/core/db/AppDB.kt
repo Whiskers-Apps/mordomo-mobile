@@ -12,17 +12,21 @@ import org.whiskersapps.mordomo.mobile.core.features.bookmarks.Bookmark
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.BookmarkDao
 import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEngine
 import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEnginesDao
+import org.whiskersapps.mordomo.mobile.core.features.todo.ToDo
+import org.whiskersapps.mordomo.mobile.core.features.todo.ToDoDao
 
 @Database(
     entities = [
         SearchEngine::class,
-        Bookmark::class
+        Bookmark::class,
+        ToDo::class
     ],
-    version = 1
+    version = 2
 )
 abstract class AppDB : RoomDatabase() {
     abstract fun searchEnginesDao(): SearchEnginesDao
     abstract fun bookmarksDao(): BookmarkDao
+    abstract fun toDoDao(): ToDoDao
 }
 
 @Volatile
@@ -31,6 +35,7 @@ private var INSTANCE: AppDB? = null
 fun getDB(context: Context): AppDB {
     return INSTANCE ?: synchronized(context) {
         val instance = Room.databaseBuilder(context.applicationContext, AppDB::class.java, "app")
+            .addMigrations(MIGRATION_1_2)
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)

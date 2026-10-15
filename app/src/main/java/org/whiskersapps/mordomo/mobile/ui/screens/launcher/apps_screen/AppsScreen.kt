@@ -214,7 +214,8 @@ fun AppsScreenPreview() {
                     icons = App.Icons(
                         stock = Icon(drawable = placeholder, adaptive = null),
                         themed = null
-                    )
+                    ),
+                    widgets = emptyList()
                 )
             )
         }

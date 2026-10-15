@@ -43,8 +43,8 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.comp
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Nav
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.card
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.getCardShape
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubble
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenIntent as ScreenIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenState as ScreenState
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenVM as ScreenVM
@@ -150,11 +150,9 @@ fun BookmarksScreen(
                         key = { _, bookmark -> bookmark.id }
                     ) { index, bookmark ->
                         Row(
-                            modifier = Modifier.card(
-                                shape = getCardShape(index, state.bookmarks.size),
-                                padding = 16.dp,
-                                onClick = { onIntent(ScreenIntent.BookmarkClick(bookmark)) }
-                            ),
+                            modifier = Modifier.buttonBubble(
+                                index, state.bookmarks.size,
+                            ) { onIntent(ScreenIntent.BookmarkClick(bookmark)) },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             WebIcon(getWebsiteIconURL(bookmark.url), size = 48.dp)

@@ -11,11 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.SwitchSetting
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DeletionSlider
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogTitle
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.EditEngineDialogIntent as DialogIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenState.EditEngineDialogState as DialogState
 
@@ -26,7 +27,7 @@ fun EditSearchEngineDialog(
     onIntent: (DialogIntent) -> Unit
 ) {
     DialogLayout(onDismiss = { onIntent(DialogIntent.Close) }) {
-        DialogTitle("Edit Search Engine")
+        DialogHeader(R.drawable.pencil,"Edit Search Engine")
 
         Spacer(Modifier.height(16.dp))
 

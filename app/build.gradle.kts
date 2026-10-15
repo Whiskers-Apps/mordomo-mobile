@@ -2,12 +2,14 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+
+    kotlin("plugin.serialization") version "2.4.21"
 }
 
 android {
     namespace = "org.whiskersapps.mordomo.mobile"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {
@@ -109,4 +111,10 @@ dependencies {
 
     // Slide to Unlock (Delete Sliders)
     implementation(libs.compose.slidetounlock)
+
+    //JSON
+    implementation(libs.kotlinx.serialization.json)
+
+    // Coil (Images)
+    implementation(libs.coil3.coil.compose)
 }

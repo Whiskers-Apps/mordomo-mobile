@@ -10,10 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenState.AddBookmarkDialogState
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogTitle
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.AddBookmarkDialogIntent as DialogIntent
 
 @Composable
@@ -24,7 +25,7 @@ fun AddBookmarkDialog(
     DialogLayout(
         onDismiss = { onIntent(DialogIntent.Close) },
     ) {
-        DialogTitle("Add Bookmark")
+        DialogHeader(R.drawable.plus,"Add Bookmark")
 
         Spacer(Modifier.height(8.dp))
 

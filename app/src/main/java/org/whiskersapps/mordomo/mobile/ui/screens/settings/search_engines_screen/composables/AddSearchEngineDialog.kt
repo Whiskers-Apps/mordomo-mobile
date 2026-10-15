@@ -10,9 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogTitle
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.AddEngineDialogIntent as DialogIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenState.AddEngineDialogState as DialogState
 
@@ -23,7 +24,7 @@ fun AddSearchEngineDialog(
     onIntent: (DialogIntent) -> Unit
 ) {
     DialogLayout(onDismiss = { onIntent(DialogIntent.Close) }) {
-        DialogTitle("Add Search Engine")
+        DialogHeader(R.drawable.plus,"Add Search Engine")
 
         Spacer(Modifier.height(8.dp))
 

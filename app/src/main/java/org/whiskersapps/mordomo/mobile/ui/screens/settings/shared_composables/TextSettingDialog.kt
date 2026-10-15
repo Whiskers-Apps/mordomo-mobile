@@ -10,9 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogTitle
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
 
 data class TextSettingDialogState(
     val show: Boolean = false,
@@ -33,7 +34,7 @@ fun TextSettingDialog(
         DialogLayout(
             onDismiss = { onCancel() }
         ) {
-            DialogTitle(state.title)
+            DialogHeader(R.drawable.text,state.title)
 
             Spacer(Modifier.height(8.dp))
 

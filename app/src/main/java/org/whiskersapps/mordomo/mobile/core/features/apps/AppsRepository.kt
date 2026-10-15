@@ -1,5 +1,6 @@
 package org.whiskersapps.mordomo.mobile.core.features.apps
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.LauncherApps
@@ -35,6 +36,9 @@ class AppsRepository(
     private val packageManager = context.packageManager
     private val launcherApps =
         context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+
+    private val widgetManager = AppWidgetManager.getInstance(context)
+    private val widgetProviders = widgetManager.installedProviders
 
     var apps = emptyList<App>()
 
@@ -109,6 +113,11 @@ class AppsRepository(
                         emptyList()
                     }.take(5)
 
+                    val appWidgets = widgetManager.getInstalledProvidersForPackage(
+                        packageName,
+                        Process.myUserHandle()
+                    )
+
                     App(
                         name = name,
                         packageName = packageName,
@@ -116,7 +125,8 @@ class AppsRepository(
                             stock = iconsRepository.getStockIcon(packageName),
                             themed = iconsRepository.getThemedIcon(packageName)
                         ),
-                        shortcuts = shortcuts
+                        shortcuts = shortcuts,
+                        widgets = appWidgets
                     )
                 }
 

@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_HIDDEN_APPS
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_SEARCH_BAR_POSITION
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_SPLIT_LIST
@@ -36,9 +36,11 @@ import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.C
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowDateKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowQuickButtonKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowSearchButtonKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Quick.Companion.QuickAppsKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Search.Companion.DefaultSearchEngineKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Setup.Companion.DEFAULT_SETUP_COMPLETED
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Setup.Companion.SetupCompletedKey
+import org.whiskersapps.mordomo.mobile.core.features.widgets.WidgetSetting
 
 
 val Context.dataStore by preferencesDataStore("settings")
@@ -61,6 +63,7 @@ class SettingsRepository(
                 setup = AppSettings.Setup(
                     completed = preferences[SetupCompletedKey] ?: DEFAULT_SETUP_COMPLETED
                 ),
+
                 home = AppSettings.Home(
                     clockStyle = preferences[ClockStyleKey] ?: DEFAULT_CLOCK_STYLE,
 
@@ -78,8 +81,13 @@ class SettingsRepository(
 
                     showAppsButton = preferences[ShowAppsButtonKey] ?: DEFAULT_SHOW_APPS_BUTTON,
 
-                    disableSwipe = preferences[DisableSwipeKey] ?: DEFAULT_DISABLE_SWIPE
+                    disableSwipe = preferences[DisableSwipeKey] ?: DEFAULT_DISABLE_SWIPE,
+
+                    widgets = Json.decodeFromString(
+                        preferences[AppSettings.Home.WidgetsKey] ?: "[]"
+                    )
                 ),
+
                 apps = AppSettings.Apps(
                     splitList = preferences[SplitListKey] ?: DEFAULT_SPLIT_LIST,
 
@@ -90,8 +98,17 @@ class SettingsRepository(
 
                     secureApps = preferences[SecureAppsKey] ?: AppSettings.Apps.DEFAULT_SECURE_APPS
                 ),
+
                 search = AppSettings.Search(
                     defaultSearchEngine = preferences[DefaultSearchEngineKey]
+                ),
+
+                quick = AppSettings.Quick(
+                    quickApps = preferences[QuickAppsKey]
+                        ?: AppSettings.Quick.DEFAULT_QUICK_APPS,
+
+                    quickBookmarks = preferences[AppSettings.Quick.QuickBookmarksKey]
+                        ?: AppSettings.Quick.DEFAULT_QUICK_BOOKMARKS
                 )
             )
 
@@ -161,5 +178,17 @@ class SettingsRepository(
 
     suspend fun setSecureApps(secureApps: Set<String>) = withContext(IO) {
         datastore.edit { it[SecureAppsKey] = secureApps }
+    }
+
+    suspend fun setQuickApps(quickApps: Set<String>) = withContext(IO) {
+        datastore.edit { it[QuickAppsKey] = quickApps }
+    }
+
+    suspend fun setQuickBookmarks(quickBookmarks: Set<String>) = withContext(IO) {
+        datastore.edit { it[AppSettings.Quick.QuickBookmarksKey] = quickBookmarks }
+    }
+
+    suspend fun setWidgets(widgets: List<WidgetSetting>) = withContext(IO) {
+        datastore.edit { it[AppSettings.Home.WidgetsKey] = Json.encodeToString(widgets) }
     }
 }
