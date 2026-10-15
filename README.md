@@ -28,8 +28,8 @@ Since this is a work in progress there are a lot of features still missing.
 
 - [ ] Pinned Apps
 - [ ] Pinned Bookmarks
-- [ ] Next Events
-- [ ] TODO List
+- [x] Widgets
+- [x] TODO List
 
 ### Home
 
