@@ -45,9 +45,8 @@ import org.whiskersapps.mordomo.mobile.core.utils.getWebsiteIconURL
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.composables.AddSearchEngineDialog
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.composables.EditSearchEngineDialog
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Nav
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubble
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenIntent as ScreenIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenState as ScreenState
@@ -113,7 +112,7 @@ fun SearchEnginesScreen(
         )
     }
 
-    ResponsiveColumn {
+    ContainerColumn {
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(

@@ -16,7 +16,7 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Sw
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.TextSetting
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.TextSettingDialog
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.TextSettingDialogState
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.home_screen.HomeSettingsScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.home_screen.HomeSettingsScreenState as State
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.home_screen.HomeSettingsScreenVM as VM
@@ -50,7 +50,7 @@ fun HomeSettingsScreen(
         onSave = { onIntent(Intent.DateFormatDialogSave(it)) }
     )
 
-    ResponsiveColumn {
+    ContainerColumn {
         Nav { onIntent(Intent.BackClick) }
 
         Spacer(Modifier.height(8.dp))

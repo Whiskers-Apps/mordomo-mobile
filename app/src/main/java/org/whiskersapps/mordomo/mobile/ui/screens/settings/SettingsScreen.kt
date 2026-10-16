@@ -12,7 +12,7 @@ import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.components.SettingsSection
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.BottomCardShape
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.MiddleCardShape
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.SingleCardShape
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.TopCardShape
 
@@ -50,7 +50,7 @@ fun SettingsScreen(
     onIntent: (SettingsScreenIntent) -> Unit
 ) {
     if (!state.loading) {
-        ResponsiveColumn(
+        ContainerColumn(
             contentPadded = true,
             scrollable = true
         ) {

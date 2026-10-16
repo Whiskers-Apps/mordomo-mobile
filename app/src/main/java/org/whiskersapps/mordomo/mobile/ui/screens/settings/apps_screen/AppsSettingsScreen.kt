@@ -13,7 +13,7 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Na
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.SegmentedOption
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.SegmentedSetting
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.SwitchSetting
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 
 @Composable
 fun AppsSettingsScreenRoot(
@@ -34,7 +34,7 @@ fun AppsSettingsScreen(
     onIntent: (AppsSettingsScreenIntent) -> Unit
 ) {
     if (!state.loading) {
-        ResponsiveColumn(scrollable = true) {
+        ContainerColumn(scrollable = true) {
             Nav { onIntent(AppsSettingsScreenIntent.BackClick) }
 
             Spacer(Modifier.height(8.dp))

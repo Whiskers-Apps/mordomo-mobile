@@ -41,9 +41,8 @@ import org.whiskersapps.mordomo.mobile.core.utils.getWebsiteIconURL
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.composables.AddBookmarkDialog
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.composables.EditBookmarkDialog
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Nav
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubble
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenIntent as ScreenIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenState as ScreenState
@@ -109,7 +108,7 @@ fun BookmarksScreen(
         )
     }
 
-    ResponsiveColumn {
+    ContainerColumn {
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(

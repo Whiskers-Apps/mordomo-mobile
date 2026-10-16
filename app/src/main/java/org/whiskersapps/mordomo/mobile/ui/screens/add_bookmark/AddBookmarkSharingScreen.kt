@@ -24,7 +24,7 @@ import org.whiskersapps.mordomo.mobile.core.utils.getActivity
 import org.whiskersapps.mordomo.mobile.core.utils.getWebsiteIconURL
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
 import org.whiskersapps.mordomo.mobile.ui.screens.add_bookmark.AddBookmarkSharingScreenIntent as ScreenIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.add_bookmark.AddBookmarkSharingScreenState as ScreenState
@@ -52,7 +52,7 @@ fun AddBookmarkSharingScreenRoot(
 
 @Composable
 fun AddBookmarkSharingScreen(state: ScreenState, onIntent: (ScreenIntent) -> Unit) {
-    ResponsiveColumn(contentPadded = true) {
+    ContainerColumn(contentPadded = true) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()

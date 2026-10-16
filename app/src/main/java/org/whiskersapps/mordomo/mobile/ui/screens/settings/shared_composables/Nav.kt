@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -22,13 +23,18 @@ import org.whiskersapps.mordomo.mobile.R
 fun Nav(
     onBackClick: () -> Unit
 ) {
-    Row(Modifier.fillMaxWidth().padding(top = 24.dp, start = 24.dp, end = 24.dp)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp, bottom = 8.dp, start = 24.dp, end = 24.dp)
+    ) {
         Box(
             modifier = Modifier
+                .size(48.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                .clickable { onBackClick() }
-                .padding(8.dp)
+                .clickable { onBackClick() },
+            contentAlignment = Alignment.Center
         ) {
             Icon(
                 modifier = Modifier.size(24.dp),

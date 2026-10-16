@@ -20,7 +20,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Nav
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.BOTTOM_SHAPE
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.InfoCard
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.MIDDLE_SHAPE
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.TOP_SHAPE
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.about_screen.AboutScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.about_screen.AboutScreenState as State
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.about_screen.AboutScreenVM as VM
@@ -47,74 +51,32 @@ fun AboutScreen(
     onIntent: (Intent) -> Unit
 ) {
     if (!state.loading) {
-        ResponsiveColumn {
+        ContainerColumn(scrollable = true) {
             Nav { onIntent(Intent.BackClick) }
 
-            Column(Modifier.padding(24.dp)) {
-                Text(
-                    text = "Version",
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onBackground
+            Column(Modifier.padding(start = 24.dp, end = 24.dp, bottom = 24.dp)) {
+                InfoCard(
+                    shape = TOP_SHAPE,
+                    title = "Version",
+                    description = state.version
                 )
 
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(2.dp))
 
-                Box(
-                    Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .padding(8.dp)
-                ) {
-                    Text(
-                        text = state.version,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                Text(
-                    text = "License",
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onBackground
+                InfoCard(
+                    shape = MIDDLE_SHAPE,
+                    title = "License",
+                    description = "MIT"
                 )
 
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(2.dp))
 
-                Box(
-                    Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .padding(8.dp)
-                ) {
-                    Text(
-                        text = "MIT",
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                Text(
-                    text = "Repository",
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onBackground
+                InfoCard(
+                    shape = BOTTOM_SHAPE,
+                    title = "Repository",
+                    description = state.repo,
+                    onClick = { onIntent(Intent.URLClick) }
                 )
-
-                Spacer(Modifier.height(4.dp))
-
-                Box(
-                    Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .clickable { onIntent(Intent.URLClick) }
-                        .padding(8.dp)
-                ) {
-                    Text(
-                        text = state.repo,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
             }
         }
     }

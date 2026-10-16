@@ -20,7 +20,7 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.compo
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.IconSetting
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Nav
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.BOTTOM_SHAPE
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.TOP_SHAPE
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenState as State
@@ -70,7 +70,7 @@ fun SecurityScreen(
         )
     }
 
-    ResponsiveColumn {
+    ContainerColumn {
         Nav { onIntent(Intent.BackClick) }
 
         Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {

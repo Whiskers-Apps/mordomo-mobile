@@ -30,7 +30,7 @@ import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsValues
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.composables.Clock
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.composables.HomePanel
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.composables.MenuDialog
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import kotlin.math.abs
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.HomeScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.HomeScreenState as State
@@ -94,7 +94,7 @@ fun HomeScreen(
         )
 
         if (!state.loading) {
-            ResponsiveColumn(
+            ContainerColumn(
                 modifier = Modifier
                     .pointerInput(state.disableSwipe) {
                         detectVerticalDragGestures { _, dragAmount ->

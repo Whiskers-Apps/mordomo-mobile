@@ -53,9 +53,8 @@ import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_sc
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.components.Section
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.components.SectionHeader
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppDialog
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.ResponsiveColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubble
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenState as State
@@ -144,7 +143,7 @@ fun SearchScreen(
         )
     }
 
-    ResponsiveColumn {
+    ContainerColumn {
         Box(Modifier.padding(start = 8.dp, end = 8.dp)) {
             SearchBar(
                 value = state.searchText,
