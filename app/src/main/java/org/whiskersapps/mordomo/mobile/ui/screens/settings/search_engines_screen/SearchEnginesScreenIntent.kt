@@ -21,7 +21,7 @@ sealed interface EditEngineDialogIntent : SearchEnginesScreenIntent {
     data class NameType(val text: String) : EditEngineDialogIntent
     data class QueryType(val text: String) : EditEngineDialogIntent
     data class DefaultToggle(val value: Boolean) : EditEngineDialogIntent
-    data object DeleteSlide : EditEngineDialogIntent
+    data object DeleteClick : EditEngineDialogIntent
     data object SaveClick : EditEngineDialogIntent
     data object Close : EditEngineDialogIntent
 }

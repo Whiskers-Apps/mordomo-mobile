@@ -25,6 +25,7 @@ import org.whiskersapps.mordomo.mobile.ui.shared_composables.BOTTOM_SHAPE
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.MIDDLE_SHAPE
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.TOP_SHAPE
+import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.home_screen.HomeSettingsScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.home_screen.HomeSettingsScreenState as State
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.home_screen.HomeSettingsScreenVM as VM
@@ -167,16 +168,18 @@ fun HomeSettingsScreen(
 @Composable
 @Preview(showBackground = true)
 fun Preview() {
-    HomeSettingsScreen(
-        State(
-            loading = false,
-            dateFormatDialog = TextSettingDialogState(
-                show = false,
-                title = "Date Format",
-                label = "Format"
+    MordomoTheme {
+        HomeSettingsScreen(
+            State(
+                loading = false,
+                dateFormatDialog = TextSettingDialogState(
+                    show = false,
+                    title = "Date Format",
+                    label = "Format"
+                )
             )
-        )
-    ) {
+        ) {
 
+        }
     }
 }

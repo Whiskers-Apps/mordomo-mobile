@@ -21,6 +21,7 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Sw
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.BOTTOM_SHAPE
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.TOP_SHAPE
+import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 
 @Composable
 fun AppsSettingsScreenRoot(
@@ -85,7 +86,9 @@ fun AppsSettingsScreen(
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview()
 fun AppsSettingsScreenPreview() {
-    AppsSettingsScreen(AppsSettingsScreenState(loading = false)) {}
+    MordomoTheme {
+        AppsSettingsScreen(AppsSettingsScreenState(loading = false)) {}
+    }
 }

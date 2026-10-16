@@ -20,10 +20,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.TOP_SHAPE
@@ -31,6 +33,8 @@ import org.whiskersapps.mordomo.mobile.ui.shared_composables.TOP_SHAPE
 @Composable
 fun SwitchSetting(
     shape: Shape,
+    padding: Dp = 16.dp,
+    backgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant,
     title: String,
     description: String,
     value: Boolean,
@@ -40,9 +44,9 @@ fun SwitchSetting(
         Modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(backgroundColor)
             .clickable { onValueChange(!value) }
-            .padding(16.dp),
+            .padding(padding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(

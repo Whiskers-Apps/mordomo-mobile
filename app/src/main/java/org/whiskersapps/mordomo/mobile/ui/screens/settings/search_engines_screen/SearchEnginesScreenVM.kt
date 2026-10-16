@@ -67,7 +67,7 @@ class SearchEnginesScreenVM(
                 is EditEngineDialogIntent.NameType -> editDialogIntent.onNameType(intent.text)
                 is EditEngineDialogIntent.QueryType -> editDialogIntent.onQueryType(intent.text)
                 is EditEngineDialogIntent.DefaultToggle -> editDialogIntent.onDefaultToggle(intent.value)
-                EditEngineDialogIntent.DeleteSlide -> editDialogIntent.onDeleteSlide()
+                EditEngineDialogIntent.DeleteClick -> editDialogIntent.onDeleteClick()
                 EditEngineDialogIntent.SaveClick -> editDialogIntent.onSaveClick()
                 EditEngineDialogIntent.Close -> editDialogIntent.onClose()
             }
@@ -98,7 +98,6 @@ class SearchEnginesScreenVM(
                             name = engine.name,
                             query = engine.query,
                             default = settingsRepository.appSettings.value.search.defaultSearchEngine == engine.id,
-                            saveEnabled = true
                         )
                     )
                 }
@@ -131,19 +130,56 @@ class SearchEnginesScreenVM(
 
     private inner class AddDialogIntent {
         fun onNameType(text: String) {
-            _state.update { it.copy(addEngineDialogState = it.addEngineDialogState.copy(name = text)) }
-
-            verifyFields()
+            _state.update {
+                it.copy(
+                    addEngineDialogState = it.addEngineDialogState.copy(
+                        name = text,
+                        nameError = null
+                    )
+                )
+            }
         }
 
         fun onQueryType(text: String) {
-            _state.update { it.copy(addEngineDialogState = it.addEngineDialogState.copy(query = text)) }
-
-            verifyFields()
+            _state.update {
+                it.copy(
+                    addEngineDialogState = it.addEngineDialogState.copy(
+                        query = text,
+                        queryError = null
+                    )
+                )
+            }
         }
 
         fun onSaveClick() {
             viewModelScope.launch {
+                val name = state.value.addEngineDialogState.name
+                val query = state.value.addEngineDialogState.query
+
+                val nameError = if (name.isBlank()) "Name can't be empty" else null
+
+                val queryError = if (!query.replace("%s", "").isFullURL())
+                    "Invalid URL"
+                else if (!query.contains("%s"))
+                    "A %s parameter is required"
+                else
+                    null
+
+                val validForm = nameError == null && queryError == null
+
+                if (!validForm) {
+                    _state.update {
+                        it.copy(
+                            addEngineDialogState = it.addEngineDialogState.copy(
+                                nameError = nameError,
+                                queryError = queryError
+                            )
+                        )
+                    }
+
+                    return@launch
+                }
+
                 val engine = SearchEngine(
                     name = state.value.addEngineDialogState.name,
                     query = state.value.addEngineDialogState.query
@@ -157,16 +193,6 @@ class SearchEnginesScreenVM(
 
         fun onClose() = closeDialog()
 
-        private fun verifyFields() {
-            val name = state.value.addEngineDialogState.name
-            val query = state.value.addEngineDialogState.query
-            val enabled = name.isNotBlank() && query.isFullURL() && query.contains("%s")
-
-            _state.update {
-                it.copy(addEngineDialogState = it.addEngineDialogState.copy(saveEnabled = enabled))
-            }
-        }
-
         private fun closeDialog() {
             _state.update { it.copy(addEngineDialogState = AddEngineDialogState()) }
         }
@@ -174,22 +200,32 @@ class SearchEnginesScreenVM(
 
     private inner class EditDialogIntent {
         fun onNameType(text: String) {
-            _state.update { it.copy(editEngineDialogState = it.editEngineDialogState.copy(name = text)) }
-
-            verifyFields()
+            _state.update {
+                it.copy(
+                    editEngineDialogState = it.editEngineDialogState.copy(
+                        name = text,
+                        nameError = null
+                    )
+                )
+            }
         }
 
         fun onQueryType(text: String) {
-            _state.update { it.copy(editEngineDialogState = it.editEngineDialogState.copy(query = text)) }
-
-            verifyFields()
+            _state.update {
+                it.copy(
+                    editEngineDialogState = it.editEngineDialogState.copy(
+                        query = text,
+                        queryError = null
+                    )
+                )
+            }
         }
 
         fun onDefaultToggle(value: Boolean) {
             _state.update { it.copy(editEngineDialogState = it.editEngineDialogState.copy(default = value)) }
         }
 
-        fun onDeleteSlide() {
+        fun onDeleteClick() {
             viewModelScope.launch {
                 preDeleteSearchEngines = state.value.searchEngines
 
@@ -205,9 +241,36 @@ class SearchEnginesScreenVM(
 
         fun onSaveClick() {
             viewModelScope.launch {
+                val name = state.value.editEngineDialogState.name
+                val query = state.value.editEngineDialogState.query
+
+                val nameError = if (name.isBlank()) "Name can't be empty" else null
+
+                val queryError = if (!query.replace("%s", "").isFullURL())
+                    "Invalid URL"
+                else if (!query.contains("%s"))
+                    "A %s parameter is required"
+                else
+                    null
+
+                val validForm = nameError == null && queryError == null
+
+                if (!validForm) {
+                    _state.update {
+                        it.copy(
+                            editEngineDialogState = it.editEngineDialogState.copy(
+                                nameError = nameError,
+                                queryError = queryError
+                            )
+                        )
+                    }
+
+                    return@launch
+                }
+
                 val searchEngine = pendingSearchEngine!!.copy(
-                    name = state.value.editEngineDialogState.name,
-                    query = state.value.editEngineDialogState.query
+                    name = name,
+                    query = query
                 )
 
                 val defaultEngineId =
@@ -232,16 +295,6 @@ class SearchEnginesScreenVM(
         }
 
         fun onClose() = closeDialog()
-
-        private fun verifyFields() {
-            val name = state.value.editEngineDialogState.name
-            val query = state.value.editEngineDialogState.query
-            val enabled = name.isNotBlank() && query.isFullURL() && query.contains("%s")
-
-            _state.update {
-                it.copy(editEngineDialogState = it.editEngineDialogState.copy(saveEnabled = enabled))
-            }
-        }
 
         fun closeDialog() {
             _state.update { it.copy(editEngineDialogState = EditEngineDialogState()) }

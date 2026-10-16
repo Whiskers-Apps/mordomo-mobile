@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,6 +49,7 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Na
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
+import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenIntent as ScreenIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenState as ScreenState
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenVM as ScreenVM
@@ -154,13 +156,17 @@ fun SearchEnginesScreen(
                     ) { index, engine ->
                         Row(
                             modifier = Modifier.buttonBubble(
-                                index, state.searchEngines.size,
-                            ) { onIntent(ScreenIntent.SearchEngineClick(engine)) },
+                                index,
+                                state.searchEngines.size,
+                                onClick = {
+                                    onIntent(ScreenIntent.SearchEngineClick(engine))
+                                }
+                            ),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            WebIcon(getWebsiteIconURL(engine.query), size = 48.dp)
+                            WebIcon(getWebsiteIconURL(engine.query), size = 40.dp)
 
-                            Spacer(Modifier.width(8.dp))
+                            Spacer(Modifier.width(16.dp))
 
                             Column(
                                 Modifier
@@ -168,17 +174,19 @@ fun SearchEnginesScreen(
                                     .weight(1f)
                             ) {
                                 Text(
-                                    engine.name,
-                                    style = TextStyle(color = MaterialTheme.colorScheme.onBackground)
+                                    text = engine.name,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
 
-                                Spacer(Modifier.height(2.dp))
-
                                 Text(
-                                    engine.query, style = TextStyle(
-                                        fontSize = 12.sp,
-                                        color = MaterialTheme.colorScheme.onBackground
-                                    )
+                                    text = engine.query,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
 
@@ -187,13 +195,13 @@ fun SearchEnginesScreen(
                             if (state.defaultSearchEngineId == engine.id) {
                                 Box(
                                     Modifier
-                                        .size(32.dp)
+                                        .size(40.dp)
                                         .clip(CircleShape)
                                         .background(MaterialTheme.colorScheme.background),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
-                                        modifier = Modifier.size(20.dp),
+                                        modifier = Modifier.size(24.dp),
                                         painter = painterResource(R.drawable.check),
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.onBackground
@@ -212,38 +220,40 @@ fun SearchEnginesScreen(
 @Composable
 @Preview
 fun SearchEnginesScreenPreview() {
-    SearchEnginesScreen(
-        ScreenState(
-            loading = false,
-            searchEngines = listOf(
-                SearchEngine(
-                    id = 0,
-                    name = "DuckDuckGo",
-                    query = "https:://awdawdwadawdawdawd.com"
+    MordomoTheme {
+        SearchEnginesScreen(
+            ScreenState(
+                loading = false,
+                searchEngines = listOf(
+                    SearchEngine(
+                        id = 0,
+                        name = "DuckDuckGo",
+                        query = "https:://awdawdwadawdawdawd.com"
+                    ),
+                    SearchEngine(
+                        id = 1,
+                        name = "DuckDuckGo",
+                        query = "https:://awdawdwadawdawdawd.com"
+                    ),
+                    SearchEngine(
+                        id = 2,
+                        name = "DuckDuckGo",
+                        query = "https:://awdawdwadawdawdawd.com"
+                    ),
+                    SearchEngine(
+                        id = 3,
+                        name = "DuckDuckGo",
+                        query = "https:://awdawdwadawdawdawd.com"
+                    ),
+                    SearchEngine(
+                        id = 4,
+                        name = "DuckDuckGo",
+                        query = "https:://awdawdwadawdawdawd.com"
+                    ),
                 ),
-                SearchEngine(
-                    id = 1,
-                    name = "DuckDuckGo",
-                    query = "https:://awdawdwadawdawdawd.com"
-                ),
-                SearchEngine(
-                    id = 2,
-                    name = "DuckDuckGo",
-                    query = "https:://awdawdwadawdawdawd.com"
-                ),
-                SearchEngine(
-                    id = 3,
-                    name = "DuckDuckGo",
-                    query = "https:://awdawdwadawdawdawd.com"
-                ),
-                SearchEngine(
-                    id = 4,
-                    name = "DuckDuckGo",
-                    query = "https:://awdawdwadawdawdawd.com"
-                ),
-            ),
-            defaultSearchEngineId = 1
-        )
-    ) {}
+                defaultSearchEngineId = 1
+            )
+        ) {}
+    }
 }
 

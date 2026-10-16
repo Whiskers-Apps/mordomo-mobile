@@ -13,15 +13,17 @@ data class SearchEnginesScreenState(
     data class AddEngineDialogState(
         val show: Boolean = false,
         val name: String = "",
+        val nameError: String? = null,
         val query: String = "",
-        val saveEnabled: Boolean = false
+        val queryError: String? = null,
     )
 
     data class EditEngineDialogState(
         val show: Boolean = false,
         val name: String = "",
+        val nameError: String? = null,
         val query: String = "",
+        val queryError: String? = null,
         val default: Boolean = false,
-        val saveEnabled: Boolean = false
     )
 }

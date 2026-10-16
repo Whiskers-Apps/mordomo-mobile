@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
+import org.whiskersapps.droid.droid_icons.models.Icon
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
 import org.whiskersapps.mordomo.mobile.core.features.apps.App.Icons
@@ -21,6 +22,7 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Ic
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Nav
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.BOTTOM_SHAPE
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.InfoCard
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.TOP_SHAPE
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenState as State
@@ -73,20 +75,23 @@ fun SecurityScreen(
     ContainerColumn {
         Nav { onIntent(Intent.BackClick) }
 
-        Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            IconSetting(
-                iconId = R.drawable.anonym,
+        Column(
+            Modifier.padding(start = 24.dp, end = 24.dp, bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            InfoCard(
+                shape = TOP_SHAPE,
                 title = "Hidden Apps",
                 description = "Select apps that should be hidden",
-                shape = TOP_SHAPE,
-            ) { onIntent(Intent.HiddenAppsClick) }
+                onClick = { onIntent(Intent.HiddenAppsClick) },
+            )
 
-            IconSetting(
-                iconId = R.drawable.fingerprint,
+            InfoCard(
+                shape = BOTTOM_SHAPE,
                 title = "Secure Apps",
                 description = "Select apps that require fingerprint to open",
-                shape = BOTTOM_SHAPE,
-            ) { onIntent(Intent.SecureAppsClick) }
+                onClick = { onIntent(Intent.SecureAppsClick) },
+            )
         }
     }
 }
@@ -106,7 +111,7 @@ fun SecurityScreenPreview() {
                     packageName = "app $i",
                     shortcuts = listOf(),
                     icons = Icons(
-                        stock = org.whiskersapps.droid.droid_icons.models.Icon(
+                        stock = Icon(
                             drawable = placeholder,
                             adaptive = null
                         ),
@@ -122,7 +127,7 @@ fun SecurityScreenPreview() {
 
     SecurityScreen(
         State(
-            showHiddenAppsPicker = true,
+            showHiddenAppsPicker = false,
             hiddenAppsPicker = State.Picker(
                 apps = apps,
                 selectedApps = setOf("app 3", "app 5")

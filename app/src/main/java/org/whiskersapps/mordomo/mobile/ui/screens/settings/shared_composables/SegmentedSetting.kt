@@ -79,8 +79,8 @@ fun SegmentedSetting(
                         activeContainerColor = MaterialTheme.colorScheme.primary,
                         activeContentColor = MaterialTheme.colorScheme.onPrimary,
                         activeBorderColor = MaterialTheme.colorScheme.onBackground,
-                        inactiveBorderColor = MaterialTheme.colorScheme.onBackground
-                    )
+                        inactiveBorderColor = MaterialTheme.colorScheme.onBackground,
+                    ),
                 )
             }
         }
