@@ -51,6 +51,7 @@ fun WidgetView(
     widget: Widget,
     widgetsHost: AppWidgetHost,
     cellSize: Int,
+    split: Boolean,
     onIntent: (Intent) -> Unit
 ) {
     val context = LocalContext.current
@@ -316,7 +317,9 @@ fun WidgetView(
         Column(
             Modifier
                 .fillMaxSize()
-                .weight(1f),
+                .conditionalModifier(split) {
+                    weight(1f)
+                },
             verticalArrangement = Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

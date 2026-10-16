@@ -6,11 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -28,7 +25,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
@@ -57,7 +53,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lighttigerxiv.layout_scaffold.inLandscape
-import com.lighttigerxiv.layout_scaffold.isTablet
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.whiskersapps.mordomo.mobile.R
@@ -65,8 +60,8 @@ import org.whiskersapps.mordomo.mobile.core.features.todo.ToDo
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.composables.WidgetPicker
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.composables.WidgetView
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubbleShape
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenIntent as Intent
@@ -91,9 +86,9 @@ fun QuickPanelScreen(
     val widgetManager = remember { AppWidgetManager.getInstance(context) }
     val widgetsHost = remember { AppWidgetHost(context, 1) }
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val isTablet = isTablet()
+
     val inLandscape = inLandscape()
-    val splitWidgets by remember(inLandscape, isTablet) { mutableStateOf(inLandscape && isTablet) }
+    val splitWidgets by remember(inLandscape) { mutableStateOf(inLandscape) }
 
     val sheetState = rememberStandardBottomSheetState(
         initialValue = SheetValue.Hidden,
@@ -394,6 +389,7 @@ fun QuickPanelScreen(
                                 widget = row.first(),
                                 widgetsHost = widgetsHost,
                                 cellSize = cellSize,
+                                split = true,
                                 onIntent = { onIntent(it) }
                             )
 
@@ -409,6 +405,7 @@ fun QuickPanelScreen(
                                     widget = secondWidget,
                                     widgetsHost = widgetsHost,
                                     cellSize = cellSize,
+                                    split = true,
                                     onIntent = { onIntent(it) }
                                 )
                             } else {
@@ -436,6 +433,7 @@ fun QuickPanelScreen(
                             widget = widget,
                             widgetsHost = widgetsHost,
                             cellSize = cellSize,
+                            split = false,
                             onIntent = { onIntent(it) }
                         )
 
