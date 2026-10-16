@@ -61,8 +61,6 @@ fun HomeSettingsScreen(
     ContainerColumn {
         Nav { onIntent(Intent.BackClick) }
 
-        Spacer(Modifier.height(8.dp))
-
         Column(
             Modifier
                 .verticalScroll(rememberScrollState())
