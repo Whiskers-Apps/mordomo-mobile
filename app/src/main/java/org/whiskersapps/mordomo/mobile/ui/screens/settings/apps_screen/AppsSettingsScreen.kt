@@ -13,7 +13,9 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Na
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.SegmentedOption
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.SegmentedSetting
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.SwitchSetting
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.BOTTOM_SHAPE
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.TOP_SHAPE
 
 @Composable
 fun AppsSettingsScreenRoot(
@@ -40,6 +42,7 @@ fun AppsSettingsScreen(
             Spacer(Modifier.height(8.dp))
 
             SwitchSetting(
+                shape = TOP_SHAPE,
                 title = "Split List",
                 description = "Split list if there's available space",
                 value = state.splitList,
@@ -47,6 +50,7 @@ fun AppsSettingsScreen(
             )
 
             SegmentedSetting(
+                shape = BOTTOM_SHAPE,
                 title = "Search Bar Position",
                 description = "Show/Hide or change the search bar position",
                 options = listOf(

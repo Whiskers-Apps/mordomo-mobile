@@ -17,6 +17,7 @@ import org.whiskersapps.mordomo.mobile.ui.shared_composables.DeletionSlider
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.MIDDLE_SHAPE
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.EditEngineDialogIntent as DialogIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenState.EditEngineDialogState as DialogState
 
@@ -27,7 +28,7 @@ fun EditSearchEngineDialog(
     onIntent: (DialogIntent) -> Unit
 ) {
     DialogLayout(onDismiss = { onIntent(DialogIntent.Close) }) {
-        DialogHeader(R.drawable.pencil,"Edit Search Engine")
+        DialogHeader(R.drawable.pencil, "Edit Search Engine")
 
         Spacer(Modifier.height(16.dp))
 
@@ -58,11 +59,11 @@ fun EditSearchEngineDialog(
         Spacer(Modifier.height(16.dp))
 
         SwitchSetting(
+            shape = MIDDLE_SHAPE,
             title = "Default",
             description = "Set this search engine as the preferred.",
             value = state.default,
             onValueChange = { onIntent(DialogIntent.DefaultToggle(it)) },
-            padding = PaddingValues(0.dp)
         )
 
         Spacer(Modifier.height(16.dp))

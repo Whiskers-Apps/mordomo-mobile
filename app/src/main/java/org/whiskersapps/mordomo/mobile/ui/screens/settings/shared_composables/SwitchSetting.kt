@@ -1,5 +1,6 @@
 package org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,26 +19,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.TOP_SHAPE
 
 @Composable
 fun SwitchSetting(
+    shape: Shape,
     title: String,
     description: String,
     value: Boolean,
     onValueChange: (value: Boolean) -> Unit,
-    padding: PaddingValues = PaddingValues(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp)
 ) {
     Row(
         Modifier
             .fillMaxWidth()
+            .clip(shape)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable { onValueChange(!value) }
-            .padding(padding),
-        verticalAlignment = Alignment.Top
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(
             modifier = Modifier
@@ -46,22 +52,18 @@ fun SwitchSetting(
         ) {
             Text(
                 text = title,
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyLarge
             )
 
             Text(
                 text = description,
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyMedium
             )
         }
 
-        Spacer(Modifier.width(16.dp))
+        Spacer(Modifier.width(8.dp))
 
         Switch(
             checked = value,
@@ -76,6 +78,7 @@ fun SwitchSettingPreview() {
     var value by remember { mutableStateOf(true) }
 
     SwitchSetting(
+        shape = TOP_SHAPE,
         title = "Black",
         description = "Override dark theme with a black background",
         value = value,
