@@ -339,7 +339,6 @@ fun WidgetView(
                     )
                 },
                 update = { view ->
-
                     view.updateAppWidgetSize(
                         null,
                         widgetWidth,
