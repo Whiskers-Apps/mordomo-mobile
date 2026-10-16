@@ -24,17 +24,16 @@ fun ResponsiveColumn(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .systemBarsPadding()
             .conditionalModifier(scrollable) {
                 this.verticalScroll(rememberScrollState())
-            }
-            .systemBarsPadding(),
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
             Modifier
                 .widthIn(max = 900.dp)
                 .fillMaxWidth()
-                .weight(1f)
                 .conditionalModifier(contentPadded) {
                     this.padding(24.dp)
                 }

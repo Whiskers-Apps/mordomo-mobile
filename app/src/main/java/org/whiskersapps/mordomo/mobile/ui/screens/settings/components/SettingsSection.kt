@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,10 +24,12 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.whiskersapps.mordomo.mobile.R
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.MiddleCardShape
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.TopCardShape
 
 @Composable
@@ -46,10 +49,11 @@ fun SettingsSection(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(Modifier
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.background)
-            .padding(8.dp),
+        Box(
+            Modifier
+                .clip(CircleShape)
+                .size(48.dp)
+                .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -60,24 +64,21 @@ fun SettingsSection(
             )
         }
 
-
         Spacer(Modifier.width(16.dp))
 
         Column {
             Text(
                 text = title,
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.Medium
-                )
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyLarge
             )
 
             Text(
                 text = description,
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
@@ -86,10 +87,21 @@ fun SettingsSection(
 @Composable
 @Preview
 fun SettingsSectionPreview() {
-    SettingsSection(
-        shape = TopCardShape,
-        iconId = R.drawable.bookmark_outline,
-        title = "Bookmarks",
-        description = "Add bookmarks to quickly open links"
-    ) {}
+    Column {
+        SettingsSection(
+            shape = TopCardShape,
+            iconId = R.drawable.bookmark_outline,
+            title = "Bookmarks",
+            description = "Add bookmarks to quickly open links"
+        ) {}
+
+        Spacer(Modifier.height(2.dp))
+
+        SettingsSection(
+            shape = MiddleCardShape,
+            iconId = R.drawable.bookmark_outline,
+            title = "Lorem Ipsum",
+            description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        ) {}
+    }
 }
