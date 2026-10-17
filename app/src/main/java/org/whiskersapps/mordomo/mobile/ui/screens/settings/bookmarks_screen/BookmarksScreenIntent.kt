@@ -20,7 +20,7 @@ sealed interface AddBookmarkDialogIntent : BookmarksScreenIntent {
 sealed interface EditBookmarkDialogIntent : BookmarksScreenIntent {
     data class NameType(val text: String) : EditBookmarkDialogIntent
     data class URLType(val text: String) : EditBookmarkDialogIntent
-    data object DeleteSlide : EditBookmarkDialogIntent
+    data object DeleteClick : EditBookmarkDialogIntent
     data object SaveClick : EditBookmarkDialogIntent
     data object Close : EditBookmarkDialogIntent
 }

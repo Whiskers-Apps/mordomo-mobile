@@ -56,7 +56,7 @@ class BookmarksScreenVM(
             is EditBookmarkDialogIntent -> when (intent) {
                 is EditBookmarkDialogIntent.NameType -> editBookmarkIntent.onNameType(intent.text)
                 is EditBookmarkDialogIntent.URLType -> editBookmarkIntent.onURLType(intent.text)
-                EditBookmarkDialogIntent.DeleteSlide -> editBookmarkIntent.onDeleteSlide()
+                EditBookmarkDialogIntent.DeleteClick -> editBookmarkIntent.onDeleteSlide()
                 EditBookmarkDialogIntent.SaveClick -> editBookmarkIntent.onSaveClick()
                 EditBookmarkDialogIntent.Close -> editBookmarkIntent.onClose()
             }
@@ -89,7 +89,6 @@ class BookmarksScreenVM(
                             show = true,
                             name = bookmark.name,
                             url = bookmark.url,
-                            saveEnabled = true
                         )
                     )
                 }
@@ -124,19 +123,48 @@ class BookmarksScreenVM(
 
     private inner class AddBookmarkIntent {
         fun onNameType(text: String) {
-            _state.update { it.copy(addBookmarkDialogState = it.addBookmarkDialogState.copy(name = text)) }
-
-            verifyFields()
+            _state.update {
+                it.copy(
+                    addBookmarkDialogState = it.addBookmarkDialogState.copy(
+                        name = text,
+                        nameError = null
+                    )
+                )
+            }
         }
 
         fun onURLType(text: String) {
-            _state.update { it.copy(addBookmarkDialogState = it.addBookmarkDialogState.copy(url = text)) }
-
-            verifyFields()
+            _state.update {
+                it.copy(
+                    addBookmarkDialogState = it.addBookmarkDialogState.copy(
+                        url = text,
+                        urlError = null
+                    )
+                )
+            }
         }
 
         fun onSaveClick() {
             viewModelScope.launch {
+                val name = state.value.addBookmarkDialogState.name
+                val url = state.value.addBookmarkDialogState.url
+
+                val nameError = if (name.isNotBlank()) null else "Name must not be empty"
+                val urlError = if (url.isFullURL()) null else "URL must be a valid one"
+
+                if (nameError != null || urlError != null) {
+                    _state.update {
+                        it.copy(
+                            addBookmarkDialogState = it.addBookmarkDialogState.copy(
+                                nameError = nameError,
+                                urlError = urlError
+                            )
+                        )
+                    }
+
+                    return@launch
+                }
+
                 val bookmark = Bookmark(
                     name = state.value.addBookmarkDialogState.name,
                     url = state.value.addBookmarkDialogState.url
@@ -150,16 +178,6 @@ class BookmarksScreenVM(
 
         fun onClose() = closeDialog()
 
-        private fun verifyFields() {
-            val name = state.value.addBookmarkDialogState.name
-            val url = state.value.addBookmarkDialogState.url
-            val enabled = name.isNotBlank() && url.isFullURL()
-
-            _state.update {
-                it.copy(addBookmarkDialogState = it.addBookmarkDialogState.copy(saveEnabled = enabled))
-            }
-        }
-
         private fun closeDialog() {
             _state.update { it.copy(addBookmarkDialogState = AddBookmarkDialogState()) }
         }
@@ -167,15 +185,25 @@ class BookmarksScreenVM(
 
     private inner class EditBookmarkIntent {
         fun onNameType(text: String) {
-            _state.update { it.copy(editBookmarkDialogState = it.editBookmarkDialogState.copy(name = text)) }
-
-            verifyFields()
+            _state.update {
+                it.copy(
+                    editBookmarkDialogState = it.editBookmarkDialogState.copy(
+                        name = text,
+                        nameError = null
+                    )
+                )
+            }
         }
 
         fun onURLType(text: String) {
-            _state.update { it.copy(editBookmarkDialogState = it.editBookmarkDialogState.copy(url = text)) }
-
-            verifyFields()
+            _state.update {
+                it.copy(
+                    editBookmarkDialogState = it.editBookmarkDialogState.copy(
+                        url = text,
+                        urlError = null
+                    )
+                )
+            }
         }
 
         fun onDeleteSlide() {
@@ -194,9 +222,28 @@ class BookmarksScreenVM(
 
         fun onSaveClick() {
             viewModelScope.launch {
+                val name = state.value.editBookmarkDialogState.name
+                val url = state.value.editBookmarkDialogState.url
+
+                val nameError = if (name.isNotBlank()) null else "Name must not be empty"
+                val urlError = if (url.isFullURL()) null else "URL must be a valid one"
+
+                if (nameError != null || urlError != null) {
+                    _state.update {
+                        it.copy(
+                            editBookmarkDialogState = it.editBookmarkDialogState.copy(
+                                nameError = nameError,
+                                urlError = urlError
+                            )
+                        )
+                    }
+
+                    return@launch
+                }
+
                 val bookmark = pendingBookmark!!.copy(
-                    name = state.value.editBookmarkDialogState.name,
-                    url = state.value.editBookmarkDialogState.url
+                    name = name,
+                    url = url
                 )
 
                 closeDialog()
@@ -206,16 +253,6 @@ class BookmarksScreenVM(
         }
 
         fun onClose() = closeDialog()
-
-        private fun verifyFields() {
-            val name = state.value.editBookmarkDialogState.name
-            val url = state.value.editBookmarkDialogState.url
-            val enabled = name.isNotBlank() && url.isFullURL()
-
-            _state.update {
-                it.copy(editBookmarkDialogState = it.editBookmarkDialogState.copy(saveEnabled = enabled))
-            }
-        }
 
         private fun closeDialog() {
             _state.update { it.copy(editBookmarkDialogState = EditBookmarkDialogState()) }

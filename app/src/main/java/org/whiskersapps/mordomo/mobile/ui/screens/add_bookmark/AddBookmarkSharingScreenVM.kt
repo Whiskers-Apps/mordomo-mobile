@@ -19,10 +19,6 @@ class AddBookmarkSharingScreenVM(
     private val _state = MutableStateFlow(ScreenState(name = name, url = url))
     val state = _state.asStateFlow()
 
-    init {
-        verifyFields()
-    }
-
     fun onIntent(intent: AddBookmarkSharingScreenIntent) {
         when (intent) {
             is AddBookmarkSharingScreenIntent.NameType -> onNameType(intent.text)
@@ -33,17 +29,25 @@ class AddBookmarkSharingScreenVM(
     }
 
     private fun onNameType(text: String) {
-        _state.update { it.copy(name = text) }
-        verifyFields()
+        _state.update { it.copy(name = text, nameError = null) }
     }
 
     private fun onURLType(text: String) {
-        _state.update { it.copy(url = text) }
-        verifyFields()
+        _state.update { it.copy(url = text, urlError = null) }
     }
 
     private fun onSave() {
         viewModelScope.launch {
+            val name = state.value.name
+            val url = state.value.url
+
+            val nameError = if (name.isNotBlank()) null else "Name must not be empty"
+            val urlError = if (url.isFullURL()) null else "URL must be a valid one"
+
+            if (nameError != null || urlError != null) {
+                _state.update { it.copy(nameError = nameError, urlError = urlError) }
+            }
+
             val bookmark = Bookmark(
                 name = state.value.name,
                 url = state.value.url
@@ -59,13 +63,5 @@ class AddBookmarkSharingScreenVM(
 
     private fun killActivity() {
         _state.update { it.copy(killFlag = true) }
-    }
-
-    private fun verifyFields() {
-        val name = state.value.name
-        val url = state.value.url
-        val enabled = name.isNotBlank() && url.isFullURL()
-
-        _state.update { it.copy(saveEnabled = enabled) }
     }
 }

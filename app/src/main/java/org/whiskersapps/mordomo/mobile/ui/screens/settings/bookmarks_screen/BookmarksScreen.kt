@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +46,7 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Na
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
+import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenIntent as ScreenIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenState as ScreenState
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenVM as ScreenVM
@@ -138,8 +141,6 @@ fun BookmarksScreen(
             Column(modifier = Modifier.padding(scaffoldPadding)) {
                 Nav { onIntent(ScreenIntent.Back) }
 
-                Spacer(Modifier.height(8.dp))
-
                 LazyColumn(
                     modifier = Modifier.padding(start = 24.dp, end = 24.dp),
                     verticalArrangement = Arrangement.spacedBy(2.dp)
@@ -149,28 +150,30 @@ fun BookmarksScreen(
                         key = { _, bookmark -> bookmark.id }
                     ) { index, bookmark ->
                         Row(
-                            modifier = Modifier.buttonBubble(
-                                index, state.bookmarks.size,
-                            ) { onIntent(ScreenIntent.BookmarkClick(bookmark)) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .buttonBubble(index, state.bookmarks.size) {
+                                    onIntent(ScreenIntent.BookmarkClick(bookmark))
+                                },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            WebIcon(getWebsiteIconURL(bookmark.url), size = 48.dp)
+                            WebIcon(getWebsiteIconURL(bookmark.url), size = 40.dp)
 
-                            Spacer(Modifier.width(8.dp))
+                            Spacer(Modifier.width(16.dp))
 
                             Column {
                                 Text(
-                                    bookmark.name,
-                                    style = TextStyle(color = MaterialTheme.colorScheme.onBackground)
+                                    text = bookmark.name,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    style = MaterialTheme.typography.bodyLarge
                                 )
 
-                                Spacer(Modifier.height(2.dp))
-
                                 Text(
-                                    bookmark.url, style = TextStyle(
-                                        fontSize = 12.sp,
-                                        color = MaterialTheme.colorScheme.onBackground
-                                    )
+                                    text = bookmark.url,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
                         }
@@ -185,18 +188,20 @@ fun BookmarksScreen(
 @Composable
 @Preview(showBackground = true)
 fun BookmarksScreenPreview() {
-    BookmarksScreen(
-        ScreenState(
-            loading = false,
-            bookmarks = listOf(
-                Bookmark(id = 0, name = "Notion", url = "https://notion.so"),
-                Bookmark(id = 1, name = "Notion", url = "https://notion.so"),
-                Bookmark(id = 2, name = "Notion", url = "https://notion.so"),
-                Bookmark(id = 3, name = "Notion", url = "https://notion.so"),
-                Bookmark(id = 4, name = "Notion", url = "https://notion.so"),
-                Bookmark(id = 5, name = "Notion", url = "https://notion.so"),
-                Bookmark(id = 6, name = "Notion", url = "https://notion.so"),
+    MordomoTheme {
+        BookmarksScreen(
+            ScreenState(
+                loading = false,
+                bookmarks = listOf(
+                    Bookmark(id = 0, name = "Notion", url = "https://notion.so"),
+                    Bookmark(id = 1, name = "Notion", url = "https://notion.so"),
+                    Bookmark(id = 2, name = "Notion", url = "https://notion.so"),
+                    Bookmark(id = 3, name = "Notion", url = "https://notion.so"),
+                    Bookmark(id = 4, name = "Notion", url = "https://notion.so"),
+                    Bookmark(id = 5, name = "Notion", url = "https://notion.so"),
+                    Bookmark(id = 6, name = "Notion", url = "https://notion.so"),
+                )
             )
-        )
-    ) {}
+        ) {}
+    }
 }

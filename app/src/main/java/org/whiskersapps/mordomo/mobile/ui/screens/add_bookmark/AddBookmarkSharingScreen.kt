@@ -3,13 +3,9 @@ package org.whiskersapps.mordomo.mobile.ui.screens.add_bookmark
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -22,9 +18,10 @@ import org.koin.core.parameter.parametersOf
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.utils.getActivity
 import org.whiskersapps.mordomo.mobile.core.utils.getWebsiteIconURL
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.TextInput
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
 import org.whiskersapps.mordomo.mobile.ui.screens.add_bookmark.AddBookmarkSharingScreenIntent as ScreenIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.add_bookmark.AddBookmarkSharingScreenState as ScreenState
@@ -51,7 +48,10 @@ fun AddBookmarkSharingScreenRoot(
 }
 
 @Composable
-fun AddBookmarkSharingScreen(state: ScreenState, onIntent: (ScreenIntent) -> Unit) {
+fun AddBookmarkSharingScreen(
+    state: ScreenState,
+    onIntent: (ScreenIntent) -> Unit
+) {
     ContainerColumn(contentPadded = true) {
         Column(
             modifier = Modifier
@@ -59,37 +59,27 @@ fun AddBookmarkSharingScreen(state: ScreenState, onIntent: (ScreenIntent) -> Uni
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
         ) {
-            DialogHeader(R.drawable.plus,"Add Bookmark")
+            DialogHeader(R.drawable.plus, "Add Bookmark")
 
-            Spacer(Modifier.height(8.dp))
-
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+            TextInput(
                 value = state.name,
                 onValueChange = { onIntent(ScreenIntent.NameType(it)) },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                label = {
-                    Text("Name")
-                }
+                label = "Name",
+                errorMessage = state.nameError
             )
 
             Spacer(Modifier.height(8.dp))
 
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+            TextInput(
                 value = state.url,
                 onValueChange = { onIntent(ScreenIntent.URLType(it)) },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                label = {
-                    Text("URL")
-                }
+                label = "Url",
+                errorMessage = state.urlError
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(8.dp))
 
-            if (state.saveEnabled) {
+            if (state.urlError == null) {
                 WebIcon(getWebsiteIconURL(state.url), size = 48.dp)
             }
         }
@@ -97,7 +87,6 @@ fun AddBookmarkSharingScreen(state: ScreenState, onIntent: (ScreenIntent) -> Uni
         DialogFooter(
             onPrimaryClick = { onIntent(ScreenIntent.SaveClick) },
             primaryButtonText = "Save",
-            enabled = state.saveEnabled,
             onCancel = { onIntent(ScreenIntent.CancelClick) }
         )
     }
@@ -114,7 +103,6 @@ fun AddBookmarkSharingScreenPreview() {
         state = ScreenState(
             name = "Banana",
             url = "https://google.com",
-            saveEnabled = true
         )
     ) {}
 }

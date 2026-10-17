@@ -12,14 +12,16 @@ data class BookmarksScreenState(
     data class AddBookmarkDialogState(
         val show: Boolean = false,
         val name: String = "",
+        val nameError: String? = null,
         val url: String = "",
-        val saveEnabled: Boolean = false
+        val urlError: String? = null,
     )
 
     data class EditBookmarkDialogState(
         val show: Boolean = false,
         val name: String = "",
+        val nameError: String? = null,
         val url: String = "",
-        val saveEnabled: Boolean = false
+        val urlError: String? = null,
     )
 }
