@@ -197,15 +197,6 @@ fun QuickPanelScreen(
                         modifier = Modifier.padding(start = 24.dp, end = 24.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            painter = painterResource(R.drawable.todo),
-                            contentDescription = null
-                        )
-
-                        Spacer(Modifier.width(4.dp))
-
                         Text(
                             text = "TODOs",
                             color = MaterialTheme.colorScheme.onBackground,
@@ -271,6 +262,7 @@ fun QuickPanelScreen(
                 ) { index, toDo ->
                     Row(
                         Modifier
+                            .fillMaxWidth()
                             .padding(start = 24.dp, end = 24.dp)
                             .buttonBubble(
                                 index,
@@ -279,15 +271,12 @@ fun QuickPanelScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
                             text = toDo.content,
                             textDecoration = if (toDo.done) TextDecoration.LineThrough else null,
                             color = MaterialTheme.colorScheme.onBackground
-                        )
-
-                        Spacer(
-                            Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
                         )
 
                         Checkbox(
@@ -323,15 +312,6 @@ fun QuickPanelScreen(
                             .padding(start = 24.dp, end = 24.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            painter = painterResource(R.drawable.puzzle),
-                            contentDescription = null
-                        )
-
-                        Spacer(Modifier.width(4.dp))
-
                         Text(
                             text = "Widgets",
                             color = MaterialTheme.colorScheme.onBackground,
