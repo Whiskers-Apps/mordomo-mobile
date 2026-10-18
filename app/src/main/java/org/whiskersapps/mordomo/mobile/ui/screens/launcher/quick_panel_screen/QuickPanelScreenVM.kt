@@ -37,11 +37,12 @@ class QuickPanelScreenVM(
         combine(
             settingsRepository.appSettings,
             todoRepository.toDos,
-        ) { settings, toDos ->
+            appsRepository.filteredApps
+        ) { settings, toDos, apps ->
             val allWidgets = getAllWidgets()
             val widgetsSettings = settings.home.widgets
 
-            appsWithWidgets = appsRepository.apps.filter { app -> app.widgets.isNotEmpty() }
+            appsWithWidgets = apps.filter { app -> app.widgets.isNotEmpty() }
 
             val widgets = widgetsSettings.mapNotNull { setting ->
                 val info = allWidgets.firstOrNull { it.provider.className == setting.name }
@@ -226,7 +227,7 @@ class QuickPanelScreenVM(
     private fun getAllWidgets(): List<AppWidgetProviderInfo> {
         val widgets = mutableListOf<AppWidgetProviderInfo>()
 
-        for (app in appsRepository.apps) {
+        for (app in appsRepository.filteredApps.value) {
             if (app.widgets.isNotEmpty())
                 widgets.addAll(app.widgets)
         }

@@ -286,9 +286,10 @@ fun QuickPanelScreen(
 
                         Box(
                             Modifier
+                                .size(48.dp)
                                 .clip(CircleShape)
-                                .clickable { onIntent(Intent.ToDoDeleteClick(toDo.id)) }
-                                .padding(8.dp),
+                                .clickable { onIntent(Intent.ToDoDeleteClick(toDo.id)) },
+                            contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 modifier = Modifier.size(24.dp),
