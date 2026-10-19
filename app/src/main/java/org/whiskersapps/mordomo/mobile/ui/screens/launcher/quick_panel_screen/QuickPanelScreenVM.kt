@@ -104,11 +104,26 @@ class QuickPanelScreenVM(
     }
 
     private fun onContentType(text: String) {
-        _state.update { it.copy(addToDoDialog = it.addToDoDialog.copy(content = text)) }
+        _state.update {
+            it.copy(
+                addToDoDialog = it.addToDoDialog.copy(
+                    content = text,
+                    contentError = null
+                )
+            )
+        }
     }
 
     private fun onDialogAddToDoClick() {
         viewModelScope.launch {
+            val content = state.value.addToDoDialog.content
+            val contentError = if (content.isNotBlank()) null else "TODO must not be empty"
+
+            if (contentError != null) {
+                _state.update { it.copy(addToDoDialog = it.addToDoDialog.copy(contentError = contentError)) }
+                return@launch
+            }
+
             val toDo = ToDo(content = state.value.addToDoDialog.content)
 
             _state.update { it.copy(addToDoDialog = AddToDoDialogState()) }

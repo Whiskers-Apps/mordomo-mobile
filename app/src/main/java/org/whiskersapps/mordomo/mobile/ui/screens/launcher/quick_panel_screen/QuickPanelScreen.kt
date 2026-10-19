@@ -62,6 +62,7 @@ import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.co
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.TextInput
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubbleShape
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenIntent as Intent
@@ -135,17 +136,12 @@ fun QuickPanelScreen(
         DialogLayout(onDismiss = { onIntent(AddToDoDialogIntent.Close) }) {
             DialogHeader(R.drawable.plus, "Add To-Do")
 
-            Spacer(Modifier.height(8.dp))
-
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+            TextInput(
                 value = state.addToDoDialog.content,
                 onValueChange = { onIntent(AddToDoDialogIntent.ContentType(it)) },
-                shape = RoundedCornerShape(12.dp),
-                label = { Text("To-Do") }
+                label = "To-Do",
+                errorMessage = state.addToDoDialog.contentError
             )
-
-            Spacer(Modifier.height(8.dp))
 
             DialogFooter(
                 onCancel = { onIntent(AddToDoDialogIntent.Close) },
@@ -275,8 +271,10 @@ fun QuickPanelScreen(
                                 .fillMaxWidth()
                                 .weight(1f),
                             text = toDo.content,
-                            textDecoration = if (toDo.done) TextDecoration.LineThrough else null,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                textDecoration = if (toDo.done) TextDecoration.LineThrough else null
+                            )
                         )
 
                         Checkbox(

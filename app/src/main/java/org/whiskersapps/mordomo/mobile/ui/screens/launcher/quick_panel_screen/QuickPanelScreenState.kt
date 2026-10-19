@@ -17,7 +17,8 @@ data class QuickPanelScreenState(
 ) {
     data class AddToDoDialogState(
         val show: Boolean = false,
-        val content: String = ""
+        val content: String = "",
+        val contentError: String? = null
     )
 
     data class WidgetPickerState(
