@@ -14,6 +14,7 @@ import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.TextInput
 
 data class TextSettingDialogState(
     val show: Boolean = false,
@@ -34,18 +35,12 @@ fun TextSettingDialog(
         DialogLayout(
             onDismiss = { onCancel() }
         ) {
-            DialogHeader(R.drawable.text,state.title)
+            DialogHeader(R.drawable.text, state.title)
 
-            Spacer(Modifier.height(8.dp))
-
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+            TextInput(
                 value = state.value,
                 onValueChange = { onValueChange(it) },
-                shape = RoundedCornerShape(8.dp),
-                label = {
-                    Text(state.label)
-                }
+                label = state.label
             )
 
             Spacer(Modifier.height(8.dp))

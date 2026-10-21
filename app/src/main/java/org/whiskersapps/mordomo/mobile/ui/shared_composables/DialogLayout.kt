@@ -1,12 +1,14 @@
 package org.whiskersapps.mordomo.mobile.ui.shared_composables
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
@@ -21,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.whiskersapps.mordomo.mobile.R
@@ -32,24 +35,13 @@ fun DialogHeader(
     @DrawableRes iconId: Int,
     title: String
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(iconId),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onBackground
-        )
-
-        Spacer(Modifier.height(8.dp))
-
+    Column{
         Text(
+            modifier = Modifier.fillMaxWidth(),
             text = title,
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center
         )
 
         Spacer(Modifier.height(8.dp))
@@ -66,28 +58,28 @@ fun DialogFooter(
     Column {
         Spacer(Modifier.height(8.dp))
 
-        Row {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                OutlinedButton(
-                    modifier = Modifier.conditionalModifier(primaryButtonText.isEmpty()) {
-                        this.fillMaxWidth()
-                    },
-                    onClick = { onCancel() },
-                    colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
+        Column {
+            if (primaryButtonText.isNotEmpty()) {
+                Button(
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                    onClick = { onPrimaryClick() },
+                    enabled = enabled
                 ) {
-                    Text(text = stringResource(R.string.Cancel))
+                    Text(text = primaryButtonText, style = MaterialTheme.typography.labelLarge)
                 }
 
-                if (primaryButtonText.isNotEmpty()) {
-                    Spacer(modifier = Modifier.width(4.dp))
+                Spacer(Modifier.height(8.dp))
+            }
 
-                    Button(
-                        onClick = { onPrimaryClick() },
-                        enabled = enabled
-                    ) {
-                        Text(text = primaryButtonText, style = MaterialTheme.typography.labelLarge)
-                    }
-                }
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth().heightIn(48.dp),
+                onClick = { onCancel() },
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                )
+            ) {
+                Text(text = stringResource(R.string.Cancel))
             }
         }
     }

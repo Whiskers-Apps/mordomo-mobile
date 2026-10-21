@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -48,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -61,8 +63,13 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.R.drawable
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Nav
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppIcon
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.InfoMessage
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ListDivider
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubble
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.section
 import kotlin.math.max
 import android.content.Intent as AndroidIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenIntent as Intent
@@ -142,6 +149,7 @@ fun WidgetPicker(
         Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
             .padding(24.dp)
             .imePadding(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -152,32 +160,70 @@ fun WidgetPicker(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .clickable {onIntent(Intent.WidgetPickerClose)},
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        painter = painterResource(R.drawable.back),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+
+                Spacer(Modifier.width(16.dp))
+
                 Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
                     text = "Pick a Widget",
                     color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center
                 )
+
+                Spacer(Modifier.width(48.dp))
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(8.dp))
 
             LazyColumn(
                 Modifier
                     .fillMaxSize()
-                    .weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                    .weight(1f)
+                    .section(),
             ) {
+                item {
+                    if (pickerState.apps.isEmpty()) {
+                        InfoMessage("No apps matching the search query.")
+                    }
+                }
+
                 itemsIndexed(
                     items = pickerState.apps,
                     key = { _, app -> app.packageName }
                 ) { index, app ->
+                    var opened by remember(pickerState.openedWidgets) {
+                        mutableStateOf(pickerState.openedWidgets.contains(app.packageName))
+                    }
+
                     Column(
-                        Modifier.bubble(index, pickerState.apps.size)
+                        modifier = Modifier
+                            .clickable {
+                                onIntent(Intent.AppWidgetCardClick(app.packageName))
+                            }
+                            .padding(16.dp)
                     ) {
                         Row(
                             Modifier.fillMaxWidth(),
@@ -185,7 +231,7 @@ fun WidgetPicker(
                         ) {
                             AppIcon(
                                 themed = false,
-                                size = 32.dp,
+                                size = 40.dp,
                                 icons = app.icons,
                                 shape = CircleShape,
                             )
@@ -193,57 +239,83 @@ fun WidgetPicker(
                             Spacer(Modifier.width(8.dp))
 
                             Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
                                 text = app.name,
                                 color = MaterialTheme.colorScheme.onBackground,
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MaterialTheme.typography.bodyMedium
                             )
+
+                            Spacer(Modifier.width(8.dp))
+
+                            Box(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.background),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(16.dp),
+                                    painter = painterResource(if (opened) R.drawable.chevron_up else R.drawable.chevron_down),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
                         }
 
-                        Spacer(Modifier.height(16.dp))
+                        if (opened) {
+                            Spacer(Modifier.height(16.dp))
 
-                        for (info in app.widgets) {
-                            key("${app.packageName} - ${info.provider.className}") {
-                                val name = info.loadLabel(context.packageManager)
+                            for (info in app.widgets) {
+                                key("${app.packageName} - ${info.provider.className}") {
+                                    val name = info.loadLabel(context.packageManager)
 
-                                val preview = info.loadPreviewImage(context, 0)?.toSafeBitmap()
-                                    ?: info.loadIcon(context, 0)?.toSafeBitmap()
+                                    val preview = info.loadPreviewImage(context, 0)?.toSafeBitmap()
+                                        ?: info.loadIcon(context, 0)?.toSafeBitmap()
 
-                                Column(
-                                    Modifier
-                                        .fillMaxHeight()
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .clickable {
-                                            onIntent(Intent.WidgetClick)
-                                            attemptWidgetBinding(info)
+                                    Column(
+                                        Modifier
+                                            .fillMaxHeight()
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .clickable {
+                                                onIntent(Intent.WidgetClick)
+                                                attemptWidgetBinding(info)
+                                            }
+                                            .padding(8.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        if (preview != null) {
+                                            Image(
+                                                modifier = Modifier
+                                                    .widthIn(max = 200.dp)
+                                                    .fillMaxWidth(),
+                                                bitmap = preview,
+                                                contentDescription = null,
+                                                contentScale = ContentScale.Fit
+                                            )
                                         }
-                                        .padding(8.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    if (preview != null) {
-                                        Image(
+
+                                        Spacer(Modifier.height(8.dp))
+
+                                        Text(
                                             modifier = Modifier
-                                                .widthIn(max = 200.dp)
                                                 .fillMaxWidth(),
-                                            bitmap = preview,
-                                            contentDescription = null,
-                                            contentScale = ContentScale.Fit
+                                            text = name,
+                                            color = MaterialTheme.colorScheme.onBackground,
+                                            textAlign = TextAlign.Center,
+                                            style = MaterialTheme.typography.bodyMedium
                                         )
+
                                     }
-
-                                    Spacer(Modifier.height(8.dp))
-
-                                    Text(
-                                        modifier = Modifier
-                                            .fillMaxWidth(),
-                                        text = name,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                        textAlign = TextAlign.Center,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-
                                 }
                             }
                         }
+                    }
+
+                    if (index < pickerState.apps.size - 1) {
+                        ListDivider()
                     }
                 }
             }
@@ -258,7 +330,8 @@ fun WidgetPicker(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    focusedBorderColor = MaterialTheme.colorScheme.onBackground,
+                    focusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant
                 ),
                 leadingIcon = {
                     Icon(
@@ -283,12 +356,11 @@ fun WidgetPicker(
                 },
                 placeholder = {
                     Text(
-                        modifier = Modifier
-                            .fillMaxWidth(),
                         text = "Search Apps",
-                        textAlign = TextAlign.Center
+                        style = MaterialTheme.typography.labelMedium
                     )
                 },
+                textStyle = MaterialTheme.typography.bodyMedium,
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Done
                 ),

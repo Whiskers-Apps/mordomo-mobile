@@ -25,8 +25,6 @@ fun Section(circle: Boolean, content: @Composable ColumnScope.() -> Unit) {
                     RoundedCornerShape(24.dp)
                 }
             )
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(8.dp)
     ) {
         content()
     }

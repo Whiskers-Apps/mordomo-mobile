@@ -1,7 +1,10 @@
 package org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +16,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,6 +50,7 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.comp
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.composables.EditBookmarkDialog
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Nav
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ListDivider
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
 import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
@@ -139,11 +146,13 @@ fun BookmarksScreen(
             }
         ) { scaffoldPadding ->
             Column(modifier = Modifier.padding(scaffoldPadding)) {
-                Nav { onIntent(ScreenIntent.Back) }
+                Nav("Bookmarks") { onIntent(ScreenIntent.Back) }
 
                 LazyColumn(
-                    modifier = Modifier.padding(start = 24.dp, end = 24.dp),
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                    modifier = Modifier
+                        .padding(start = 24.dp, end = 24.dp)
+                        .clip(RoundedCornerShape(40.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
                 ) {
                     itemsIndexed(
                         items = state.bookmarks,
@@ -152,9 +161,10 @@ fun BookmarksScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .buttonBubble(index, state.bookmarks.size) {
+                                .clickable {
                                     onIntent(ScreenIntent.BookmarkClick(bookmark))
-                                },
+                                }
+                                .padding(16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             WebIcon(getWebsiteIconURL(bookmark.url), size = 40.dp)
@@ -176,6 +186,10 @@ fun BookmarksScreen(
                                     overflow = TextOverflow.Ellipsis
                                 )
                             }
+                        }
+
+                        if(index < state.bookmarks.size - 1){
+                            ListDivider()
                         }
                     }
                 }

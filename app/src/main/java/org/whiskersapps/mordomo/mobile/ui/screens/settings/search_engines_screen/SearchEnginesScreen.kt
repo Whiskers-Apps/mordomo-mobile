@@ -2,6 +2,7 @@ package org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_scree
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +49,7 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.composables.EditSearchEngineDialog
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Nav
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ListDivider
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
 import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
@@ -142,12 +145,15 @@ fun SearchEnginesScreen(
             }
         ) { scaffoldPadding ->
             Column(modifier = Modifier.padding(scaffoldPadding)) {
-                Nav { onIntent(ScreenIntent.Back) }
+                Nav("Search Engines") { onIntent(ScreenIntent.Back) }
 
                 Spacer(Modifier.height(8.dp))
 
                 LazyColumn(
-                    modifier = Modifier.padding(start = 24.dp, end = 24.dp),
+                    modifier = Modifier
+                        .padding(start = 24.dp, end = 24.dp)
+                        .clip(RoundedCornerShape(40.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
                     verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     itemsIndexed(
@@ -155,13 +161,11 @@ fun SearchEnginesScreen(
                         key = { _, engine -> engine.id }
                     ) { index, engine ->
                         Row(
-                            modifier = Modifier.buttonBubble(
-                                index,
-                                state.searchEngines.size,
-                                onClick = {
+                            modifier = Modifier
+                                .clickable {
                                     onIntent(ScreenIntent.SearchEngineClick(engine))
                                 }
-                            ),
+                                .padding(16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             WebIcon(getWebsiteIconURL(engine.query), size = 40.dp)
@@ -208,6 +212,10 @@ fun SearchEnginesScreen(
                                     )
                                 }
                             }
+                        }
+
+                        if (index < state.searchEngines.size - 1) {
+                            ListDivider()
                         }
                     }
                 }

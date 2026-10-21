@@ -167,5 +167,12 @@ fun HomeScreen(
 @Composable
 @Preview(showBackground = false)
 fun Preview() {
-    HomeScreen(State(loading = false, clock = "13:56", date = "Domingo - 14/04/2026")) { }
+    HomeScreen(State(
+        loading = false,
+        clock = "13:56",
+        date = "Domingo - 14/04/2026",
+        showQuickButton = false,
+        showSearchButton = true,
+        showAppsButton = true
+    )) { }
 }

@@ -2,7 +2,9 @@ package org.whiskersapps.mordomo.mobile.ui.screens.launcher.apps_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +15,10 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -45,6 +50,9 @@ import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsValues
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppDialog
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.apps_screen.composables.AppRow
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.apps_screen.composables.SearchBar
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.InfoMessage
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ListDivider
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubbleShape
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.apps_screen.AppsScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.apps_screen.AppsScreenState as State
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.apps_screen.AppsScreenUICallback as UICallback
@@ -114,10 +122,11 @@ fun AppsScreen(state: State, onIntent: (Intent) -> Unit) {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .systemBarsPadding()
-                .padding(24.dp)
                 .imePadding()
+                .padding(24.dp)
         ) {
             if (state.searchBarPosition == SettingsValues.SearchBarPosition.TOP) {
+
                 SearchBar(
                     value = state.searchText,
                     onValueChange = { text -> onIntent(Intent.SearchType(text)) },
@@ -130,53 +139,41 @@ fun AppsScreen(state: State, onIntent: (Intent) -> Unit) {
             }
 
             if (state.apps.isEmpty()) {
-                Column(
-                    modifier = Modifier
+                Box(
+                    Modifier
                         .fillMaxSize()
-                        .weight(1f, fill = true),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .weight(1f), contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = """¯\_(ツ)_/¯""",
-                        color = MaterialTheme.colorScheme.onBackground,
-                        fontSize = 24.sp
-                    )
-
-                    Spacer(Modifier.height(16.dp))
-
-                    Text(
-                        text = "No Apps Found. Verify your spelling.",
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                    InfoMessage("No apps matching the search query.")
                 }
             } else {
                 LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f, fill = true),
-                    columns = if (state.splitList) {
+                    columns = if (state.splitList)
                         GridCells.Adaptive(minSize = 300.dp)
-                    } else {
-                        GridCells.Fixed(1)
-                    },
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    else
+                        GridCells.Fixed(1),
                     state = lazyGridState
                 ) {
-                    items(state.apps, key = { it.packageName }) { app ->
-                        AppRow(
-                            app,
-                            onClick = {
-                                onIntent(Intent.AppClick(app))
+                    itemsIndexed(state.apps, key = { _, app -> app.packageName }) { index, app ->
+                        Column {
+                            AppRow(
+                                app,
+                                onClick = {
+                                    onIntent(Intent.AppClick(app))
 
-                                scope.launch(Dispatchers.Main) {
-                                    lazyGridState.scrollToItem(0)
-                                }
-                            },
-                            onLongClick = {
-                                onIntent(Intent.AppLongClick(app))
-                            }
-                        )
+                                    scope.launch(Dispatchers.Main) {
+                                        lazyGridState.scrollToItem(0)
+                                    }
+                                },
+                                onLongClick = {
+                                    onIntent(Intent.AppLongClick(app))
+                                },
+                                padding = PaddingValues(16.dp)
+                            )
+                        }
                     }
                 }
             }

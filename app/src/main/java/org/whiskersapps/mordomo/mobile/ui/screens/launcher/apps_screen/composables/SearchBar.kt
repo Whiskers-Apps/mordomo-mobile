@@ -29,8 +29,12 @@ fun SearchBar(
         value = value,
         onValueChange = { text -> onValueChange(text) },
         placeholder = {
-            Text("Search")
+            Text(
+                text = "Search",
+                style = MaterialTheme.typography.labelMedium
+            )
         },
+        textStyle = MaterialTheme.typography.bodyMedium,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done
         ),
@@ -54,10 +58,12 @@ fun SearchBar(
         trailingIcon = {
             if (value.isNotEmpty()) {
                 Icon(
-                    modifier = Modifier.size(20.dp).clickable{
-                        onValueChange("")
-                    },
-                    painter = painterResource(R.drawable.clear),
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clickable {
+                            onValueChange("")
+                        },
+                    painter = painterResource(R.drawable.clear_circle),
                     contentDescription = null
                 )
             }

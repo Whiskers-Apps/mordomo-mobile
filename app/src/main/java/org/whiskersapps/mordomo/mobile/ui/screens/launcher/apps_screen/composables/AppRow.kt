@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
@@ -23,15 +24,14 @@ import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppIcon
 @Composable
 fun AppRow(
     app: App,
-    shape: RoundedCornerShape = CircleShape,
     padding: PaddingValues = PaddingValues(8.dp),
+    size: Dp = 48.dp,
     onClick: () -> Unit,
     onLongClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(shape)
             .combinedClickable(
                 onClick = {
                     onClick()
@@ -43,10 +43,14 @@ fun AppRow(
             .padding(padding),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AppIcon(themed = false, size = 48.dp, icons = app.icons)
+        AppIcon(themed = false, size = size, icons = app.icons)
 
         Spacer(Modifier.width(8.dp))
 
-        Text(app.name, color = MaterialTheme.colorScheme.onBackground, fontSize = 13.sp)
+        Text(
+            app.name,
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }

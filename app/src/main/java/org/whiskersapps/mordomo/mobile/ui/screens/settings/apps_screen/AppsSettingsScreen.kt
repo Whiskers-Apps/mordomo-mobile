@@ -1,9 +1,6 @@
 package org.whiskersapps.mordomo.mobile.ui.screens.settings.apps_screen
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -20,7 +17,8 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Se
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.SwitchSetting
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.BOTTOM_SHAPE
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.TOP_SHAPE
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ListDivider
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.section
 import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 
 @Composable
@@ -43,21 +41,22 @@ fun AppsSettingsScreen(
 ) {
     if (!state.loading) {
         ContainerColumn {
-            Nav { onIntent(AppsSettingsScreenIntent.BackClick) }
+            Nav("Apps") { onIntent(AppsSettingsScreenIntent.BackClick) }
 
             Column(
                 Modifier
                     .verticalScroll(rememberScrollState())
-                    .padding(start = 24.dp, end = 24.dp, bottom = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp)
+                    .padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
+                    .section(),
             ) {
                 SwitchSetting(
-                    shape = TOP_SHAPE,
                     title = "Split List",
                     description = "Split list if there's available space",
                     value = state.splitList,
                     onValueChange = { onIntent(AppsSettingsScreenIntent.SplitListClick(it)) }
                 )
+
+                ListDivider()
 
                 SegmentedSetting(
                     shape = BOTTOM_SHAPE,

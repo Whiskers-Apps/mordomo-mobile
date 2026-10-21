@@ -24,6 +24,7 @@ data class QuickPanelScreenState(
     data class WidgetPickerState(
         val show: Boolean = false,
         val apps: List<App> = emptyList(),
-        val searchText: String = ""
+        val searchText: String = "",
+        val openedWidgets: Set<String> = emptySet()
     )
 }

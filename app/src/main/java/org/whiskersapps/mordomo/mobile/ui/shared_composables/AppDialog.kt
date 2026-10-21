@@ -54,8 +54,7 @@ fun AppDialog(
                     .fillMaxWidth()
                     .clip(SingleCardShape)
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(8.dp),
-
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -63,7 +62,11 @@ fun AppDialog(
 
                 Spacer(Modifier.height(8.dp))
 
-                Text(text = app.name, color = MaterialTheme.colorScheme.onBackground)
+                Text(
+                    text = app.name,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
 
             Spacer(Modifier.height(8.dp))
@@ -80,7 +83,7 @@ fun AppDialog(
                         .clip(LeftCardShape)
                         .background(MaterialTheme.colorScheme.background)
                         .clickable { onAppInfoClick(app) }
-                        .padding(12.dp),
+                        .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
@@ -92,7 +95,11 @@ fun AppDialog(
 
                     Spacer(Modifier.width(8.dp))
 
-                    Text("App Info", color = MaterialTheme.colorScheme.onBackground)
+                    Text(
+                        "App Info",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
 
                 Spacer(Modifier.width(4.dp))
@@ -104,7 +111,7 @@ fun AppDialog(
                         .clip(RightCardShape)
                         .background(MaterialTheme.colorScheme.background)
                         .clickable { onUninstallClick(app) }
-                        .padding(12.dp),
+                        .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
@@ -116,7 +123,11 @@ fun AppDialog(
 
                     Spacer(Modifier.width(8.dp))
 
-                    Text("Uninstall", color = MaterialTheme.colorScheme.onBackground)
+                    Text(
+                        "Uninstall",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
 
@@ -134,7 +145,7 @@ fun AppDialog(
                             .clip(getShapeByIndex(index, app.shortcuts.size))
                             .background(MaterialTheme.colorScheme.background)
                             .clickable { onShortcutClick(shortcut) }
-                            .padding(12.dp),
+                            .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         shortcut.icon?.let { icon ->
@@ -149,7 +160,8 @@ fun AppDialog(
 
                         Text(
                             text = shortcut.text,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 }

@@ -21,6 +21,7 @@ import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.TextInput
+import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.EditBookmarkDialogIntent as DialogIntent
 
 @Composable
@@ -54,9 +55,10 @@ fun EditBookmarkDialog(
         OutlinedButton(
             modifier = Modifier.height(48.dp),
             onClick = { onIntent(DialogIntent.DeleteClick) },
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.error),
+            border = BorderStroke(2.dp, MaterialTheme.colorScheme.surfaceVariant),
             colors = outlinedButtonColors(
-                contentColor = MaterialTheme.colorScheme.error
+                contentColor = MaterialTheme.colorScheme.error,
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
             )
         ) {
             Text(
@@ -77,11 +79,13 @@ fun EditBookmarkDialog(
 @Composable
 @Preview(showSystemUi = true)
 fun EditBookmarkDialogPreview() {
-    EditBookmarkDialog(
-        state = EditBookmarkDialogState(
-            show = true,
-            name = "Notion",
-            url = "https://notion.so",
-        )
-    ) {}
+    MordomoTheme {
+        EditBookmarkDialog(
+            state = EditBookmarkDialogState(
+                show = true,
+                name = "Notion",
+                url = "https://notion.so",
+            )
+        ) {}
+    }
 }

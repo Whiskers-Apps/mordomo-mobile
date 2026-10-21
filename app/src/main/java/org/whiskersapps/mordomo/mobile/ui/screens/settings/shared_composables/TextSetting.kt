@@ -30,7 +30,6 @@ import org.whiskersapps.mordomo.mobile.ui.shared_composables.TOP_SHAPE
 
 @Composable
 fun TextSetting(
-    shape: Shape,
     title: String,
     description: String,
     text: String,
@@ -39,7 +38,6 @@ fun TextSetting(
     Column(
         Modifier
             .fillMaxWidth()
-            .clip(shape)
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable { onClick() }
             .padding(16.dp)
@@ -61,7 +59,7 @@ fun TextSetting(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
+                .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.background)
                 .padding(8.dp),
             contentAlignment = Alignment.Center
@@ -79,7 +77,6 @@ fun TextSetting(
 @Preview
 fun PreviewTextSetting() {
     TextSetting(
-        shape = TOP_SHAPE,
         title = "Date Format",
         description = "Date format under the clock",
         text = "EEEE - dd/MM/y",

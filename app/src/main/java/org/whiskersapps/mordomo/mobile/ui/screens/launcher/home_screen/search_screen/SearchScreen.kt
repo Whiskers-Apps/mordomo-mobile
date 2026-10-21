@@ -4,21 +4,28 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
@@ -28,10 +35,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,8 +64,12 @@ import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_sc
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.components.SectionHeader
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppDialog
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ListDivider
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.SINGLE_SHAPE
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubbleShape
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.section
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenState as State
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenUICallback as UICallback
@@ -143,41 +157,91 @@ fun SearchScreen(
         )
     }
 
-    ContainerColumn {
-        Box(Modifier.padding(start = 8.dp, end = 8.dp)) {
-            SearchBar(
-                value = state.searchText,
-                onValueChange = { onIntent(Intent.SearchType(it)) },
-                focusRequester = focusRequester,
+    ContainerColumn(contentPadded = true) {
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
+            value = state.searchText,
+            onValueChange = { onIntent(Intent.SearchType(it)) },
+            placeholder = {
+                Text(
+                    text = "Search",
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            singleLine = true,
+            shape = CircleShape,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
+                focusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+            leadingIcon = {
+                androidx.compose.material3.Icon(
+                    modifier = Modifier.size(24.dp),
+                    painter = painterResource(R.drawable.search),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            },
+            trailingIcon = {
+                if (state.searchText.isNotEmpty()) {
+                    androidx.compose.material3.Icon(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable {
+                                onIntent(Intent.SearchType(""))
+                            },
+                        painter = painterResource(R.drawable.clear_circle),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+            },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
                 onDone = { onIntent(Intent.SearchDone) }
             )
-        }
+        )
+
+        Spacer(Modifier.height(16.dp))
 
         Column(
-            Modifier
-                .padding(24.dp)
-                .verticalScroll(rememberScrollState())
+            Modifier.verticalScroll(rememberScrollState())
         ) {
             if (state.apps.isNotEmpty()) {
-                SectionHeader(R.drawable.apps_outline, "Apps")
+                SectionHeader("Apps")
 
-                Section(state.circleApps) {
-                    state.apps.forEach { app ->
+                Column(Modifier.section()) {
+                    state.apps.forEachIndexed { index, app ->
                         key("app-${app.packageName}") {
-                            AppRow(
-                                app = app,
-                                shape = if (state.apps.size == 1) {
-                                    CircleShape
-                                } else {
-                                    RoundedCornerShape(24.dp)
-                                },
-                                onClick = {
-                                    onIntent(Intent.AppClick(app))
-                                },
-                                onLongClick = {
-                                    onIntent(Intent.AppLongClick(app))
-                                }
-                            )
+                            Box(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .bubbleShape(index, state.apps.size)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                            ) {
+                                AppRow(
+                                    app = app,
+                                    onClick = {
+                                        onIntent(Intent.AppClick(app))
+                                    },
+                                    onLongClick = {
+                                        onIntent(Intent.AppLongClick(app))
+                                    },
+                                    padding = PaddingValues(16.dp),
+                                    size = 40.dp
+                                )
+                            }
+
+                            if (index < state.apps.size - 1) {
+                                ListDivider()
+                            }
                         }
                     }
                 }
@@ -186,37 +250,46 @@ fun SearchScreen(
             }
 
             if (state.bookmarks.isNotEmpty()) {
-                SectionHeader(R.drawable.bookmark_outline, "Bookmarks")
+                SectionHeader("Bookmarks")
 
-                Section(state.circleBookmarks) {
+                Column(Modifier.section()) {
+
                     state.bookmarks.forEachIndexed { index, bookmark ->
                         key("bookmark-${bookmark.id}") {
                             Row(
-                                modifier = Modifier.buttonBubble(
-                                    index,
-                                    state.bookmarks.size
-                                ) { onIntent(Intent.BookmarkClick(bookmark)) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        onIntent(Intent.BookmarkClick(bookmark))
+                                    }
+                                    .padding(16.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                WebIcon(getWebsiteIconURL(bookmark.url), size = 48.dp)
+                                WebIcon(getWebsiteIconURL(bookmark.url), size = 40.dp)
 
                                 Spacer(Modifier.width(8.dp))
 
                                 Column {
                                     Text(
-                                        bookmark.name,
-                                        style = TextStyle(color = MaterialTheme.colorScheme.onBackground)
+                                        text = bookmark.name,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
-
-                                    Spacer(Modifier.height(2.dp))
 
                                     Text(
-                                        bookmark.url, style = TextStyle(
-                                            fontSize = 12.sp,
-                                            color = MaterialTheme.colorScheme.onBackground
-                                        )
+                                        text = bookmark.url,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                 }
+                            }
+
+                            if (index < state.bookmarks.size - 1) {
+                                ListDivider()
                             }
                         }
                     }
@@ -226,18 +299,17 @@ fun SearchScreen(
             }
 
             if (state.searchEngine != null && state.searchText.isNotBlank()) {
-                SectionHeader(R.drawable.globe_outline, "Web Search")
+                SectionHeader("Web Search")
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .section()
                         .clickable { onIntent(Intent.WebSearchClick) }
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    WebIcon(getWebsiteIconURL(state.searchEngine.query), size = 48.dp)
+                    WebIcon(getWebsiteIconURL(state.searchEngine.query), size = 40.dp)
 
                     Spacer(Modifier.width(8.dp))
 

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,12 +30,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.whiskersapps.mordomo.mobile.R
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ListDivider
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.MiddleCardShape
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.TopCardShape
 
 @Composable
 fun SettingsSection(
-    shape: Shape,
     @DrawableRes iconId: Int,
     title: String,
     description: String,
@@ -43,7 +44,6 @@ fun SettingsSection(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(shape)
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable { onClick() }
             .padding(16.dp),
@@ -52,7 +52,7 @@ fun SettingsSection(
         Box(
             Modifier
                 .clip(CircleShape)
-                .size(48.dp)
+                .size(40.dp)
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
@@ -89,16 +89,14 @@ fun SettingsSection(
 fun SettingsSectionPreview() {
     Column {
         SettingsSection(
-            shape = TopCardShape,
             iconId = R.drawable.bookmark_outline,
             title = "Bookmarks",
             description = "Add bookmarks to quickly open links"
         ) {}
 
-        Spacer(Modifier.height(2.dp))
+        ListDivider()
 
         SettingsSection(
-            shape = MiddleCardShape,
             iconId = R.drawable.bookmark_outline,
             title = "Lorem Ipsum",
             description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."

@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,6 +20,7 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.whiskersapps.mordomo.mobile.R
@@ -42,15 +44,17 @@ fun TextInput(
         modifier = Modifier.fillMaxWidth(),
         value = value,
         onValueChange = { onValueChange(it) },
-        shape = RoundedCornerShape(8.dp),
+        shape = CircleShape,
         singleLine = true,
         isError = errorMessage != null,
         supportingText = errorMessage?.let { message ->
             {
                 Text(
+                    modifier = Modifier.fillMaxWidth(),
                     text = message,
                     color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
                 )
             }
         },
@@ -64,7 +68,7 @@ fun TextInput(
             if (value.isNotEmpty()) {
                 Icon(
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(24.dp)
                         .clickable { onValueChange("") },
                     painter = painterResource(R.drawable.clear_circle),
                     contentDescription = null,

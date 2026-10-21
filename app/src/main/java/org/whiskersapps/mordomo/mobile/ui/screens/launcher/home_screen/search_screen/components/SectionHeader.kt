@@ -16,36 +16,29 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.whiskersapps.mordomo.mobile.R
+import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 
 @Composable
 fun SectionHeader(
-    @DrawableRes iconId: Int,
     title: String
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Spacer(Modifier.width(16.dp))
-
-        androidx.compose.material3.Icon(
-            modifier = Modifier.size(20.dp),
-            painter = painterResource(iconId),
-            contentDescription = null
-        )
-
+    Row {
         Spacer(Modifier.width(8.dp))
 
         Text(
             text = title,
-            style = TextStyle(
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 
-    Spacer(Modifier.height(8.dp))
+    Spacer(Modifier.height(4.dp))
 }
 
 @Composable
 @Preview(showBackground = true)
 fun SectionHeaderPreview() {
-    SectionHeader(iconId = R.drawable.apps, "Apps")
+    MordomoTheme {
+        SectionHeader("Apps")
+    }
 }

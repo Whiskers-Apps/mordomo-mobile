@@ -1,6 +1,5 @@
 package org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen
 
-import android.appwidget.AppWidgetProviderInfo
 import org.whiskersapps.mordomo.mobile.core.features.widgets.Widget
 
 sealed interface QuickPanelScreenIntent {
@@ -9,6 +8,7 @@ sealed interface QuickPanelScreenIntent {
     data class ToDoDeleteClick(val id: Int) : QuickPanelScreenIntent
     data object WidgetPickerClose : QuickPanelScreenIntent
     data object AddWidgetClick : QuickPanelScreenIntent
+    data class AppWidgetCardClick(val name: String) : QuickPanelScreenIntent
     data object WidgetClick : QuickPanelScreenIntent
     data class WidgetBound(val id: Int, val name: String) : QuickPanelScreenIntent
     data class DeleteWidgetClick(val widget: Widget) : QuickPanelScreenIntent

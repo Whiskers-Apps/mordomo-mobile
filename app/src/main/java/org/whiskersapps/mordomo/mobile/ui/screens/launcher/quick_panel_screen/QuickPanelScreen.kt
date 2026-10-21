@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +26,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -34,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,11 +43,11 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -62,9 +63,11 @@ import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.co
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.InfoMessage
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ListDivider
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.TextInput
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubbleShape
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.buttonBubble
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.section
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenState as State
 
@@ -116,19 +119,19 @@ fun QuickPanelScreen(
     }
 
     LaunchedEffect(state.widgetPickerState.show) {
-        if (state.widgetPickerState.show) {
-            scope.launch { scaffoldState.bottomSheetState.expand() }
-        } else {
-            scope.launch {
+        scope.launch {
+            if (state.widgetPickerState.show) {
+                scaffoldState.bottomSheetState.expand()
+            } else {
                 scaffoldState.bottomSheetState.hide()
             }
         }
     }
 
     LaunchedEffect(sheetState.currentValue) {
-        snapshotFlow { sheetState.targetValue }
+        snapshotFlow { sheetState.currentValue }
             .collect { target ->
-                if (target != SheetValue.Expanded) onIntent(Intent.WidgetPickerClose)
+                if (target == SheetValue.PartiallyExpanded) onIntent(Intent.WidgetPickerClose)
             }
     }
 
@@ -161,18 +164,13 @@ fun QuickPanelScreen(
         containerColor = MaterialTheme.colorScheme.background,
         sheetPeekHeight = 0.dp,
         sheetDragHandle = null,
-        sheetSwipeEnabled = false,
-        sheetMaxWidth = Dp.Unspecified,
         sheetContent = {
-            Box(Modifier.systemBarsPadding()) {
-                WidgetPicker(
-                    widgetsHost = widgetsHost,
-                    widgetManager = widgetManager,
-                    pickerState = state.widgetPickerState,
-                    onIntent = { onIntent(it) }
-                )
-            }
-
+            WidgetPicker(
+                widgetsHost = widgetsHost,
+                widgetManager = widgetManager,
+                pickerState = state.widgetPickerState,
+                onIntent = { onIntent(it) }
+            )
         },
     ) { scaffoldPadding ->
         BoxWithConstraints(
@@ -180,6 +178,7 @@ fun QuickPanelScreen(
                 .fillMaxSize()
                 .padding(scaffoldPadding)
                 .systemBarsPadding()
+                .padding(24.dp)
         ) {
             val width = maxWidth.value
             val cellSize = remember(
@@ -187,237 +186,215 @@ fun QuickPanelScreen(
                 splitWidgets
             ) { mutableIntStateOf(width.toInt() / if (splitWidgets) 8 else 4) }.intValue
 
-            LazyColumn {
-                item {
-                    Row(
-                        modifier = Modifier.padding(start = 24.dp, end = 24.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "TODOs",
-                            color = MaterialTheme.colorScheme.onBackground,
-                            style = MaterialTheme.typography.titleMedium
-                        )
-
-                        Spacer(
-                            Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                        )
-
-                        Box(
-                            Modifier
-                                .size(48.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .clickable {
-                                    onIntent(Intent.AddToDoClick)
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.plus),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground
-                            )
-                        }
-                    }
-
-                    Spacer(Modifier.height(8.dp))
-
-                    if (state.toDos.isEmpty()) {
-                        Row(
-                            modifier = Modifier.padding(start = 24.dp, end = 24.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.info),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground
-                            )
-
-                            Spacer(Modifier.width(4.dp))
-
+            Column {
+                LazyColumn {
+                    item {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = "No TODOs. Click on the add button to create one.",
+                                text = "TODOs",
                                 color = MaterialTheme.colorScheme.onBackground,
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.titleMedium
                             )
-                        }
 
-
-                        Spacer(Modifier.height(8.dp))
-                    }
-                }
-
-                itemsIndexed(
-                    items = state.toDos,
-                    key = { _, toDo -> "todo-${toDo.id}" }
-                ) { index, toDo ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(start = 24.dp, end = 24.dp)
-                            .buttonBubble(
-                                index,
-                                state.toDos.size,
-                            ) { onIntent(Intent.ToDoClick(toDo.id)) },
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            text = toDo.content,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                textDecoration = if (toDo.done) TextDecoration.LineThrough else null
-                            )
-                        )
-
-                        Checkbox(
-                            checked = toDo.done,
-                            onCheckedChange = { onIntent(Intent.ToDoClick(toDo.id)) }
-                        )
-
-                        Box(
-                            Modifier
-                                .size(48.dp)
-                                .clip(CircleShape)
-                                .clickable { onIntent(Intent.ToDoDeleteClick(toDo.id)) },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.trash),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground
-                            )
-                        }
-                    }
-
-                    if (index < state.toDos.size - 1)
-                        Spacer(Modifier.height(2.dp))
-                }
-
-                item {
-                    Spacer(Modifier.height(16.dp))
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 24.dp, end = 24.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Widgets",
-                            color = MaterialTheme.colorScheme.onBackground,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-
-                        Spacer(
-                            Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                        )
-
-                        Box(
-                            Modifier
-                                .size(48.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .clickable {
-                                    onIntent(Intent.AddWidgetClick)
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(R.drawable.plus),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onBackground
-                            )
-                        }
-                    }
-
-                    Spacer(Modifier.height(8.dp))
-                }
-
-
-                if (splitWidgets) {
-                    itemsIndexed(
-                        items = state.widgets.chunked(2),
-                        key = { _, widget -> "${widget.first().id} - ${widget.getOrNull(1)?.id}" }
-                    ) { index, row ->
-                        val secondWidget = row.getOrNull(1)
-
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(IntrinsicSize.Min)
-                                .padding(start = 24.dp, end = 24.dp)
-                        ) {
-                            WidgetView(
-                                modifier = Modifier
-                                    .fillMaxSize()
+                            Spacer(
+                                Modifier
+                                    .fillMaxWidth()
                                     .weight(1f)
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                                widget = row.first(),
-                                widgetsHost = widgetsHost,
-                                cellSize = cellSize,
-                                split = true,
-                                onIntent = { onIntent(it) }
                             )
 
-                            Spacer(Modifier.width(8.dp))
-
-                            if (secondWidget != null) {
-                                WidgetView(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .weight(1f)
-                                        .clip(RoundedCornerShape(16.dp))
-                                        .background(MaterialTheme.colorScheme.surfaceVariant),
-                                    widget = secondWidget,
-                                    widgetsHost = widgetsHost,
-                                    cellSize = cellSize,
-                                    split = true,
-                                    onIntent = { onIntent(it) }
-                                )
-                            } else {
-                                Box(
-                                    Modifier
-                                        .fillMaxSize()
-                                        .weight(1f)
+                            Box(
+                                Modifier
+                                    .size(48.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                                    .clickable {
+                                        onIntent(Intent.AddToDoClick)
+                                    },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(24.dp),
+                                    painter = painterResource(R.drawable.plus),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground
                                 )
                             }
                         }
 
-                        if (index < state.widgets.size - 1)
-                            Spacer(Modifier.height(8.dp))
-                    }
-                } else {
-                    itemsIndexed(
-                        items = state.widgets,
-                        key = { _, widget -> widget.id }
-                    ) { index, widget ->
-                        WidgetView(
-                            modifier = Modifier
-                                .padding(start = 24.dp, end = 24.dp)
-                                .bubbleShape(index, state.widgets.size)
-                                .background(MaterialTheme.colorScheme.surfaceVariant),
-                            widget = widget,
-                            widgetsHost = widgetsHost,
-                            cellSize = cellSize,
-                            split = false,
-                            onIntent = { onIntent(it) }
-                        )
+                        Spacer(Modifier.height(8.dp))
 
-                        if (index < state.widgets.size - 1)
-                            Spacer(Modifier.height(2.dp))
+                        if (state.toDos.isEmpty()) {
+                            InfoMessage("No TODOs. Click on the add button to create one.")
+
+                            Spacer(Modifier.height(8.dp))
+                        }
+                    }
+
+                    item {
+                        Column(Modifier.section()) {
+                            state.toDos.forEachIndexed { index, toDo ->
+                                key("todo-${toDo.id}") {
+                                    Row(
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .clickable { onIntent(Intent.ToDoClick(toDo.id)) }
+                                            .padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Checkbox(
+                                            checked = toDo.done,
+                                            onCheckedChange = { onIntent(Intent.ToDoClick(toDo.id)) }
+                                        )
+
+                                        Spacer(Modifier.width(8.dp))
+
+                                        Text(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .weight(1f),
+                                            text = toDo.content,
+                                            color = MaterialTheme.colorScheme.onBackground,
+                                            style = MaterialTheme.typography.bodyMedium.copy(
+                                                textDecoration = if (toDo.done) TextDecoration.LineThrough else null
+                                            )
+                                        )
+
+                                        Spacer(Modifier.width(8.dp))
+
+                                        Box(
+                                            Modifier
+                                                .size(48.dp)
+                                                .clip(CircleShape)
+                                                .background(MaterialTheme.colorScheme.background)
+                                                .clickable { onIntent(Intent.ToDoDeleteClick(toDo.id)) },
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Icon(
+                                                modifier = Modifier.size(24.dp),
+                                                painter = painterResource(R.drawable.trash),
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.error
+                                            )
+                                        }
+                                    }
+
+                                    if (index < state.toDos.size - 1) {
+                                        ListDivider()
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    item {
+                        Spacer(Modifier.height(16.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Widgets",
+                                color = MaterialTheme.colorScheme.onBackground,
+                                style = MaterialTheme.typography.titleMedium,
+                            )
+
+                            Spacer(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                            )
+
+                            Box(
+                                Modifier
+                                    .size(48.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                                    .clickable {
+                                        onIntent(Intent.AddWidgetClick)
+                                    },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(24.dp),
+                                    painter = painterResource(R.drawable.plus),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                        }
+
+                        Spacer(Modifier.height(8.dp))
+
+                        Column(Modifier.section()) {
+                            if (splitWidgets) {
+                                state.widgets.chunked(2).forEachIndexed { index, row ->
+                                    val secondWidget = row.getOrNull(1)
+
+                                    Row(
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .height(IntrinsicSize.Min)
+                                    ) {
+                                        WidgetView(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .weight(1f)
+                                                .clip(RoundedCornerShape(16.dp))
+                                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                                            widget = row.first(),
+                                            widgetsHost = widgetsHost,
+                                            cellSize = cellSize,
+                                            split = true,
+                                            onIntent = { onIntent(it) }
+                                        )
+
+                                        Spacer(Modifier.width(8.dp))
+
+                                        if (secondWidget != null) {
+                                            WidgetView(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .weight(1f)
+                                                    .clip(RoundedCornerShape(16.dp))
+                                                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                                                widget = secondWidget,
+                                                widgetsHost = widgetsHost,
+                                                cellSize = cellSize,
+                                                split = true,
+                                                onIntent = { onIntent(it) }
+                                            )
+                                        } else {
+                                            Box(
+                                                Modifier
+                                                    .fillMaxSize()
+                                                    .weight(1f)
+                                            )
+                                        }
+                                    }
+
+                                    if (index < state.widgets.size - 1) {
+                                        ListDivider()
+                                    }
+                                }
+                            } else {
+                                state.widgets.forEachIndexed { index, widget ->
+                                    WidgetView(
+                                        modifier = Modifier,
+                                        widget = widget,
+                                        widgetsHost = widgetsHost,
+                                        cellSize = cellSize,
+                                        split = false,
+                                        onIntent = { onIntent(it) }
+                                    )
+
+                                    if (index < state.widgets.size - 1) {
+                                        ListDivider()
+                                    }
+                                }
+                            }
+                        }
+
                     }
                 }
             }
@@ -426,7 +403,7 @@ fun QuickPanelScreen(
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 fun QuickPanelScreenPreview() {
     val state = State(
         loading = false,
@@ -444,7 +421,7 @@ fun QuickPanelScreenPreview() {
         ),
         quickApps = listOf(),
         addToDoDialog = State.AddToDoDialogState(
-            show = true,
+            show = false,
             content = "Buy gro"
         )
     )

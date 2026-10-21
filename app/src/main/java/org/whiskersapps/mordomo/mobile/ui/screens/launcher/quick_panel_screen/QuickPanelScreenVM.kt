@@ -80,6 +80,7 @@ class QuickPanelScreenVM(
 
             Intent.AddWidgetClick -> onAddWidgetClick()
             Intent.WidgetPickerClose -> onWidgetPickerClose()
+            is Intent.AppWidgetCardClick -> onWidgetCardClick(intent.name)
             is Intent.WidgetClick -> onWidgetClick()
             is Intent.WidgetBound -> onWidgetBound(intent.id, intent.name)
             is Intent.DeleteWidgetClick -> onDeleteWidgetClick(intent.widget)
@@ -162,6 +163,20 @@ class QuickPanelScreenVM(
                     widgetPickerState = WidgetPickerState(),
                 )
             }
+        }
+    }
+
+    private fun onWidgetCardClick(name: String) {
+        viewModelScope.launch {
+            val openedWidgets = state.value.widgetPickerState.openedWidgets.toMutableSet()
+
+            if (openedWidgets.contains(name)) {
+                openedWidgets.remove(name)
+            } else {
+                openedWidgets.add(name)
+            }
+
+            _state.update { it.copy(widgetPickerState = it.widgetPickerState.copy(openedWidgets = openedWidgets)) }
         }
     }
 

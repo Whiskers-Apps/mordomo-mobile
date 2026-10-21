@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -24,8 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import org.whiskersapps.mordomo.mobile.R
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.BottomCardShape
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.ListDivider
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.TopCardShape
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.section
+import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 
 @Composable
 fun MenuDialog(
@@ -43,15 +46,15 @@ fun MenuDialog(
             Column(
                 modifier = Modifier
                     .widthIn(max = 600.dp)
-                    .padding(24.dp),
+                    .padding(24.dp)
+                    .section(),
             ) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .clip(TopCardShape)
-                        .background(MaterialTheme.colorScheme.background)
                         .clickable { onSetWallpaperClick() }
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         modifier = Modifier.size(24.dp),
@@ -62,22 +65,21 @@ fun MenuDialog(
 
                     Spacer(Modifier.width(8.dp))
 
-                    Text(text = "Set Wallpaper", color = MaterialTheme.colorScheme.onBackground)
+                    Text(
+                        text = "Set Wallpaper",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
 
-                Spacer(
-                    Modifier
-                        .height(2.dp)
-                        .background(Color.Transparent)
-                )
+                ListDivider()
 
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .clip(BottomCardShape)
-                        .background(MaterialTheme.colorScheme.background)
                         .clickable { onSettingsClick() }
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         modifier = Modifier.size(24.dp),
@@ -88,7 +90,11 @@ fun MenuDialog(
 
                     Spacer(Modifier.width(8.dp))
 
-                    Text(text = "Settings", color = MaterialTheme.colorScheme.onBackground)
+                    Text(
+                        text = "Settings",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
         }
@@ -96,11 +102,13 @@ fun MenuDialog(
 }
 
 @Composable
-@Preview
-fun HomeMenuPreview(){
-    MenuDialog(
-        show = true,
-        onDismiss = {},
-        onSetWallpaperClick = {}
-    ){}
+@Preview(showSystemUi = true)
+fun HomeMenuPreview() {
+    MordomoTheme {
+        MenuDialog(
+            show = true,
+            onDismiss = {},
+            onSetWallpaperClick = {}
+        ) {}
+    }
 }

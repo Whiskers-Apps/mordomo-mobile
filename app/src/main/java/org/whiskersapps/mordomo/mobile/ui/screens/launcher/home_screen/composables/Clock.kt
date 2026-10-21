@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsValues
+import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.HomeScreenIntent as Intent
 
 @Composable
@@ -101,18 +102,19 @@ fun Clock(
 }
 
 @Composable
-@Preview(wallpaper = Wallpapers.BLUE_DOMINATED_EXAMPLE, showBackground = true)
+@Preview()
 fun ClockPreview() {
-    Box(
-        Modifier
-            .fillMaxSize()
-            .padding(32.dp)
-    ) {
-        Clock(
-            style = SettingsValues.ClockStyle.ISLAND,
-            clock = "13:51",
-            date = "Saturday - 20/06/2026",
-            showDate = true,
-        ) {}
+    MordomoTheme {
+        Box(
+            Modifier
+                .padding(32.dp)
+        ) {
+            Clock(
+                style = SettingsValues.ClockStyle.ISLAND,
+                clock = "13:51",
+                date = "Saturday - 20/06/2026",
+                showDate = true,
+            ) {}
+        }
     }
 }

@@ -1,10 +1,10 @@
 package org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.composables
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -19,9 +19,8 @@ import androidx.compose.ui.unit.dp
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.SwitchSetting
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.SINGLE_SHAPE
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.TextInput
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.EditEngineDialogIntent as DialogIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenState.EditEngineDialogState as DialogState
@@ -55,7 +54,8 @@ fun EditSearchEngineDialog(
         Spacer(Modifier.height(8.dp))
 
         SwitchSetting(
-            shape = SINGLE_SHAPE,
+            padding = PaddingValues(start = 4.dp, end = 4.dp),
+            backgroundColor = MaterialTheme.colorScheme.background,
             title = "Default",
             description = "Set this search engine as the preferred.",
             value = state.default,
@@ -67,9 +67,10 @@ fun EditSearchEngineDialog(
         OutlinedButton(
             modifier = Modifier.height(48.dp),
             onClick = { onIntent(DialogIntent.DeleteClick) },
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.error),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant),
             colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = MaterialTheme.colorScheme.error
+                contentColor = MaterialTheme.colorScheme.error,
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
             )
         ) {
             Text(
