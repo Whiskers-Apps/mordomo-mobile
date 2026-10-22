@@ -31,8 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ListDivider
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.MiddleCardShape
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.TopCardShape
 
 @Composable
 fun SettingsSection(
