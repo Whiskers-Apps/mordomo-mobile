@@ -14,18 +14,22 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.whiskersapps.mordomo.mobile.core.features.lock.LockRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
+import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsValues
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.SettingsActivity
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.time.Duration.Companion.milliseconds
 import android.content.Intent as AndroidIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.HomeScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.HomeScreenUICallback as UICallback
 
 class HomeScreenVM(
     val context: Application,
-    val settingsRepository: SettingsRepository
+    val settingsRepository: SettingsRepository,
+    val lockRepository: LockRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeScreenState())
@@ -59,7 +63,7 @@ class HomeScreenVM(
                     )
                 }
 
-                delay(1000)
+                delay(1000.milliseconds)
             }
         }
 
@@ -73,7 +77,8 @@ class HomeScreenVM(
                     disableSwipe = settings.home.disableSwipe,
                     showQuickButton = settings.home.showQuickButton,
                     showSearchButton = settings.home.showSearchButton,
-                    showAppsButton = settings.home.showAppsButton
+                    showAppsButton = settings.home.showAppsButton,
+                    showLockOption = settings.home.lockScreenMethod != SettingsValues.LockScreenMethod.DISABLED
                 )
             }
         }.launchIn(viewModelScope)
@@ -84,7 +89,9 @@ class HomeScreenVM(
             Intent.ClockClick -> onClockClick()
             Intent.DateClick -> onDateClick()
             Intent.LongClick -> onLongClick()
+            Intent.DoubleClick -> onDoubleClick()
             Intent.SetWallpaperClick -> onSetWallpaperClick()
+            Intent.LockScreenClick -> onLockScreenClick()
             Intent.SettingsClick -> onSettingsClick()
             Intent.MenuDismiss -> onMenuDismiss()
             Intent.SwipeDown -> onSwipeDown()
@@ -92,6 +99,8 @@ class HomeScreenVM(
             Intent.QuickPanelButtonClick -> onQuickPanelButtonClick()
             Intent.SearchButtonClick -> onSearchButtonClick()
             Intent.SwipeUp -> onSwipeUp()
+            Intent.AccessibilityDialogClose -> onAccessibilityDialogClose()
+            Intent.OpenAccessibilityClick -> onOpenAccessibilityClick()
         }
     }
 
@@ -128,6 +137,22 @@ class HomeScreenVM(
         }
     }
 
+    private fun onDoubleClick() {
+        viewModelScope.launch {
+            val method = settingsRepository.appSettings.value.home.lockScreenMethod
+
+            if (method == SettingsValues.LockScreenMethod.DISABLED)
+                return@launch
+
+            if (method == SettingsValues.LockScreenMethod.ACCESSIBILITY && !lockRepository.canLockScreen()) {
+                _state.update { it.copy(showAccessibilityDialog = true) }
+                return@launch
+            }
+
+            lockRepository.lockScreen()
+        }
+    }
+
     private fun onSetWallpaperClick() {
         viewModelScope.launch {
             try {
@@ -139,6 +164,21 @@ class HomeScreenVM(
             } catch (e: Exception) {
                 Log.e("Debug", "Error opening wallpaper selector. $e")
             }
+        }
+    }
+
+    private fun onLockScreenClick() {
+        viewModelScope.launch {
+            _state.update { it.copy(showMenu = false) }
+
+            val method = settingsRepository.appSettings.value.home.lockScreenMethod
+
+            if (method == SettingsValues.LockScreenMethod.ACCESSIBILITY && !lockRepository.canLockScreen()) {
+                _state.update { it.copy(showAccessibilityDialog = true) }
+                return@launch
+            }
+
+            lockRepository.lockScreen()
         }
     }
 
@@ -184,5 +224,19 @@ class HomeScreenVM(
 
     private fun onSwipeUp() {
         viewModelScope.launch { _uiCallback.send(UICallback.ExpandSheet) }
+    }
+
+    private fun onAccessibilityDialogClose() {
+        viewModelScope.launch {
+            _state.update { it.copy(showAccessibilityDialog = false) }
+        }
+    }
+
+    private fun onOpenAccessibilityClick() {
+        viewModelScope.launch {
+            _state.update { it.copy(showAccessibilityDialog = false) }
+
+            lockRepository.openAccessibilitySettings()
+        }
     }
 }

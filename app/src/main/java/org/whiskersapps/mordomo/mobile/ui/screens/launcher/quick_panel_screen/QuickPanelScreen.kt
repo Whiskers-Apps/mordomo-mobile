@@ -137,7 +137,7 @@ fun QuickPanelScreen(
 
     if (state.addToDoDialog.show) {
         DialogLayout(onDismiss = { onIntent(AddToDoDialogIntent.Close) }) {
-            DialogHeader(R.drawable.plus, "Add To-Do")
+            DialogHeader("Add To-Do")
 
             TextInput(
                 value = state.addToDoDialog.content,

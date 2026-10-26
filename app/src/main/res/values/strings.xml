@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Mordomo</string>
     <string name="Cancel">Cancel</string>
+    <string name="lock_service_description">This service is required to use the lock feature.\nIt\'s the only way to lock the screen and keep fingerprint unlocking from Android 9+ without root access.</string>
 </resources>

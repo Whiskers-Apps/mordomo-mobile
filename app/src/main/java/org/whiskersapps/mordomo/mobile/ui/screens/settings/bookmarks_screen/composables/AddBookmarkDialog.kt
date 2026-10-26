@@ -22,7 +22,7 @@ fun AddBookmarkDialog(
     DialogLayout(
         onDismiss = { onIntent(DialogIntent.Close) },
     ) {
-        DialogHeader(R.drawable.plus, "Add Bookmark")
+        DialogHeader("Add Bookmark")
 
         TextInput(
             value = state.name,

@@ -35,7 +35,7 @@ fun TextSettingDialog(
         DialogLayout(
             onDismiss = { onCancel() }
         ) {
-            DialogHeader(R.drawable.text, state.title)
+            DialogHeader(state.title)
 
             TextInput(
                 value = state.value,

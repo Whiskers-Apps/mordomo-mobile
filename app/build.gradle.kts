@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -117,4 +118,6 @@ dependencies {
 
     // Coil (Images)
     implementation(libs.coil3.coil.compose)
+
+    implementation("com.github.topjohnwu.libsu:core:6.0.0")
 }

@@ -20,4 +20,6 @@ data class HomeScreenState(
     val showQuickButton: Boolean = DEFAULT_SHOW_QUICK_BUTTON,
     val showSearchButton: Boolean = DEFAULT_SHOW_SEARCH_BUTTON,
     val showAppsButton: Boolean = DEFAULT_SHOW_APPS_BUTTON,
+    val showAccessibilityDialog: Boolean = false,
+    val showLockOption: Boolean = false
 )

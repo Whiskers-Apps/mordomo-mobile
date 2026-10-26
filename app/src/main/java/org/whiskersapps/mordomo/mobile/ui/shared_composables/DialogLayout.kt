@@ -32,7 +32,6 @@ import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 
 @Composable
 fun DialogHeader(
-    @DrawableRes iconId: Int,
     title: String
 ) {
     Column{
@@ -91,7 +90,6 @@ fun DialogFooter(
 fun DialogHeaderPreview() {
     MordomoTheme {
         DialogHeader(
-            iconId = R.drawable.text,
             title = "Select Category"
         )
     }

@@ -32,7 +32,7 @@ fun EditSearchEngineDialog(
     onIntent: (DialogIntent) -> Unit
 ) {
     DialogLayout(onDismiss = { onIntent(DialogIntent.Close) }) {
-        DialogHeader(R.drawable.pencil, "Edit Search Engine")
+        DialogHeader("Edit Search Engine")
 
         TextInput(
             value = state.name,

@@ -59,7 +59,7 @@ fun AddBookmarkSharingScreen(
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
         ) {
-            DialogHeader(R.drawable.plus, "Add Bookmark")
+            DialogHeader("Add Bookmark")
 
             TextInput(
                 value = state.name,

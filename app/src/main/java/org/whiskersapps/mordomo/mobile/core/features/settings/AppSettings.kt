@@ -36,8 +36,12 @@ data class AppSettings(
         val showSearchButton: Boolean = DEFAULT_SHOW_SEARCH_BUTTON,
 
         val showAppsButton: Boolean = DEFAULT_SHOW_APPS_BUTTON,
+
         val disableSwipe: Boolean = DEFAULT_DISABLE_SWIPE,
+
         val widgets: List<WidgetSetting> = DEFAULT_WIDGETS,
+
+        val lockScreenMethod: String = DEFAULT_LOCK_SCREEN_METHOD
     ) {
         companion object {
             val ClockStyleKey = stringPreferencesKey("clock_style")
@@ -66,6 +70,9 @@ data class AppSettings(
 
             val WidgetsKey = stringPreferencesKey("widgets")
             val DEFAULT_WIDGETS = emptyList<WidgetSetting>()
+
+            val LockScreenMethodKey = stringPreferencesKey("lock_screen_method")
+            const val DEFAULT_LOCK_SCREEN_METHOD = SettingsValues.LockScreenMethod.DISABLED
         }
     }
 
@@ -129,6 +136,12 @@ object SettingsValues {
         const val TOP = "top"
         const val BOTTOM = "bottom"
         const val HIDDEN = "hidden"
+    }
+
+    object LockScreenMethod {
+        const val DISABLED = "disabled"
+        const val ROOT = "root"
+        const val ACCESSIBILITY = "accessibility"
     }
 }
 

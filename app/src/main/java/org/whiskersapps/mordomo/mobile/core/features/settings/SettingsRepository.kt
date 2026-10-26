@@ -30,12 +30,16 @@ import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.C
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ClockPositionKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ClockStyleKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_DISABLE_SWIPE
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_LOCK_SCREEN_METHOD
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_SHOW_DATE
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DateFormatKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DisableSwipeKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.LockScreenMethodKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowAppsButtonKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowDateKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowQuickButtonKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowSearchButtonKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.WidgetsKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Quick.Companion.QuickAppsKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Search.Companion.DefaultSearchEngineKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Setup.Companion.DEFAULT_SETUP_COMPLETED
@@ -70,7 +74,7 @@ class SettingsRepository(
                     clockPosition = preferences[ClockPositionKey] ?: DEFAULT_CLOCK_POSITION,
 
                     showDate = preferences[ShowDateKey]
-                        ?: AppSettings.Home.DEFAULT_SHOW_DATE,
+                        ?: DEFAULT_SHOW_DATE,
 
                     dateFormat = preferences[DateFormatKey] ?: DEFAULT_DATE_FORMAT,
 
@@ -84,8 +88,11 @@ class SettingsRepository(
                     disableSwipe = preferences[DisableSwipeKey] ?: DEFAULT_DISABLE_SWIPE,
 
                     widgets = Json.decodeFromString(
-                        preferences[AppSettings.Home.WidgetsKey] ?: "[]"
-                    )
+                        preferences[WidgetsKey] ?: "[]"
+                    ),
+
+                    lockScreenMethod = preferences[LockScreenMethodKey]
+                        ?: DEFAULT_LOCK_SCREEN_METHOD
                 ),
 
                 apps = AppSettings.Apps(
@@ -189,6 +196,10 @@ class SettingsRepository(
     }
 
     suspend fun setWidgets(widgets: List<WidgetSetting>) = withContext(IO) {
-        datastore.edit { it[AppSettings.Home.WidgetsKey] = Json.encodeToString(widgets) }
+        datastore.edit { it[WidgetsKey] = Json.encodeToString(widgets) }
+    }
+
+    suspend fun setLockScreenMethod(method: String) = withContext(IO) {
+        datastore.edit { it[LockScreenMethodKey] = method }
     }
 }

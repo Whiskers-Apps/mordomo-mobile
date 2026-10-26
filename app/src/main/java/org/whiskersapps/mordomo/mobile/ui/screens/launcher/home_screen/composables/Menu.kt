@@ -31,8 +31,10 @@ import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 fun MenuDialog(
     show: Boolean,
     onDismiss: () -> Unit,
+    showLockOption: Boolean,
     onSetWallpaperClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onLockScreenClick: () -> Unit,
+    onSettingsClick: () -> Unit,
 ) {
 
     if (show) {
@@ -72,6 +74,34 @@ fun MenuDialog(
 
                 ListDivider(MaterialTheme.colorScheme.surfaceVariant)
 
+                if (showLockOption) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { onLockScreenClick() }
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            painter = painterResource(R.drawable.lock_outline),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+
+                        Spacer(Modifier.width(8.dp))
+
+                        Text(
+                            text = "Lock Screen",
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+
+
+                    ListDivider(MaterialTheme.colorScheme.surfaceVariant)
+                }
+
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -106,7 +136,10 @@ fun HomeMenuPreview() {
         MenuDialog(
             show = true,
             onDismiss = {},
-            onSetWallpaperClick = {}
-        ) {}
+            showLockOption = true,
+            onSetWallpaperClick = {},
+            onLockScreenClick = {},
+            onSettingsClick = {}
+        )
     }
 }

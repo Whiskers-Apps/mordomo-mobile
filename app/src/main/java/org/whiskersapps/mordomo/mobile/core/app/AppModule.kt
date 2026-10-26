@@ -6,6 +6,7 @@ import org.whiskersapps.mordomo.mobile.core.db.getDB
 import org.whiskersapps.mordomo.mobile.core.features.apps.AppsRepository
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.BookmarksRepository
 import org.whiskersapps.mordomo.mobile.core.features.icons.IconsRepository
+import org.whiskersapps.mordomo.mobile.core.features.lock.LockRepository
 import org.whiskersapps.mordomo.mobile.core.features.screen.FoldableRepository
 import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEnginesRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
@@ -20,8 +21,8 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.about_screen.AboutScr
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.apps_screen.AppsSettingsScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.home_screen.HomeSettingsScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.lock_screen.LockSettingsScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenVM
-import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenVM
 
 val appModule = module {
@@ -37,11 +38,12 @@ val appModule = module {
     single(createdAtStart = true) { SearchEnginesRepository(get()) }
     single(createdAtStart = true) { FoldableRepository() }
     single(createdAtStart = true) { ToDoRepository(get()) }
+    single { LockRepository(get(), get()) }
 
 
     // -------------------- View Models ----------------------- //
     viewModel { QuickPanelScreenVM(get(), get(), get()) }
-    viewModel { HomeScreenVM(get(), get()) }
+    viewModel { HomeScreenVM(get(), get(), get()) }
     viewModel { SearchScreenVM(get(), get(), get(), get(), get()) }
     viewModel { AppsScreenVM(get(), get()) }
 
@@ -51,6 +53,7 @@ val appModule = module {
     viewModel { BookmarksScreenVM(get()) }
     viewModel { SearchEnginesScreenVM(get(), get()) }
     viewModel { SecurityScreenVM(get()) }
+    viewModel { LockSettingsScreenVM(get(), get()) }
     viewModel { AboutScreenVM(get()) }
 
     viewModel { params ->

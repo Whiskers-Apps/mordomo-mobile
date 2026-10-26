@@ -25,7 +25,7 @@ fun AddSearchEngineDialog(
     onIntent: (DialogIntent) -> Unit
 ) {
     DialogLayout(onDismiss = { onIntent(DialogIntent.Close) }) {
-        DialogHeader(R.drawable.plus, "Add Search Engine")
+        DialogHeader("Add Search Engine")
 
         TextInput(
             value = state.name,

@@ -32,7 +32,7 @@ fun EditBookmarkDialog(
     DialogLayout(
         onDismiss = { onIntent(DialogIntent.Close) },
     ) {
-        DialogHeader(R.drawable.pencil, "Edit Bookmark")
+        DialogHeader("Edit Bookmark")
 
         TextInput(
             value = state.name,
