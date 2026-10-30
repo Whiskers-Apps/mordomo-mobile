@@ -26,14 +26,10 @@ Since this is a work in progress there are a lot of features still missing.
 
 ### Quick Panel
 
-- [ ] Pinned Apps
-- [ ] Pinned Bookmarks
+- [x] Pinned Apps
+- [x] Pinned Bookmarks
 - [x] Widgets
 - [x] TODO List
-
-### Home
-
-- [ ] Pinned Apps
 
 ### Security
 
