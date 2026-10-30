@@ -23,6 +23,7 @@ sealed interface QuickPanelScreenIntent {
     data object AddBookmarkClick : QuickPanelScreenIntent
     data object BookmarksPickerClose : QuickPanelScreenIntent
     data class BookmarksPickerSelect(val id: Int) : QuickPanelScreenIntent
+    data object BookmarksPickerSave : QuickPanelScreenIntent
 }
 
 sealed interface AddToDoDialogIntent : QuickPanelScreenIntent {

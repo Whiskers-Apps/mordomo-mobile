@@ -59,17 +59,19 @@ import org.koin.androidx.compose.koinViewModel
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsValues
 import org.whiskersapps.mordomo.mobile.core.features.todo.ToDo
+import org.whiskersapps.mordomo.mobile.core.utils.getWebsiteIconURL
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.apps_screen.composables.AppRow
+import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.composables.BookmarksPicker
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.composables.WidgetPicker
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.composables.WidgetView
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.composables.AppsPicker
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppIcon
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.InfoCard
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ListDivider
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.TextInput
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.WebIcon
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.section
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenIntent as ScreenIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenState as State
@@ -209,6 +211,18 @@ fun QuickPanelScreen(
                     onSaveClick = { onIntent(ScreenIntent.AppsPickerSave) },
                 )
             }
+
+            if (state.bookmarksPickerState.show) {
+                BookmarksPicker(
+                    bookmarks = state.bookmarksPickerState.bookmarks,
+                    selectedBookmarks = state.bookmarksPickerState.selectedBookmarks,
+                    title = "Quick Bookmarks",
+                    selectedIconId = R.drawable.star,
+                    onClose = { onIntent(ScreenIntent.BookmarksPickerClose) },
+                    onBookmarkClick = { onIntent(ScreenIntent.BookmarksPickerSelect(it.id)) },
+                    onSaveClick = { onIntent(ScreenIntent.BookmarksPickerSave) },
+                )
+            }
         },
     ) { scaffoldPadding ->
         BoxWithConstraints(
@@ -326,7 +340,7 @@ fun QuickPanelScreen(
                                     ) {
                                         Icon(
                                             modifier = Modifier.size(24.dp),
-                                            painter = painterResource(R.drawable.plus),
+                                            painter = painterResource(R.drawable.pencil),
                                             contentDescription = null,
                                             tint = MaterialTheme.colorScheme.onBackground
                                         )
@@ -343,9 +357,36 @@ fun QuickPanelScreen(
                                             description = "There are no available bookmarks. Add them in settings."
                                         )
                                     }
-
-                                    Spacer(Modifier.height(8.dp))
                                 }
+
+                                Column(Modifier.section()) {
+                                    for ((index, bookmark) in state.quickBookmarks.withIndex()) {
+                                        key("bookmark-${bookmark.id}") {
+                                            Row(Modifier
+                                                .fillMaxWidth()
+                                                .clickable {}
+                                                .padding(16.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                WebIcon(url = getWebsiteIconURL(bookmark.url), size = 40.dp)
+
+                                                Spacer(Modifier.width(8.dp))
+
+                                                Text(
+                                                    text = bookmark.name,
+                                                    color = MaterialTheme.colorScheme.onBackground,
+                                                    style = MaterialTheme.typography.bodyMedium
+                                                )
+                                            }
+
+                                            if (index < state.quickApps.size - 1) {
+                                                ListDivider()
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Spacer(Modifier.height(8.dp))
                             }
 
                             SettingsValues.QuickSections.WIDGETS -> {

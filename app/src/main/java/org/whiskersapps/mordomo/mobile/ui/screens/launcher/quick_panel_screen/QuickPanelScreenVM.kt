@@ -71,11 +71,16 @@ class QuickPanelScreenVM(
 
             val quickApps = apps.filter { settings.quickPanel.quickApps.contains(it.packageName) }
 
+            val quickBookmarks = bookmarksRepository.bookmarks.value.filter {
+                settings.quickPanel.quickBookmarks.contains(it.id)
+            }
+
             _state.update {
                 it.copy(
                     toDos = toDos,
                     widgets = widgets,
                     quickApps = quickApps,
+                    quickBookmarks = quickBookmarks,
                     sections = settings.quickPanel.sections
                 )
             }
@@ -109,7 +114,8 @@ class QuickPanelScreenVM(
             is Intent.AppClick -> onAppClick(intent.app)
             Intent.AddBookmarkClick -> onAddBookmarkClick()
             Intent.BookmarksPickerClose -> onBookmarksPickerClose()
-            is Intent.BookmarksPickerSelect -> TODO()
+            is Intent.BookmarksPickerSelect -> onBookmarksPickerSelect(intent.id)
+            Intent.BookmarksPickerSave -> onBookmarksPickerSave()
         }
     }
 
@@ -299,11 +305,16 @@ class QuickPanelScreenVM(
 
     private fun onAddBookmarkClick() {
         viewModelScope.launch {
+            val selectedBookmarks = bookmarksRepository.bookmarks.value.filter {
+                settingsRepository.appSettings.value.quickPanel.quickBookmarks.contains(it.id)
+            }.map { it.id }
+
             _state.update {
                 it.copy(
                     bookmarksPickerState = QuickBookmarksPickerState(
                         show = true,
-                        bookmarks = bookmarksRepository.bookmarks.value
+                        bookmarks = bookmarksRepository.bookmarks.value,
+                        selectedBookmarks = selectedBookmarks
                     )
                 )
             }
@@ -359,6 +370,36 @@ class QuickPanelScreenVM(
     private fun onBookmarksPickerClose() {
         viewModelScope.launch {
             _state.update { it.copy(bookmarksPickerState = QuickBookmarksPickerState()) }
+        }
+    }
+
+    private fun onBookmarksPickerSelect(id: Int) {
+        viewModelScope.launch {
+            val newSelectedBookmarks =
+                state.value.bookmarksPickerState.selectedBookmarks.toMutableList()
+
+            if (newSelectedBookmarks.contains(id))
+                newSelectedBookmarks.remove(id)
+            else
+                newSelectedBookmarks.add(id)
+
+            _state.update {
+                it.copy(
+                    bookmarksPickerState = it.bookmarksPickerState.copy(
+                        selectedBookmarks = newSelectedBookmarks
+                    )
+                )
+            }
+        }
+    }
+
+    private fun onBookmarksPickerSave() {
+        viewModelScope.launch {
+            val bookmarks = state.value.bookmarksPickerState.selectedBookmarks
+
+            _state.update { it.copy(bookmarksPickerState = QuickBookmarksPickerState()) }
+
+            settingsRepository.setQuickBookmarks(bookmarks)
         }
     }
 

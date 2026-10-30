@@ -12,7 +12,7 @@ data class QuickPanelScreenState(
     val sections: List<QuickSection> = emptyList(),
     val toDos: List<ToDo> = emptyList(),
     val quickApps: List<App> = emptyList(),
-    val quickBookmarks: List<App> = emptyList(),
+    val quickBookmarks: List<Bookmark> = emptyList(),
     val addToDoDialog: AddToDoDialogState = AddToDoDialogState(),
     val widgets: List<Widget> = emptyList(),
     val widgetPickerState: WidgetPickerState = WidgetPickerState(),
@@ -41,6 +41,6 @@ data class QuickPanelScreenState(
     data class QuickBookmarksPickerState(
         val show: Boolean = false,
         val bookmarks: List<Bookmark> = emptyList(),
-        val selectedBookmarks: Set<Int> = emptySet()
+        val selectedBookmarks: List<Int> = emptyList()
     )
 }

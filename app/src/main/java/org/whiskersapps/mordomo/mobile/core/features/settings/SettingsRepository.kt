@@ -202,7 +202,7 @@ class SettingsRepository(
         datastore.edit { it[QuickAppsKey] = Json.encodeToString(quickApps) }
     }
 
-    suspend fun setQuickBookmarks(quickBookmarks: List<String>) = withContext(IO) {
+    suspend fun setQuickBookmarks(quickBookmarks: List<Int>) = withContext(IO) {
         datastore.edit { it[QuickBookmarksKey] = Json.encodeToString(quickBookmarks) }
     }
 
