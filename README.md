@@ -9,9 +9,8 @@
 
 This is a launcher focused on search. You are able to search apps, web bookmarks and web search.
 
-<div align="center">
-  <img height="800" alt="Frame 16(1)" src="https://github.com/user-attachments/assets/f11bacaf-243b-4460-96c1-c3051fb1fe5b" />
-</div>
+<img height="800" alt="banner" src="https://github.com/user-attachments/assets/18415258-2869-457a-92af-abdef2b71ae4" />
+
 
 # TODO
 
