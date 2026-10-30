@@ -1,16 +1,11 @@
 package org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen
 
-import org.whiskersapps.mordomo.mobile.core.features.apps.App
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.composables.AppsPickerState
 
 
 data class SecurityScreenState(
     val showHiddenAppsPicker: Boolean = false,
-    val hiddenAppsPicker: Picker = Picker(),
+    val hiddenAppsPicker: AppsPickerState = AppsPickerState(),
     val showSecureAppsPicker: Boolean = false,
-    val secureAppsPicker: Picker = Picker()
-) {
-    data class Picker(
-        val apps: List<App> = emptyList(),
-        val selectedApps: Set<String> = emptySet()
-    )
-}
+    val secureAppsPicker: AppsPickerState = AppsPickerState()
+)

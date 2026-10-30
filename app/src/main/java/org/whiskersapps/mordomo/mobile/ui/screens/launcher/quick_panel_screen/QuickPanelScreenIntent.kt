@@ -1,5 +1,6 @@
 package org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen
 
+import org.whiskersapps.mordomo.mobile.core.features.apps.App
 import org.whiskersapps.mordomo.mobile.core.features.widgets.Widget
 
 sealed interface QuickPanelScreenIntent {
@@ -14,10 +15,22 @@ sealed interface QuickPanelScreenIntent {
     data class DeleteWidgetClick(val widget: Widget) : QuickPanelScreenIntent
     data class SaveWidgetClick(val id: Int, val rows: Int, val cols: Int) : QuickPanelScreenIntent
     data class SearchWidgetType(val text: String) : QuickPanelScreenIntent
+    data object AddAppClick : QuickPanelScreenIntent
+    data object AppsPickerClose : QuickPanelScreenIntent
+    data class AppsPickerSelect(val packageName: String) : QuickPanelScreenIntent
+    data object AppsPickerSave : QuickPanelScreenIntent
+    data class AppClick(val app: App) : QuickPanelScreenIntent
+    data object AddBookmarkClick : QuickPanelScreenIntent
+    data object BookmarksPickerClose : QuickPanelScreenIntent
+    data class BookmarksPickerSelect(val id: Int) : QuickPanelScreenIntent
 }
 
 sealed interface AddToDoDialogIntent : QuickPanelScreenIntent {
     data object Close : AddToDoDialogIntent
     data class ContentType(val text: String) : AddToDoDialogIntent
     data object AddClick : AddToDoDialogIntent
+}
+
+sealed interface QuickPanelScreenCallback {
+    data object GoHome : QuickPanelScreenCallback
 }

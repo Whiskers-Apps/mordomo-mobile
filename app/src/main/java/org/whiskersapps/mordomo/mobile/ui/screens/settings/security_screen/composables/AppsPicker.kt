@@ -17,14 +17,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -39,20 +35,19 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
-import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenState.Picker
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.AppIcon
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogFooter
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogLayout
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.DialogHeader
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ListDivider
-import org.whiskersapps.mordomo.mobile.ui.shared_composables.bubbleShape
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.section
 import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 
+data class AppsPickerState(
+    val apps: List<App> = emptyList(),
+    val selectedApps: List<String> = emptyList()
+)
 
 @Composable
 fun AppsPicker(
-    picker: Picker,
+    state: AppsPickerState,
     title: String,
     @DrawableRes selectedIconId: Int,
     onClose: () -> Unit,
@@ -64,7 +59,7 @@ fun AppsPicker(
     }
 
     Column(
-        Modifier.padding(24.dp)
+        Modifier.systemBarsPadding().padding(24.dp)
     ) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Box(
@@ -123,7 +118,7 @@ fun AppsPicker(
                 .section(),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-            itemsIndexed(items = picker.apps, key = { _, app -> app.packageName }) { index, app ->
+            itemsIndexed(items = state.apps, key = { _, app -> app.packageName }) { index, app ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -154,7 +149,7 @@ fun AppsPicker(
                             .weight(1f, fill = true)
                     )
 
-                    if (app.packageName in picker.selectedApps) {
+                    if (app.packageName in state.selectedApps) {
                         Box(
                             modifier = Modifier
                                 .size(32.dp)
@@ -173,7 +168,7 @@ fun AppsPicker(
                     }
                 }
 
-                if (index < picker.apps.size - 1) {
+                if (index < state.apps.size - 1) {
                     ListDivider()
                 }
             }
@@ -212,7 +207,7 @@ fun PreviewAppsPicker() {
 
     MordomoTheme() {
         AppsPicker(
-            picker = Picker(apps = apps, selectedApps = setOf("app 1", "app 3")),
+            state = AppsPickerState(apps = apps, selectedApps = listOf("app 1", "app 3")),
             "Hidden Apps",
             R.drawable.anonym,
             onClose = {},

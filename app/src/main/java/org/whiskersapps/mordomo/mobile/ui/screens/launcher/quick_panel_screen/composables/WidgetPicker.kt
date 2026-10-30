@@ -91,7 +91,7 @@ fun WidgetPicker(
     val focusManager = LocalFocusManager.current
 
 
-    BackHandler {
+    BackHandler(pickerState.show) {
         focusManager.clearFocus()
         onIntent(Intent.WidgetPickerClose)
     }
@@ -170,7 +170,7 @@ fun WidgetPicker(
                         .size(48.dp)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .clickable {onIntent(Intent.WidgetPickerClose)},
+                        .clickable { onIntent(Intent.WidgetPickerClose) },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(

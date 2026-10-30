@@ -4,30 +4,42 @@ import android.appwidget.AppWidgetProviderInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.whiskersapps.lib.Sniffer
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
 import org.whiskersapps.mordomo.mobile.core.features.apps.AppsRepository
+import org.whiskersapps.mordomo.mobile.core.features.bookmarks.BookmarksRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
 import org.whiskersapps.mordomo.mobile.core.features.todo.ToDo
 import org.whiskersapps.mordomo.mobile.core.features.todo.ToDoRepository
 import org.whiskersapps.mordomo.mobile.core.features.widgets.Widget
 import org.whiskersapps.mordomo.mobile.core.features.widgets.WidgetSetting
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenState.AddToDoDialogState
+import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenState.QuickAppsPickerState
+import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenState.QuickBookmarksPickerState
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenState.WidgetPickerState
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.composables.AppsPickerState
+import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenCallback as ScreenCallback
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenIntent as Intent
+import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenState as ScreenState
 
 class QuickPanelScreenVM(
     private val settingsRepository: SettingsRepository,
     val todoRepository: ToDoRepository,
-    private val appsRepository: AppsRepository
+    private val appsRepository: AppsRepository,
+    private val bookmarksRepository: BookmarksRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow(QuickPanelScreenState())
+    private val _state = MutableStateFlow(ScreenState())
     val state = _state.asStateFlow()
+
+    private val _screenCallback = Channel<ScreenCallback>()
+    val screenCallback = _screenCallback.receiveAsFlow()
 
     private var appsWithWidgets = listOf<App>()
 
@@ -37,10 +49,10 @@ class QuickPanelScreenVM(
         combine(
             settingsRepository.appSettings,
             todoRepository.toDos,
-            appsRepository.filteredApps
+            appsRepository.filteredApps,
         ) { settings, toDos, apps ->
             val allWidgets = getAllWidgets()
-            val widgetsSettings = settings.home.widgets
+            val widgetsSettings = settings.quickPanel.widgets
 
             appsWithWidgets = apps.filter { app -> app.widgets.isNotEmpty() }
 
@@ -57,10 +69,14 @@ class QuickPanelScreenVM(
                 )
             }
 
+            val quickApps = apps.filter { settings.quickPanel.quickApps.contains(it.packageName) }
+
             _state.update {
                 it.copy(
                     toDos = toDos,
                     widgets = widgets,
+                    quickApps = quickApps,
+                    sections = settings.quickPanel.sections
                 )
             }
         }.launchIn(viewModelScope)
@@ -86,6 +102,14 @@ class QuickPanelScreenVM(
             is Intent.DeleteWidgetClick -> onDeleteWidgetClick(intent.widget)
             is Intent.SaveWidgetClick -> onSaveWidgetClick(intent.id, intent.rows, intent.cols)
             is Intent.SearchWidgetType -> onSearchWidgetType(intent.text)
+            Intent.AddAppClick -> onAddAppClick()
+            Intent.AppsPickerClose -> onAppsPickerClose()
+            is Intent.AppsPickerSelect -> onAppsPickerSelect(intent.packageName)
+            Intent.AppsPickerSave -> onAppsPickerSave()
+            is Intent.AppClick -> onAppClick(intent.app)
+            Intent.AddBookmarkClick -> onAddBookmarkClick()
+            Intent.BookmarksPickerClose -> onBookmarksPickerClose()
+            is Intent.BookmarksPickerSelect -> TODO()
         }
     }
 
@@ -192,7 +216,7 @@ class QuickPanelScreenVM(
 
     private fun onWidgetBound(id: Int, name: String) {
         viewModelScope.launch {
-            val widgets = settingsRepository.appSettings.value.home.widgets
+            val widgets = settingsRepository.appSettings.value.quickPanel.widgets
 
             val newWidgets = widgets.toMutableList().apply {
                 add(
@@ -212,7 +236,7 @@ class QuickPanelScreenVM(
 
     private fun onDeleteWidgetClick(widget: Widget) {
         viewModelScope.launch {
-            val widgetsSettings = settingsRepository.appSettings.value.home.widgets
+            val widgetsSettings = settingsRepository.appSettings.value.quickPanel.widgets
             val newWidgetsSettings = widgetsSettings.toMutableList().apply {
                 removeIf { it.id == widget.id }
             }
@@ -223,7 +247,7 @@ class QuickPanelScreenVM(
 
     private fun onSaveWidgetClick(id: Int, rows: Int, cols: Int) {
         viewModelScope.launch {
-            val widgetSettings = settingsRepository.appSettings.value.home.widgets
+            val widgetSettings = settingsRepository.appSettings.value.quickPanel.widgets
             val newWidgetsSettings = widgetSettings.toMutableList().map { widget ->
                 if (widget.id == id) {
                     widget.copy(rows = rows, cols = cols)
@@ -250,6 +274,91 @@ class QuickPanelScreenVM(
                 appsWithWidgets.filter { sniffer.matches(it.name, text) }
 
             _state.update { it.copy(widgetPickerState = it.widgetPickerState.copy(apps = newApps)) }
+        }
+    }
+
+    private fun onAddAppClick() {
+        viewModelScope.launch {
+            val selectedApps = appsRepository.filteredApps.value.filter {
+                settingsRepository.appSettings.value.quickPanel.quickApps.contains(it.packageName)
+            }.map { it.packageName }
+
+            _state.update {
+                it.copy(
+                    appsPickerState = QuickAppsPickerState(
+                        show = true,
+                        pickerState = AppsPickerState(
+                            apps = appsRepository.filteredApps.value,
+                            selectedApps = selectedApps
+                        )
+                    )
+                )
+            }
+        }
+    }
+
+    private fun onAddBookmarkClick() {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    bookmarksPickerState = QuickBookmarksPickerState(
+                        show = true,
+                        bookmarks = bookmarksRepository.bookmarks.value
+                    )
+                )
+            }
+        }
+    }
+
+    private fun onAppsPickerClose() {
+        viewModelScope.launch {
+            _state.update { it.copy(appsPickerState = QuickAppsPickerState()) }
+        }
+    }
+
+    private fun onAppsPickerSelect(packageName: String) {
+        viewModelScope.launch {
+            val newSelectedApps =
+                state.value.appsPickerState.pickerState.selectedApps.toMutableList()
+
+            if (newSelectedApps.contains(packageName))
+                newSelectedApps.remove(packageName)
+            else
+                newSelectedApps.add(packageName)
+
+            _state.update {
+                it.copy(
+                    appsPickerState = it.appsPickerState.copy(
+                        pickerState = it.appsPickerState.pickerState.copy(
+                            selectedApps = newSelectedApps
+                        )
+                    )
+                )
+            }
+        }
+    }
+
+    private fun onAppsPickerSave() {
+        viewModelScope.launch {
+            val apps = state.value.appsPickerState.pickerState.selectedApps
+
+            _state.update { it.copy(appsPickerState = QuickAppsPickerState()) }
+
+            settingsRepository.setQuickApps(apps)
+        }
+    }
+
+    private fun onAppClick(app: App) {
+        viewModelScope.launch {
+            appsRepository.openApp(app)
+
+            _screenCallback.send(ScreenCallback.GoHome)
+        }
+    }
+
+    private fun onBookmarksPickerClose() {
+        viewModelScope.launch {
+            _state.update { it.copy(bookmarksPickerState = QuickBookmarksPickerState()) }
         }
     }
 

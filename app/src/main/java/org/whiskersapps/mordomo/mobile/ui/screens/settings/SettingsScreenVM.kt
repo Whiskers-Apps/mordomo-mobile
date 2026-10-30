@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.time.Duration.Companion.seconds
 
 class SettingsScreenVM(
     val context: Application
@@ -31,7 +32,7 @@ class SettingsScreenVM(
 
             while (true) {
                 _state.update { it.copy(isDefaultLauncher = isDefaultLauncher()) }
-                delay(3000)
+                delay(3.seconds)
             }
         }
     }

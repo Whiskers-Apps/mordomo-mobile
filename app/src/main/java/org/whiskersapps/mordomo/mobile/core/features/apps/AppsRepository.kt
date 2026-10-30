@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Process
 import android.provider.Settings
 import android.util.DisplayMetrics
-import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import kotlinx.coroutines.CoroutineScope
@@ -23,10 +22,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.internal.wait
 import org.whiskersapps.mordomo.mobile.core.features.icons.IconsRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
 import org.whiskersapps.mordomo.mobile.core.utils.isDefaultLauncher
+import kotlin.time.Duration.Companion.seconds
 
 class AppsRepository(
     private val context: Context,
@@ -38,7 +37,6 @@ class AppsRepository(
         context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
 
     private val widgetManager = AppWidgetManager.getInstance(context)
-    private val widgetProviders = widgetManager.installedProviders
 
     var apps = emptyList<App>()
 
@@ -57,7 +55,7 @@ class AppsRepository(
                     fetchApps()
                 }
 
-                delay(3000)
+                delay(3.seconds)
             }
         }
     }
@@ -193,22 +191,22 @@ class AppsRepository(
     }
 
     /// Returns a list with the package names of the hidden apps
-    suspend fun getHiddenApps(): Set<String> = withContext(IO) {
+    suspend fun getHiddenApps(): List<String> = withContext(IO) {
         return@withContext settingsRepository.appSettings.value.apps.hiddenApps
     }
 
-    suspend fun setHiddenApps(apps: Set<String>) = withContext(IO) {
+    suspend fun setHiddenApps(apps: List<String>) = withContext(IO) {
         settingsRepository.setHiddenApps(apps)
 
         fetchApps()
     }
 
-    suspend fun getSecureApps(): Set<String> = withContext(IO) {
+    suspend fun getSecureApps(): List<String> = withContext(IO) {
         return@withContext settingsRepository.appSettings.value.apps.secureApps
     }
 
 
-    suspend fun setSecureApps(apps: Set<String>) = withContext(IO) {
+    suspend fun setSecureApps(apps: List<String>) = withContext(IO) {
         settingsRepository.setSecureApps(apps)
     }
 }

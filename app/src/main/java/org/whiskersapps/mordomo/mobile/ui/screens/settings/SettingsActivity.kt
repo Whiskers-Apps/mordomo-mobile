@@ -6,7 +6,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,7 +16,9 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.apps_screen.AppsSetti
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.home_screen.HomeSettingsScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.lock_screen.LockSettingsScreenRoot
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.quick_panel_screen.QuickPanelSettingsScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenRoot
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_screen.SearchSettingsScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenRoot
 import org.whiskersapps.mordomo.mobile.ui.theme.MordomoTheme
 
@@ -39,9 +40,11 @@ class SettingsActivity : AppCompatActivity() {
                     composable(Routes.SETTINGS_ROOT) {
                         SettingsScreenRoot(
                             onGoToStyleScreen = { navController.navigate(Routes.SETTINGS_STYLE) },
+                            onGoToQuickPanelScreen = { navController.navigate(Routes.SETTINGS_QUICK_PANEL) },
                             onGoToHomeScreen = { navController.navigate(Routes.SETTINGS_HOME) },
                             onGoToAppsScreen = { navController.navigate(Routes.SETTINGS_APPS) },
                             onGoToBookmarksScreen = { navController.navigate(Routes.SETTINGS_BOOKMARKS) },
+                            onGoToSearchScreen = { navController.navigate(Routes.SETTINGS_SEARCH) },
                             onGoToSearchEnginesScreen = { navController.navigate(Routes.SETTINGS_SEARCH_ENGINES) },
                             onGoToSecurityScreen = { navController.navigate(Routes.SETTINGS_SECURITY) },
                             onGoToLockScreen = { navController.navigate(Routes.SETTINGS_LOCK) },
@@ -51,19 +54,25 @@ class SettingsActivity : AppCompatActivity() {
 
                     composable(Routes.SETTINGS_STYLE) { }
 
+                    composable(Routes.SETTINGS_QUICK_PANEL) {
+                        QuickPanelSettingsScreenRoot(onBack = { navController.navigateUp() })
+                    }
+
                     composable(Routes.SETTINGS_HOME) {
                         HomeSettingsScreenRoot(onBackClick = { navController.navigateUp() })
                     }
 
                     composable(Routes.SETTINGS_APPS) {
-                        AppsSettingsScreenRoot(
-                            onBackClick = { navController.navigateUp() }
-                        )
+                        AppsSettingsScreenRoot(onBackClick = { navController.navigateUp() })
                     }
 
                     composable(Routes.SETTINGS_BOOKMARKS) {
-                        BookmarksScreenRoot(
-                            onBackClick = { navController.navigateUp() }
+                        BookmarksScreenRoot(onBackClick = { navController.navigateUp() })
+                    }
+
+                    composable(Routes.SETTINGS_SEARCH) {
+                        SearchSettingsScreenRoot(
+                            onBack = { navController.navigateUp() }
                         )
                     }
 

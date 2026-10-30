@@ -119,5 +119,9 @@ dependencies {
     // Coil (Images)
     implementation(libs.coil3.coil.compose)
 
-    implementation("com.github.topjohnwu.libsu:core:6.0.0")
+    // Su Prompt
+    implementation(libs.libsu.core)
+
+    // Reorder Components
+    implementation(libs.reorderable)
 }

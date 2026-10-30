@@ -18,13 +18,16 @@ import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.components.SettingsSection
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ListDivider
+import org.whiskersapps.mordomo.mobile.ui.shared_composables.section
 
 
 @Composable
 fun SettingsScreenRoot(
     onGoToStyleScreen: () -> Unit,
+    onGoToQuickPanelScreen: () -> Unit,
     onGoToHomeScreen: () -> Unit,
     onGoToAppsScreen: () -> Unit,
+    onGoToSearchScreen: () -> Unit,
     onGoToBookmarksScreen: () -> Unit,
     onGoToSearchEnginesScreen: () -> Unit,
     onGoToSecurityScreen: () -> Unit,
@@ -35,8 +38,10 @@ fun SettingsScreenRoot(
     SettingsScreen(state = vm.state.collectAsState().value) { intent ->
         when (intent) {
             SettingsScreenIntent.AboutSectionClick -> onGoToAboutScreen()
-            SettingsScreenIntent.AppsSectionClick -> onGoToAppsScreen()
+            SettingsScreenIntent.QuickPanelSectionClick -> onGoToQuickPanelScreen()
             SettingsScreenIntent.HomeSectionClick -> onGoToHomeScreen()
+            SettingsScreenIntent.AppsSectionClick -> onGoToAppsScreen()
+            SettingsScreenIntent.SearchSectionClick -> onGoToSearchScreen()
             SettingsScreenIntent.BookmarksSectionClick -> onGoToBookmarksScreen()
             SettingsScreenIntent.SearchEnginesSectionClick -> onGoToSearchEnginesScreen()
             SettingsScreenIntent.SecuritySectionClick -> onGoToSecurityScreen()
@@ -70,16 +75,23 @@ fun SettingsScreen(
                 Spacer(Modifier.height(16.dp))
             }
 
-            Column(
-                Modifier
-                    .clip(RoundedCornerShape(40.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-            ) {
+            Column(Modifier.section()) {
                 SettingsSection(
                     iconId = R.drawable.palette,
                     title = "Style",
                     description = "Customize the app theme and icons",
                     onClick = { onIntent(SettingsScreenIntent.StyleSectionClick) }
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            Column(Modifier.section()) {
+                SettingsSection(
+                    iconId = R.drawable.lightning_outline,
+                    title = "Quick Panel",
+                    description = "Customize sections and widgets",
+                    onClick = { onIntent(SettingsScreenIntent.QuickPanelSectionClick) }
                 )
 
                 ListDivider()
@@ -98,6 +110,15 @@ fun SettingsScreen(
                     title = "Apps",
                     description = "Customize apps layout and search",
                     onClick = { onIntent(SettingsScreenIntent.AppsSectionClick) }
+                )
+
+                ListDivider()
+
+                SettingsSection(
+                    iconId = R.drawable.search,
+                    title = "Search",
+                    description = "Customize search bar and sections",
+                    onClick = { onIntent(SettingsScreenIntent.SearchSectionClick) }
                 )
             }
 
@@ -118,7 +139,7 @@ fun SettingsScreen(
                 ListDivider()
 
                 SettingsSection(
-                    iconId = R.drawable.search,
+                    iconId = R.drawable.globe_outline,
                     title = "Search Engines",
                     description = "Add search engines to search",
                     onClick = { onIntent(SettingsScreenIntent.SearchEnginesSectionClick) }

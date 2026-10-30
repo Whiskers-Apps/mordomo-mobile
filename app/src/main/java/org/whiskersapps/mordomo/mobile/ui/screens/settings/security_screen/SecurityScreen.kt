@@ -11,7 +11,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,6 +30,7 @@ import org.whiskersapps.mordomo.mobile.R
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
 import org.whiskersapps.mordomo.mobile.core.features.apps.App.Icons
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.composables.AppsPicker
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.composables.AppsPickerState
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.shared_composables.Nav
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.ContainerColumn
 import org.whiskersapps.mordomo.mobile.ui.shared_composables.InfoCard
@@ -93,7 +93,9 @@ fun SecurityScreen(
     }
 
     BottomSheetScaffold(
-        modifier = Modifier.fillMaxSize().systemBarsPadding(),
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
         scaffoldState = scaffoldState,
         sheetPeekHeight = 0.dp,
         sheetDragHandle = null,
@@ -103,7 +105,7 @@ fun SecurityScreen(
             Box(Modifier.systemBarsPadding()) {
                 if (state.showHiddenAppsPicker) {
                     AppsPicker(
-                        picker = state.hiddenAppsPicker,
+                        state = state.hiddenAppsPicker,
                         "Hidden Apps",
                         R.drawable.anonym,
                         onClose = { onIntent(HiddenAppsIntent.Close) },
@@ -114,7 +116,7 @@ fun SecurityScreen(
 
                 if (state.showSecureAppsPicker) {
                     AppsPicker(
-                        picker = state.secureAppsPicker,
+                        state = state.secureAppsPicker,
                         "Secure Apps",
                         R.drawable.fingerprint,
                         onClose = { onIntent(SecureAppsIntent.Close) },
@@ -187,9 +189,9 @@ fun SecurityScreenPreview() {
         SecurityScreen(
             State(
                 showHiddenAppsPicker = false,
-                hiddenAppsPicker = State.Picker(
+                hiddenAppsPicker = AppsPickerState(
                     apps = apps,
-                    selectedApps = setOf("app 3", "app 5")
+                    selectedApps = listOf("app 3", "app 5")
                 )
             )
         ) {}

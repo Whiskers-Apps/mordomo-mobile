@@ -16,22 +16,23 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_HIDDEN_APPS
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_SEARCH_BAR_POSITION
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_SECURE_APPS
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.DEFAULT_SPLIT_LIST
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.HiddenAppsKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.SearchBarPositionKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.SecureAppsKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Apps.Companion.SplitListKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ClockPositionKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ClockStyleKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_CLOCK_POSITION
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_CLOCK_STYLE
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_DATE_FORMAT
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_SHOW_APPS_BUTTON
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_SHOW_QUICK_BUTTON
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_SHOW_SEARCH_BUTTON
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ClockPositionKey
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ClockStyleKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_DISABLE_SWIPE
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_LOCK_SCREEN_METHOD
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_SHOW_APPS_BUTTON
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_SHOW_DATE
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_SHOW_QUICK_BUTTON
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DEFAULT_SHOW_SEARCH_BUTTON
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DateFormatKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.DisableSwipeKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.LockScreenMethodKey
@@ -39,8 +40,12 @@ import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.C
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowDateKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowQuickButtonKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.ShowSearchButtonKey
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Home.Companion.WidgetsKey
-import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Quick.Companion.QuickAppsKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.QuickPanel.Companion.DEFAULT_SECTIONS
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.QuickPanel.Companion.QuickAppsKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.QuickPanel.Companion.QuickBookmarksKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.QuickPanel.Companion.QuickSectionsKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.QuickPanel.Companion.WidgetsKey
+import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.QuickPanel.QuickSection
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Search.Companion.DefaultSearchEngineKey
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Setup.Companion.DEFAULT_SETUP_COMPLETED
 import org.whiskersapps.mordomo.mobile.core.features.settings.AppSettings.Setup.Companion.SetupCompletedKey
@@ -87,10 +92,6 @@ class SettingsRepository(
 
                     disableSwipe = preferences[DisableSwipeKey] ?: DEFAULT_DISABLE_SWIPE,
 
-                    widgets = Json.decodeFromString(
-                        preferences[WidgetsKey] ?: "[]"
-                    ),
-
                     lockScreenMethod = preferences[LockScreenMethodKey]
                         ?: DEFAULT_LOCK_SCREEN_METHOD
                 ),
@@ -101,21 +102,31 @@ class SettingsRepository(
                     searchBarPosition = preferences[SearchBarPositionKey]
                         ?: DEFAULT_SEARCH_BAR_POSITION,
 
-                    hiddenApps = preferences[HiddenAppsKey] ?: DEFAULT_HIDDEN_APPS,
+                    hiddenApps = preferences[HiddenAppsKey]?.toList() ?: DEFAULT_HIDDEN_APPS,
 
-                    secureApps = preferences[SecureAppsKey] ?: AppSettings.Apps.DEFAULT_SECURE_APPS
+                    secureApps = preferences[SecureAppsKey]?.toList() ?: DEFAULT_SECURE_APPS
                 ),
 
                 search = AppSettings.Search(
                     defaultSearchEngine = preferences[DefaultSearchEngineKey]
                 ),
 
-                quick = AppSettings.Quick(
-                    quickApps = preferences[QuickAppsKey]
-                        ?: AppSettings.Quick.DEFAULT_QUICK_APPS,
+                quickPanel = AppSettings.QuickPanel(
+                    quickApps = Json.decodeFromString(
+                        preferences[QuickAppsKey] ?: Json.encodeToString(emptyList<String>())
+                    ),
 
-                    quickBookmarks = preferences[AppSettings.Quick.QuickBookmarksKey]
-                        ?: AppSettings.Quick.DEFAULT_QUICK_BOOKMARKS
+                    quickBookmarks = Json.decodeFromString(
+                        preferences[QuickBookmarksKey] ?: Json.encodeToString(emptyList<String>())
+                    ),
+
+                    widgets = Json.decodeFromString(
+                        preferences[WidgetsKey] ?: "[]"
+                    ),
+
+                    sections = Json.decodeFromString(
+                        preferences[QuickSectionsKey] ?: Json.encodeToString(DEFAULT_SECTIONS)
+                    )
                 )
             )
 
@@ -179,24 +190,28 @@ class SettingsRepository(
         datastore.edit { it[DisableSwipeKey] = disable }
     }
 
-    suspend fun setHiddenApps(hiddenApps: Set<String>) = withContext(IO) {
-        datastore.edit { it[HiddenAppsKey] = hiddenApps }
+    suspend fun setHiddenApps(hiddenApps: List<String>) = withContext(IO) {
+        datastore.edit { it[HiddenAppsKey] = hiddenApps.toSet() }
     }
 
-    suspend fun setSecureApps(secureApps: Set<String>) = withContext(IO) {
-        datastore.edit { it[SecureAppsKey] = secureApps }
+    suspend fun setSecureApps(secureApps: List<String>) = withContext(IO) {
+        datastore.edit { it[SecureAppsKey] = secureApps.toSet() }
     }
 
-    suspend fun setQuickApps(quickApps: Set<String>) = withContext(IO) {
-        datastore.edit { it[QuickAppsKey] = quickApps }
+    suspend fun setQuickApps(quickApps: List<String>) = withContext(IO) {
+        datastore.edit { it[QuickAppsKey] = Json.encodeToString(quickApps) }
     }
 
-    suspend fun setQuickBookmarks(quickBookmarks: Set<String>) = withContext(IO) {
-        datastore.edit { it[AppSettings.Quick.QuickBookmarksKey] = quickBookmarks }
+    suspend fun setQuickBookmarks(quickBookmarks: List<String>) = withContext(IO) {
+        datastore.edit { it[QuickBookmarksKey] = Json.encodeToString(quickBookmarks) }
     }
 
     suspend fun setWidgets(widgets: List<WidgetSetting>) = withContext(IO) {
         datastore.edit { it[WidgetsKey] = Json.encodeToString(widgets) }
+    }
+
+    suspend fun setQuickSections(sections: List<QuickSection>) = withContext(IO) {
+        datastore.edit { it[QuickSectionsKey] = Json.encodeToString(sections) }
     }
 
     suspend fun setLockScreenMethod(method: String) = withContext(IO) {

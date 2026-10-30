@@ -22,7 +22,9 @@ import org.whiskersapps.mordomo.mobile.ui.screens.settings.apps_screen.AppsSetti
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.bookmarks_screen.BookmarksScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.home_screen.HomeSettingsScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.lock_screen.LockSettingsScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.quick_panel_screen.QuickPanelSettingsScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_engines_screen.SearchEnginesScreenVM
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.search_screen.SearchSettingsScreenVM
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenVM
 
 val appModule = module {
@@ -42,14 +44,16 @@ val appModule = module {
 
 
     // -------------------- View Models ----------------------- //
-    viewModel { QuickPanelScreenVM(get(), get(), get()) }
+    viewModel { QuickPanelScreenVM(get(), get(), get(), get()) }
     viewModel { HomeScreenVM(get(), get(), get()) }
     viewModel { SearchScreenVM(get(), get(), get(), get(), get()) }
     viewModel { AppsScreenVM(get(), get()) }
 
     viewModel { SettingsScreenVM(get()) }
+    viewModel { QuickPanelSettingsScreenVM(get()) }
     viewModel { HomeSettingsScreenVM(get()) }
     viewModel { AppsSettingsScreenVM(get()) }
+    viewModel { SearchSettingsScreenVM(get()) }
     viewModel { BookmarksScreenVM(get()) }
     viewModel { SearchEnginesScreenVM(get(), get()) }
     viewModel { SecurityScreenVM(get()) }

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.whiskersapps.mordomo.mobile.core.features.apps.AppsRepository
-import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenState.Picker
+import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.composables.AppsPickerState
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenIntent as Intent
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenState as State
 import org.whiskersapps.mordomo.mobile.ui.screens.settings.security_screen.SecurityScreenUICallback as UICallback
@@ -53,9 +53,9 @@ class SecurityScreenVM(
             _state.update {
                 it.copy(
                     showHiddenAppsPicker = true,
-                    hiddenAppsPicker = Picker(
+                    hiddenAppsPicker = AppsPickerState(
                         apps = appsRepository.apps,
-                        selectedApps = appsRepository.getHiddenApps()
+                        selectedApps = appsRepository.getHiddenApps().toList()
                     )
                 )
             }
@@ -67,7 +67,7 @@ class SecurityScreenVM(
             _state.update {
                 it.copy(
                     showSecureAppsPicker = true,
-                    secureAppsPicker = Picker(
+                    secureAppsPicker = AppsPickerState(
                         apps = appsRepository.apps,
                         selectedApps = appsRepository.getSecureApps()
                     )
@@ -79,7 +79,7 @@ class SecurityScreenVM(
     private fun onHiddenAppClick(packageName: String) {
         viewModelScope.launch {
 
-            val selectedApps = state.value.hiddenAppsPicker.selectedApps.toMutableSet()
+            val selectedApps = state.value.hiddenAppsPicker.selectedApps.toMutableList()
 
             if (packageName in selectedApps) {
                 selectedApps.remove(packageName)
@@ -102,7 +102,7 @@ class SecurityScreenVM(
             _state.update {
                 it.copy(
                     showHiddenAppsPicker = false,
-                    hiddenAppsPicker = Picker()
+                    hiddenAppsPicker = AppsPickerState()
                 )
             }
         }
@@ -115,7 +115,7 @@ class SecurityScreenVM(
             _state.update {
                 it.copy(
                     showHiddenAppsPicker = false,
-                    hiddenAppsPicker = Picker()
+                    hiddenAppsPicker = AppsPickerState()
                 )
             }
 
@@ -125,7 +125,7 @@ class SecurityScreenVM(
 
     private fun onSecureAppClick(packageName: String) {
         viewModelScope.launch {
-            val selectedApps = state.value.secureAppsPicker.selectedApps.toMutableSet()
+            val selectedApps = state.value.secureAppsPicker.selectedApps.toMutableList()
 
             if (packageName in selectedApps) {
                 selectedApps.remove(packageName)
@@ -150,7 +150,7 @@ class SecurityScreenVM(
             _state.update {
                 it.copy(
                     showSecureAppsPicker = false,
-                    secureAppsPicker = Picker()
+                    secureAppsPicker = AppsPickerState()
                 )
             }
 
@@ -163,7 +163,7 @@ class SecurityScreenVM(
             _state.update {
                 it.copy(
                     showSecureAppsPicker = false,
-                    secureAppsPicker = Picker()
+                    secureAppsPicker = AppsPickerState()
                 )
             }
         }

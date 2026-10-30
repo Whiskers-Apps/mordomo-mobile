@@ -4,6 +4,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import kotlinx.serialization.Serializable
 import org.whiskersapps.mordomo.mobile.core.features.widgets.WidgetSetting
 
 data class AppSettings(
@@ -11,7 +12,7 @@ data class AppSettings(
     val home: Home = Home(),
     val apps: Apps = Apps(),
     val search: Search = Search(),
-    val quick: Quick = Quick()
+    val quickPanel: QuickPanel = QuickPanel()
 ) {
     data class Setup(
         val completed: Boolean = DEFAULT_SETUP_COMPLETED
@@ -21,6 +22,7 @@ data class AppSettings(
             const val DEFAULT_SETUP_COMPLETED = false
         }
     }
+
 
     data class Home(
         val clockStyle: String = DEFAULT_CLOCK_STYLE,
@@ -38,8 +40,6 @@ data class AppSettings(
         val showAppsButton: Boolean = DEFAULT_SHOW_APPS_BUTTON,
 
         val disableSwipe: Boolean = DEFAULT_DISABLE_SWIPE,
-
-        val widgets: List<WidgetSetting> = DEFAULT_WIDGETS,
 
         val lockScreenMethod: String = DEFAULT_LOCK_SCREEN_METHOD
     ) {
@@ -68,9 +68,6 @@ data class AppSettings(
             val DisableSwipeKey = booleanPreferencesKey("disable_swipe")
             const val DEFAULT_DISABLE_SWIPE = false
 
-            val WidgetsKey = stringPreferencesKey("widgets")
-            val DEFAULT_WIDGETS = emptyList<WidgetSetting>()
-
             val LockScreenMethodKey = stringPreferencesKey("lock_screen_method")
             const val DEFAULT_LOCK_SCREEN_METHOD = SettingsValues.LockScreenMethod.DISABLED
         }
@@ -79,8 +76,8 @@ data class AppSettings(
     data class Apps(
         val splitList: Boolean = DEFAULT_SPLIT_LIST,
         val searchBarPosition: String = DEFAULT_SEARCH_BAR_POSITION,
-        val hiddenApps: Set<String> = DEFAULT_HIDDEN_APPS,
-        val secureApps: Set<String> = DEFAULT_SECURE_APPS,
+        val hiddenApps: List<String> = DEFAULT_HIDDEN_APPS,
+        val secureApps: List<String> = DEFAULT_SECURE_APPS,
     ) {
         companion object {
             val SplitListKey = booleanPreferencesKey("split_apps_list")
@@ -90,10 +87,10 @@ data class AppSettings(
             const val DEFAULT_SEARCH_BAR_POSITION = SettingsValues.SearchBarPosition.BOTTOM
 
             val HiddenAppsKey = stringSetPreferencesKey("hidden-apps")
-            val DEFAULT_HIDDEN_APPS = emptySet<String>()
+            val DEFAULT_HIDDEN_APPS = emptyList<String>()
 
             val SecureAppsKey = stringSetPreferencesKey("secure-apps")
-            val DEFAULT_SECURE_APPS = emptySet<String>()
+            val DEFAULT_SECURE_APPS = emptyList<String>()
         }
     }
 
@@ -106,16 +103,34 @@ data class AppSettings(
         }
     }
 
-    data class Quick(
-        val quickApps: Set<String> = DEFAULT_QUICK_APPS,
-        val quickBookmarks: Set<String> = DEFAULT_QUICK_BOOKMARKS,
+    data class QuickPanel(
+        val quickApps: List<String> = DEFAULT_QUICK_APPS,
+        val quickBookmarks: List<Int> = DEFAULT_QUICK_BOOKMARKS,
+        val widgets: List<WidgetSetting> = DEFAULT_WIDGETS,
+        val sections: List<QuickSection> = DEFAULT_SECTIONS
     ) {
         companion object {
-            val QuickAppsKey = stringSetPreferencesKey("quick-apps")
-            val DEFAULT_QUICK_APPS = emptySet<String>()
-            val QuickBookmarksKey = stringSetPreferencesKey("quick-bookmarks")
-            val DEFAULT_QUICK_BOOKMARKS = emptySet<String>()
+            val QuickAppsKey = stringPreferencesKey("quick-apps")
+            val DEFAULT_QUICK_APPS = emptyList<String>()
+            val QuickBookmarksKey = stringPreferencesKey("quick-bookmarks")
+            val DEFAULT_QUICK_BOOKMARKS = emptyList<Int>()
+            val WidgetsKey = stringPreferencesKey("widgets")
+            val DEFAULT_WIDGETS = emptyList<WidgetSetting>()
+            val QuickSectionsKey = stringPreferencesKey("quick-sections")
+            val DEFAULT_SECTIONS =
+                listOf(
+                    QuickSection(SettingsValues.QuickSections.APPS),
+                    QuickSection(SettingsValues.QuickSections.BOOKMARKS),
+                    QuickSection(SettingsValues.QuickSections.WIDGETS),
+                    QuickSection(SettingsValues.QuickSections.TODOS),
+                )
         }
+
+        @Serializable
+        data class QuickSection(
+            val id: String,
+            val hidden: Boolean = false
+        )
     }
 }
 
@@ -142,6 +157,13 @@ object SettingsValues {
         const val DISABLED = "disabled"
         const val ROOT = "root"
         const val ACCESSIBILITY = "accessibility"
+    }
+
+    object QuickSections {
+        const val APPS = "apps"
+        const val BOOKMARKS = "bookmarks"
+        const val WIDGETS = "widgets"
+        const val TODOS = "todos"
     }
 }
 
