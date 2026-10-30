@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.util.Log
 import android.util.Patterns
 import androidx.activity.ComponentActivity
+import androidx.core.net.toUri
 
 fun isDefaultLauncher(context: Context): Boolean {
     val intent = Intent(Intent.ACTION_MAIN).apply {
@@ -37,4 +39,26 @@ fun Context.getActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
     is ContextWrapper -> baseContext.getActivity()
     else -> null
+}
+
+fun openURL(url: String, context: Context) {
+    try {
+        val parsedURL = if (!url.startsWith("https") || !url.startsWith("http")) {
+            "https://${url}"
+        } else {
+            url
+        }
+
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                parsedURL.toUri()
+            ).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        )
+    } catch (e: Exception) {
+        Log.e("Search Screen", "Error opening url")
+        e.printStackTrace()
+    }
 }

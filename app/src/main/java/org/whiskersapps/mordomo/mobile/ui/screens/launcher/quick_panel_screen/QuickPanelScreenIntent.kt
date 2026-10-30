@@ -1,6 +1,7 @@
 package org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen
 
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
+import org.whiskersapps.mordomo.mobile.core.features.bookmarks.Bookmark
 import org.whiskersapps.mordomo.mobile.core.features.widgets.Widget
 
 sealed interface QuickPanelScreenIntent {
@@ -24,6 +25,7 @@ sealed interface QuickPanelScreenIntent {
     data object BookmarksPickerClose : QuickPanelScreenIntent
     data class BookmarksPickerSelect(val id: Int) : QuickPanelScreenIntent
     data object BookmarksPickerSave : QuickPanelScreenIntent
+    data class BookmarkClick(val bookmark: Bookmark) : QuickPanelScreenIntent
 }
 
 sealed interface AddToDoDialogIntent : QuickPanelScreenIntent {

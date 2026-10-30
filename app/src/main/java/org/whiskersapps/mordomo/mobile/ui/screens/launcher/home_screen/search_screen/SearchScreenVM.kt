@@ -24,6 +24,7 @@ import org.whiskersapps.mordomo.mobile.core.features.bookmarks.BookmarksReposito
 import org.whiskersapps.mordomo.mobile.core.features.search_engines.SearchEnginesRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
 import org.whiskersapps.mordomo.mobile.core.utils.isShortURL
+import org.whiskersapps.mordomo.mobile.core.utils.openURL
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenState.AppDialogState
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenIntent as ScreenIntent
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.home_screen.search_screen.SearchScreenUICallback as UICallback
@@ -163,7 +164,7 @@ class SearchScreenVM(
                 }
 
                 if (state.value.isTextURL) {
-                    openURL(state.value.searchText)
+                    openURL(state.value.searchText, context)
                     resetScreen()
                 }
 
@@ -171,8 +172,7 @@ class SearchScreenVM(
                     val queryURL = searchEngine.query
                     val searchURL = queryURL.replace("%s", state.value.searchText)
 
-                    openURL(searchURL)
-
+                    openURL(searchURL, context)
                     resetScreen()
                 }
             }
@@ -238,14 +238,13 @@ class SearchScreenVM(
         }
 
         fun onBookmarkClick(bookmark: Bookmark) {
-            openURL(bookmark.url)
-
+            openURL(bookmark.url, context)
             resetScreen()
         }
 
         fun onWebSearchClick() {
             if (state.value.isTextURL) {
-                openURL(state.value.searchText)
+                openURL(state.value.searchText, context)
                 resetScreen()
 
                 return
@@ -254,33 +253,8 @@ class SearchScreenVM(
             val queryURL = state.value.searchEngine!!.query
             val searchURL = queryURL.replace("%s", state.value.searchText)
 
-            openURL(searchURL)
+            openURL(searchURL, context)
             resetScreen()
-        }
-
-
-        private fun openURL(url: String) {
-            try {
-                val parsedURL = if (!url.startsWith("https") || !url.startsWith("http")) {
-                    "https://${url}"
-                } else {
-                    url
-                }
-
-                context.startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        parsedURL.toUri()
-                    ).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    }
-                )
-
-                resetScreen()
-            } catch (e: Exception) {
-                Log.e("Search Screen", "Error opening url")
-                e.printStackTrace()
-            }
         }
     }
 

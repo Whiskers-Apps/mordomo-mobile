@@ -1,9 +1,11 @@
 package org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen
 
+import android.app.Application
 import android.appwidget.AppWidgetProviderInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.whiskersapps.lib.Sniffer
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,12 +16,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.whiskersapps.mordomo.mobile.core.features.apps.App
 import org.whiskersapps.mordomo.mobile.core.features.apps.AppsRepository
+import org.whiskersapps.mordomo.mobile.core.features.bookmarks.Bookmark
 import org.whiskersapps.mordomo.mobile.core.features.bookmarks.BookmarksRepository
 import org.whiskersapps.mordomo.mobile.core.features.settings.SettingsRepository
 import org.whiskersapps.mordomo.mobile.core.features.todo.ToDo
 import org.whiskersapps.mordomo.mobile.core.features.todo.ToDoRepository
 import org.whiskersapps.mordomo.mobile.core.features.widgets.Widget
 import org.whiskersapps.mordomo.mobile.core.features.widgets.WidgetSetting
+import org.whiskersapps.mordomo.mobile.core.utils.openURL
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenState.AddToDoDialogState
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenState.QuickAppsPickerState
 import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.QuickPanelScreenState.QuickBookmarksPickerState
@@ -33,7 +37,8 @@ class QuickPanelScreenVM(
     private val settingsRepository: SettingsRepository,
     val todoRepository: ToDoRepository,
     private val appsRepository: AppsRepository,
-    private val bookmarksRepository: BookmarksRepository
+    private val bookmarksRepository: BookmarksRepository,
+    private val context: Application
 ) : ViewModel() {
     private val _state = MutableStateFlow(ScreenState())
     val state = _state.asStateFlow()
@@ -116,6 +121,7 @@ class QuickPanelScreenVM(
             Intent.BookmarksPickerClose -> onBookmarksPickerClose()
             is Intent.BookmarksPickerSelect -> onBookmarksPickerSelect(intent.id)
             Intent.BookmarksPickerSave -> onBookmarksPickerSave()
+            is Intent.BookmarkClick -> onBookmarkClick(intent.bookmark)
         }
     }
 
@@ -400,6 +406,16 @@ class QuickPanelScreenVM(
             _state.update { it.copy(bookmarksPickerState = QuickBookmarksPickerState()) }
 
             settingsRepository.setQuickBookmarks(bookmarks)
+        }
+    }
+
+    private fun onBookmarkClick(bookmark: Bookmark) {
+        viewModelScope.launch {
+            launch {
+                openURL(bookmark.url, context)
+            }
+
+            _screenCallback.send(ScreenCallback.GoHome)
         }
     }
 

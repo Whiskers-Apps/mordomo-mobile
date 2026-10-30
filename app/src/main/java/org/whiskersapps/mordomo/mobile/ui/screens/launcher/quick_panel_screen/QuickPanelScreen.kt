@@ -2,6 +2,7 @@ package org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen
 
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetManager
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -79,15 +81,18 @@ import org.whiskersapps.mordomo.mobile.ui.screens.launcher.quick_panel_screen.Qu
 
 @Composable
 fun QuickPanelScreenRoot(
-    onGoHome: () -> Unit,
+    pagerState: PagerState,
     vm: ScreenVM = koinViewModel()
 ) {
     val state = vm.state.collectAsStateWithLifecycle().value
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         vm.screenCallback.collect {
             when (it) {
-                QuickPanelScreenCallback.GoHome -> onGoHome()
+                QuickPanelScreenCallback.GoHome -> {
+                    scope.launch { pagerState.scrollToPage(1) }
+                }
             }
         }
     }
@@ -362,13 +367,19 @@ fun QuickPanelScreen(
                                 Column(Modifier.section()) {
                                     for ((index, bookmark) in state.quickBookmarks.withIndex()) {
                                         key("bookmark-${bookmark.id}") {
-                                            Row(Modifier
-                                                .fillMaxWidth()
-                                                .clickable {}
-                                                .padding(16.dp),
+                                            Row(
+                                                Modifier
+                                                    .fillMaxWidth()
+                                                    .clickable {
+                                                        onIntent(ScreenIntent.BookmarkClick(bookmark))
+                                                    }
+                                                    .padding(16.dp),
                                                 verticalAlignment = Alignment.CenterVertically
                                             ) {
-                                                WebIcon(url = getWebsiteIconURL(bookmark.url), size = 40.dp)
+                                                WebIcon(
+                                                    url = getWebsiteIconURL(bookmark.url),
+                                                    size = 40.dp
+                                                )
 
                                                 Spacer(Modifier.width(8.dp))
 

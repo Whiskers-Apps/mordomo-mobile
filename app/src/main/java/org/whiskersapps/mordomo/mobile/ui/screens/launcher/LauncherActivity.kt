@@ -124,11 +124,7 @@ class LauncherActivity : AppCompatActivity() {
                     ) { pageIndex ->
                         when (pageIndex) {
                             0 -> {
-                                QuickPanelScreenRoot(
-                                    onGoHome = {
-                                        scope.launch { pagerState.scrollToPage(0) }
-                                    }
-                                )
+                                QuickPanelScreenRoot(pagerState)
                             }
 
                             1 -> {

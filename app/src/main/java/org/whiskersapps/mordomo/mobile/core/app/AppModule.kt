@@ -44,7 +44,7 @@ val appModule = module {
 
 
     // -------------------- View Models ----------------------- //
-    viewModel { QuickPanelScreenVM(get(), get(), get(), get()) }
+    viewModel { QuickPanelScreenVM(get(), get(), get(), get(), get()) }
     viewModel { HomeScreenVM(get(), get(), get()) }
     viewModel { SearchScreenVM(get(), get(), get(), get(), get()) }
     viewModel { AppsScreenVM(get(), get()) }
